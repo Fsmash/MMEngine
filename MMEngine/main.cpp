@@ -38,6 +38,7 @@ int main() {
 		glEnable(GL_DEPTH_TEST);	// enable depth testing
 		glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
 		glClearColor(0.2f, 0.3f, 0.8f, 1.0f);	// set up clear color for glfw
+		//glfwSetErrorCallback(glfw_error_log);	// register error call-back function for glfw error function
 	}
 	else {
 		system("PAUSE");
@@ -105,6 +106,5 @@ int main() {
 		window.update();
 	}
 
-	//system("PAUSE");
 	return 0;
 }
