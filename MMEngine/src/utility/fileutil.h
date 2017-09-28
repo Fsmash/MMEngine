@@ -11,7 +11,7 @@ static std::string loadShader(const char *filePath)
 	std::string str = "";
 
 	if (in.is_open()) {
-		std::cout << filePath << " loaded" << std::endl;
+		//std::cout << filePath << " loaded" << std::endl;
 		std::string line = "";
 		while (!in.eof()) {
 			std::getline(in, line);
@@ -19,10 +19,10 @@ static std::string loadShader(const char *filePath)
 		}
 	}
 	else {
-		std::cout << filePath << " failed to load" << std::endl;
+		//std::cout << filePath << " failed to load" << std::endl;
 	}
 
-	std::cout << str;
+	//std::cout << str;
 	in.close();
 	return str;
 }
