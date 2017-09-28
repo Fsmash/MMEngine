@@ -38,7 +38,6 @@ int main() {
 		glEnable(GL_DEPTH_TEST);	// enable depth testing
 		glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
 		glClearColor(0.2f, 0.3f, 0.8f, 1.0f);	// set up clear color for glfw
-		//glfwSetErrorCallback(glfw_error_log);	// register error call-back function for glfw error function
 	}
 	else {
 		system("PAUSE");
@@ -103,12 +102,6 @@ int main() {
 								// set vao as input variable for all further drawing (in this case just some vertex points)
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 											   // for 4 indices (1 index consist of 3 points as defined by vao layout)
-		//glBegin(GL_TRIANGLES);
-		//glColor3f(1.0f, 0.0f, 0.0f);
-		//glVertex2f(-0.5f, -0.5f);
-		//glVertex2f( 0.0f,  0.5f);
-		//glVertex2f( 0.5f, -0.5f);
-		//glEnd();
 		window.update();
 	}
 
