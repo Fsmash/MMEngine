@@ -12,26 +12,31 @@ namespace mme {
 
 		private:
 
-			// holds shader variables (attribues and uniform) with corresponding index
-			typedef std::map<std::string, int> VariableMap;
-			VariableMap m_map;
-
 			// shader indexes (names) and program  index
 			GLuint m_vertex;
 			GLuint m_fragment;
 			//GLuint m_geometry;
 			GLuint m_program;
-
-			// get index of variables in shader program. 
-			//GLuint getVariableIndex(const std::string name, bool isUnif);
 			bool init(const char *vert, const char *frag);
 
 		public:
-
+			
 			Shader(const char *vert, const char *frag);
 			~Shader();
 			void enable() const;
 			void disable() const;
+			
+			/* TO DO
+			void setUniform1f(const GLchar* name, float value);
+			void setUniform1fv(const GLchar* name, float* value, int count);
+			void setUniform1i(const GLchar* name, int value);
+			void setUniform1iv(const GLchar* name, int* value, int count);
+			void setUniform2f(const GLchar* name, const maths::vec2& vector);
+			void setUniform3f(const GLchar* name, const maths::vec3& vector);
+			void setUniform4f(const GLchar* name, const maths::vec4& vector);
+			void setUniformMat4(const GLchar* name, const maths::mat4& matrix);
+			*/
+
 			inline GLuint getVert() const { return m_vertex; }
 			inline GLuint getFrag() const { return m_fragment; }
 			//inline GLuint getGeom() const { return m_geometry; }
@@ -40,9 +45,6 @@ namespace mme {
 			inline void setFrag(GLenum idx) { m_fragment = idx; }
 			//inline void setGeom(GLenum idx) { m_geometry = idx; }
 			inline void setProgram(GLenum idx) { m_program = idx; }
-
-			//GLuint getAttributeIndex(const std::string name);
-			//GLuint getUniformIndex(const std::string name);
 
 		};
 	}}
