@@ -6,21 +6,21 @@
 #define FRAG "src/shaders/shader.frag"
 
 #if DEBUG
-	#include "src/utility/log.h"
-	#define INIT_LOG() restart_gl_log()
-	#define LOG(x, ...) gl_log(x, __VA_ARGS__)
-	#define INFO() log_gl_params()
+#include "src/utility/log.h"
+#define INIT_LOG() restart_gl_log()
+#define LOG(x, ...) gl_log(x, __VA_ARGS__)
+#define INFO() log_gl_params()
 #else
-	#define INIT_LOG() true
-	#define LOG(x, y)
-	#define INFO()
+#define INIT_LOG() true
+#define LOG(x, y)
+#define INFO()
 #endif
 
 int main() {
 
 	using namespace mme;
 	using namespace graphics;
-	
+
 	if (!INIT_LOG()) { // if unable to open and start new log file for every program run, exit
 		system("PAUSE");
 		return 1;

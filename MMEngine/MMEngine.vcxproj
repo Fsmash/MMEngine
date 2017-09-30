@@ -149,12 +149,15 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\graphics\shader.cpp" />
     <ClCompile Include="src\graphics\window.cpp" />
+    <ClCompile Include="src\utility\log.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphics\shader.h" />
     <ClInclude Include="src\graphics\window.h" />
     <ClInclude Include="src\utility\fileutil.h" />
-    <ClInclude Include="src\utility\log.h" />
+    <ClInclude Include="src\utility\log.h">
+      <FileType>CppHeader</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\shader.frag" />

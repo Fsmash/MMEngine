@@ -6,7 +6,7 @@
 
 namespace mme {
 	namespace graphics {
-		
+
 		// "Shader" object that will hold all shader indexes(names) for a corresponding shader program, stored as a index(name) 
 		class Shader {
 
@@ -20,12 +20,12 @@ namespace mme {
 			bool init(const char *vert, const char *frag);
 
 		public:
-			
+
 			Shader(const char *vert, const char *frag);
 			~Shader();
 			void enable() const;
 			void disable() const;
-			
+
 			/* TO DO
 			void setUniform1f(const GLchar* name, float value);
 			void setUniform1fv(const GLchar* name, float* value, int count);
@@ -47,4 +47,5 @@ namespace mme {
 			inline void setProgram(GLenum idx) { m_program = idx; }
 
 		};
-	}}
+	}
+}
