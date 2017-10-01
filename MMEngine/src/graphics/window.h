@@ -5,6 +5,7 @@
 #include <iostream>
 #include "../utility/log.h"
 #define MAX_KEYS 1024
+#define MAX_BUTTONS 32
 
 namespace mme {
 	namespace graphics {
@@ -18,12 +19,14 @@ namespace mme {
 			GLFWwindow *m_window;
 			bool m_closed;
 			bool m_keys[MAX_KEYS];
+			bool m_mouse[MAX_BUTTONS];
 			double m_xpos, m_ypos;
 
 			bool init();
 			friend static void frameBufResize(GLFWwindow *window, int width, int height);
 			friend static void fpsCounter(GLFWwindow * window);
 			friend static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			friend static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 			friend static void cursorCallback(GLFWwindow *window, double x, double y);
 
 		public:

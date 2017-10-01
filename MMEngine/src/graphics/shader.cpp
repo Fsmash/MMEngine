@@ -64,5 +64,40 @@ namespace mme {
 			glUseProgram(0);
 		}
 
+		void Shader::setUniform1f(const GLchar* name, GLfloat value) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform1f(unifLoc, value);
+		}
+
+		void Shader::setUniform1fv(const GLchar* name, GLfloat* value, GLsizei count) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform1fv(unifLoc, count, value);
+		}
+
+		void Shader::setUniform1i(const GLchar* name, GLint value) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform1i(unifLoc, value);
+		}
+
+		void Shader::setUniform1iv(const GLchar* name, GLint* value, GLsizei count) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform1iv(unifLoc, count, value);
+		}
+
+		void Shader::setUniform2f(const GLchar* name, const math::vec2& vector) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform2f(unifLoc, vector.x, vector.y);
+		}
+
+		void Shader::setUniform3f(const GLchar* name, const math::vec3& vector) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform3f(unifLoc, vector.x, vector.y, vector.z);
+		}
+
+		void Shader::setUniform4f(const GLchar* name, const math::vec4& vector) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniform4f(unifLoc, vector.x, vector.y, vector.z, vector.w);
+		}
+
 	}
 }

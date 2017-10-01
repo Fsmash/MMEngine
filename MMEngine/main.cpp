@@ -89,6 +89,7 @@ int main() {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	printf("vao name: %d\n", vao); // name of vao object in state
 
+	// MATH TEST
 	math::vec4 moo(1.0, 2.3, 3.3, 4.3);
 	math::vec4 moo2(1.0, 2.3, 3.3, 4.3);
 	math::vec3 mew(12.3, 4.2, 5.5);
@@ -96,13 +97,11 @@ int main() {
 	math::vec3 mew2(baa, 5.5);
 	math::vec4 moo3(mew, 4.3);
 
-	// MATH TEST
 	std::cout << moo << std::endl;
 	std::cout << moo + moo2 << std::endl;
 	std::cout << moo3 << std::endl;
 	std::cout << mew2 << std::endl;
 	std::cout << mew - mew2 << std::endl;
-
 
 	Shader shader(VERT, FRAG);
 

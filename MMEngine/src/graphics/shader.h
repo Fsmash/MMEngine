@@ -3,6 +3,7 @@
 #include <map>
 #include "../utility/fileutil.h"
 #include "../utility/log.h"
+#include "../math/vec4.h"
 
 namespace mme {
 	namespace graphics {
@@ -26,14 +27,14 @@ namespace mme {
 			void enable() const;
 			void disable() const;
 
-			/* TO DO
-			void setUniform1f(const GLchar* name, float value);
-			void setUniform1fv(const GLchar* name, float* value, int count);
-			void setUniform1i(const GLchar* name, int value);
-			void setUniform1iv(const GLchar* name, int* value, int count);
-			void setUniform2f(const GLchar* name, const maths::vec2& vector);
-			void setUniform3f(const GLchar* name, const maths::vec3& vector);
-			void setUniform4f(const GLchar* name, const maths::vec4& vector);
+			void setUniform1f(const GLchar* name, GLfloat value);
+			void setUniform1fv(const GLchar* name, GLfloat* value, GLsizei count);
+			void setUniform1i(const GLchar* name, GLint value);
+			void setUniform1iv(const GLchar* name, GLint* value, GLsizei count);
+			void setUniform2f(const GLchar* name, const math::vec2& vector);
+			void setUniform3f(const GLchar* name, const math::vec3& vector);
+			void setUniform4f(const GLchar* name, const math::vec4& vector);
+			/*
 			void setUniformMat4(const GLchar* name, const maths::mat4& matrix);
 			*/
 

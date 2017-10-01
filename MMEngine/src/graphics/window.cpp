@@ -33,6 +33,7 @@ namespace mme {
 			glfwSetErrorCallback(glfw_error_log);	// register error call-back function for glfw error function
 			glfwSetFramebufferSizeCallback(m_window, frameBufResize);	// call back function called when framebuffer is resized
 			glfwSetKeyCallback(m_window, keyCallback);	// call back functions for key presses
+			glfwSetMouseButtonCallback(m_window, mouseButtonCallback);	// call back functions for key presses
 			glfwSetCursorPosCallback(m_window, cursorCallback);
 
 			return true;
@@ -75,13 +76,20 @@ namespace mme {
 			// other inputs can go here
 		}
 
+		void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+			Window *win = (Window *)glfwGetWindowUserPointer(window);
+			win->m_mouse[button] = action != GLFW_RELEASE;
+			//std::cout << button << std::endl;
+			std::cout << win->m_xpos << std::endl;
+			std::cout << win->m_ypos << std::endl;
+		}
+
 		void cursorCallback(GLFWwindow *window, double x, double y) {
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
 			win->m_xpos = x;
 			win->m_ypos = y;
-			std::cout << win->m_xpos << std::endl;
-			std::cout << win->m_ypos << std::endl;
-
+			//std::cout << win->m_xpos << std::endl;
+			//std::cout << win->m_ypos << std::endl;
 		}
 		// END OF CALL BACK FUNCTIONS
 
@@ -95,6 +103,10 @@ namespace mme {
 			}
 			else
 				m_closed = false;
+
+			for (int i = 0; i < MAX_KEYS; i++) {
+				m_keys[i] = false;
+			}
 		}
 
 		Window::~Window() {
