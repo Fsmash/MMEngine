@@ -29,9 +29,11 @@ namespace mme {
 			}
 
 			// set call back functions here.
+			glfwSetWindowUserPointer(m_window, this);
 			glfwSetErrorCallback(glfw_error_log);	// register error call-back function for glfw error function
 			glfwSetFramebufferSizeCallback(m_window, frameBufResize);	// call back function called when framebuffer is resized
-			glfwSetKeyCallback(m_window, key_callback);	// call back functions for key presses
+			glfwSetKeyCallback(m_window, keyCallback);	// call back functions for key presses
+			glfwSetCursorPosCallback(m_window, cursorCallback);
 
 			return true;
 		}
@@ -42,7 +44,7 @@ namespace mme {
 		}
 
 		// function that calculates fps and updates counter in glfw window
-		void update_fps_counter(GLFWwindow * window) {
+		void fpsCounter(GLFWwindow * window) {
 			static double prev_sec = 0;
 			static int frame_count = 0;
 			double cur_sec;
@@ -61,13 +63,25 @@ namespace mme {
 			frame_count++;
 		}
 
-		void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+		void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
+			Window *win = (Window *)glfwGetWindowUserPointer(window);
+			win->m_keys[key] = action != GLFW_RELEASE;
+
 			if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 				glfwSetWindowShouldClose(window, 1);
 			}
 
 			// other inputs can go here
+		}
+
+		void cursorCallback(GLFWwindow *window, double x, double y) {
+			Window *win = (Window *)glfwGetWindowUserPointer(window);
+			win->m_xpos = x;
+			win->m_ypos = y;
+			std::cout << win->m_xpos << std::endl;
+			std::cout << win->m_ypos << std::endl;
+
 		}
 		// END OF CALL BACK FUNCTIONS
 
@@ -105,7 +119,17 @@ namespace mme {
 		}
 
 		void Window::frameCounter() const {
-			update_fps_counter(m_window);
+			fpsCounter(m_window);
+		}
+
+		bool Window::isKeyPressed(unsigned int key) const {
+			
+			if (key >= MAX_KEYS || key < 0) {
+				gl_log("Error: Key pressed out of range. key = %d\n", key);
+				return false;
+			}
+
+			return m_keys[key];
 		}
 
 	}

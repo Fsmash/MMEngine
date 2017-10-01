@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "../utility/log.h"
+#define MAX_KEYS 1024
 
 namespace mme {
 	namespace graphics {
@@ -16,11 +17,14 @@ namespace mme {
 			int m_fwidth, m_fheight;	// frame buffer size of window
 			GLFWwindow *m_window;
 			bool m_closed;
+			bool m_keys[MAX_KEYS];
+			double m_xpos, m_ypos;
 
 			bool init();
-			friend void frameBufResize(GLFWwindow *window, int width, int height);
-			friend void update_fps_counter(GLFWwindow * window);
-			friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			friend static void frameBufResize(GLFWwindow *window, int width, int height);
+			friend static void fpsCounter(GLFWwindow * window);
+			friend static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+			friend static void cursorCallback(GLFWwindow *window, double x, double y);
 
 		public:
 			Window(const char* title, int width, int height);
@@ -29,6 +33,7 @@ namespace mme {
 			void update();
 			bool closed();
 			void frameCounter() const;
+			bool isKeyPressed(unsigned int key) const;
 
 			inline bool isClosed() const { return m_closed; }
 			inline int getSize() const { return m_width; }
