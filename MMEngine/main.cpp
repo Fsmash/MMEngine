@@ -1,6 +1,6 @@
 #include "src/graphics/window.h"
 #include "src/graphics/shader.h"
-#include "src/math/vec4.h"
+#include "src/math/mat4.h"
 
 #define DEBUG 1
 #define VERT "src/shaders/shader.vert"
@@ -90,12 +90,22 @@ int main() {
 	printf("vao name: %d\n", vao); // name of vao object in state
 
 	// MATH TEST
-	math::vec4 moo(1.0, 2.3, 3.3, 4.3);
-	math::vec4 moo2(1.0, 2.3, 3.3, 4.3);
-	math::vec3 mew(12.3, 4.2, 5.5);
-	math::vec2 baa(324.3, 154.3);
-	math::vec3 mew2(baa, 5.5);
-	math::vec4 moo3(mew, 4.3);
+	math::vec4 moo(1.0f, 2.3f, 3.3f, 4.3f);
+	math::vec4 moo2(1.0f, 2.3f, 3.3f, 4.3f);
+	math::vec3 mew(12.3f, 4.2f, 5.5f);
+	math::vec2 baa(324.3f, 154.3f);
+	math::vec3 mew2(baa, 5.5f);
+	math::vec4 moo3(mew, 4.3f);
+	math::vec4 moo4(mew, 4.3f);
+
+	math::mat4 woo(1.0f);
+	math::mat4 woo2(moo, moo2, moo3, moo4);
+
+	std::cout << woo.columns[0] << std::endl;
+	std::cout << woo.columns[1] << std::endl;
+	std::cout << woo.columns[2] << std::endl;
+	std::cout << woo.columns[3] << std::endl;
+	std::cout << woo2 << std::endl;
 
 	std::cout << moo << std::endl;
 	std::cout << moo + moo2 << std::endl;
@@ -108,7 +118,7 @@ int main() {
 	while (!window.closed()) {
 
 		if (window.isKeyPressed(GLFW_KEY_A)) {
-			//std::cout << "A is PRESSED" << std::endl;
+			std::cout << "A is PRESSED" << std::endl;
 		}
 
 		window.frameCounter();
@@ -119,7 +129,7 @@ int main() {
 		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
 								// set vao as input variable for all further drawing (in this case just some vertex points)
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
-											   // for 4 indices (1 index consist of 3 points as defined by vao layout)
+											   // for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 		window.update();
 	}
 

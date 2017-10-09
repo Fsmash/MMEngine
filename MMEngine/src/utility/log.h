@@ -1,7 +1,6 @@
 #pragma once
 #include <time.h>
 #include <stdarg.h>	// let functions take a variable number of arguments
-#define GL_LOG_FILE "gl.log"
 
 namespace mme {
 
