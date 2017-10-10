@@ -1,6 +1,6 @@
 #include "src/graphics/window.h"
 #include "src/graphics/shader.h"
-#include "src/math/mat4.h"
+#include "src/graphics/camera.h"
 
 #define DEBUG 1
 #define VERT "src/shaders/shader.vert"
@@ -90,6 +90,7 @@ int main() {
 	printf("vao name: %d\n", vao); // name of vao object in state
 
 	// MATH TEST
+	/*
 	math::vec4 moo(1.0f, 2.3f, 3.3f, 4.3f);
 	math::vec4 moo2(1.0f, 2.3f, 3.3f, 4.3f);
 	math::vec3 mew(12.3f, 4.2f, 5.5f);
@@ -98,9 +99,18 @@ int main() {
 	math::vec4 moo3(mew, 4.3f);
 	math::vec4 moo4(mew, 4.3f);
 
-	math::mat4 woo(1.0f);
-	math::mat4 woo2(moo, moo2, moo3, moo4);
+	math::vec3 mew3 = mew + mew2;
 
+	math::mat4 woo(moo2, moo3, moo, moo);
+	math::mat4 woo2(moo, moo2, moo3, moo4);
+	std::cout << woo << std::endl;
+	std::cout << woo2 << std::endl;
+	std::cout << woo * woo2 << std::endl;
+	
+	std::cout << mew << std::endl;
+	std::cout << mew2 << std::endl;
+	std::cout << mew3 << std::endl;
+	std::cout << baa << std::endl;
 	std::cout << woo.columns[0] << std::endl;
 	std::cout << woo.columns[1] << std::endl;
 	std::cout << woo.columns[2] << std::endl;
@@ -112,8 +122,20 @@ int main() {
 	std::cout << moo3 << std::endl;
 	std::cout << mew2 << std::endl;
 	std::cout << mew - mew2 << std::endl;
-
+	*/
 	Shader shader(VERT, FRAG);
+
+	float width = window.getWidth();
+	float height = window.getHeight();
+
+	Camera cam(0.0f, 0.0f, 2.0f);
+	cam.setRoll(-90.0f);
+	//cam.setPitch(30.0f);
+	cam.update();
+	shader.enable();
+	shader.setUniformMat4("view", cam.viewMatrix());
+	shader.setUniformMat4("proj", cam.projMatrix(width, height));
+	shader.disable();
 
 	while (!window.closed()) {
 
@@ -131,6 +153,8 @@ int main() {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 											   // for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 		window.update();
+		// update projection matrix with new width and height on resize.
+		//shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	}
 
 	return 0;

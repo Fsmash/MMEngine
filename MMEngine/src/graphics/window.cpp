@@ -122,7 +122,8 @@ namespace mme {
 			glfwGetWindowSize(m_window, &m_width, &m_height);
 			glfwGetFramebufferSize(m_window, &m_fwidth, &m_fheight);
 			glfwPollEvents();
-			glfwSwapBuffers(m_window); // flip the swap onto the screen, and screen onto nex drawing surface 
+			glfwSwapBuffers(m_window); // flip the swap onto the screen, and screen onto nex drawing surface
+			std::cout << m_width << " " << m_height << std::endl;
 		}
 
 		bool Window::closed() {

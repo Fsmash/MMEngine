@@ -3,7 +3,7 @@
 #include <map>
 #include "../utility/fileutil.h"
 #include "../utility/log.h"
-#include "../math/vec4.h"
+#include "../math/mat4.h"
 
 namespace mme {
 	namespace graphics {
@@ -34,9 +34,8 @@ namespace mme {
 			void setUniform2f(const GLchar* name, const math::vec2& vector);
 			void setUniform3f(const GLchar* name, const math::vec3& vector);
 			void setUniform4f(const GLchar* name, const math::vec4& vector);
-			/*
-			void setUniformMat4(const GLchar* name, const maths::mat4& matrix);
-			*/
+			void setUniformMat4(const GLchar* name, const math::mat4& matrix);
+			
 
 			inline GLuint getVert() const { return m_vertex; }
 			inline GLuint getFrag() const { return m_fragment; }

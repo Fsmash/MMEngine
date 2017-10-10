@@ -10,13 +10,13 @@ namespace mme {
 			z = 0.0f;
 		}
 
-		vec3::vec3(const float &x, const float &y, const float &z) {
+		vec3::vec3(const float x, const float y, const float z) {
 			this->x = x;
 			this->y = y;
 			this->z = z;
 		}
 
-		vec3::vec3(const vec2 &vec, const float &z) {
+		vec3::vec3(const vec2 &vec, const float z) {
 			x = vec.x;
 			y = vec.y;
 			this->z = z;

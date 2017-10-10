@@ -10,21 +10,21 @@ namespace mme {
 			w = 0.0f;
 		}
 
-		vec4::vec4(const float &x, const float &y, const float &z, const float &w) {
+		vec4::vec4(const float x, const float y, const float z, const float w) {
 			this->x = x;
 			this->y = y;
 			this->z = z;
 			this->w = w;
 		}
 
-		vec4::vec4(const vec2 &vec, const float &z, const float &w) {
+		vec4::vec4(const vec2 &vec, const float z, const float w) {
 			x = vec.x;
 			y = vec.y;
 			this->z = z;
 			this->w = z;
 		}
 
-		vec4::vec4(const vec3 &vec, const float &w) {
+		vec4::vec4(const vec3 &vec, const float w) {
 			x = vec.x;
 			y = vec.y;
 			z = vec.z;

@@ -99,5 +99,10 @@ namespace mme {
 			glUniform4f(unifLoc, vector.x, vector.y, vector.z, vector.w);
 		}
 
+		void Shader::setUniformMat4(const GLchar* name, const math::mat4& mat) {
+			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
+			glUniformMatrix4fv(unifLoc, 1, GL_FALSE, mat.matrix);
+		}
+
 	}
 }

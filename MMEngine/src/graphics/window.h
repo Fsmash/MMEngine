@@ -39,7 +39,7 @@ namespace mme {
 			bool isKeyPressed(unsigned int key) const;
 
 			inline bool isClosed() const { return m_closed; }
-			inline int getSize() const { return m_width; }
+			inline int getWidth() const { return m_width; }
 			inline int getHeight() const { return m_height; }
 			inline int getFWidth() const { return m_fwidth; }
 			inline int getFHeight() const { return m_fheight; }
