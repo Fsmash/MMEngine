@@ -1,7 +1,7 @@
 #pragma once
 #include "vec4.h"
 #include <math.h>
-#define RADIANS 3.14159265f / 180.0f
+#define RADIANS (3.14159265f / 180.0f)
 
 namespace mme {
 	namespace math {
@@ -26,10 +26,9 @@ namespace mme {
 
 			mat4& multiply(const mat4 &other);
 			mat4& operator*=(const mat4 &other);
-			//mat4& orthographic();
-			//mat4& perspective();
-
+		
 			friend mat4 operator*(mat4 left, const mat4 &right);
+			friend vec4 operator*(mat4 left, const vec4 &right);
 			friend std::ostream& operator<<(std::ostream &stream, const mat4 &matrix);
 
 		};

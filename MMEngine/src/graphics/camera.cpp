@@ -67,22 +67,22 @@ namespace mme {
 		}
 
 		void Camera::right() { 
-			m_pos.x -= speed; 
-			m_moved = true;
-		}
-		
-		void Camera::left() {
 			m_pos.x += speed; 
 			m_moved = true;
 		}
 		
+		void Camera::left() {
+			m_pos.x -= speed; 
+			m_moved = true;
+		}
+		
 		void Camera::up() { 
-			m_pos.y -= speed; 
+			m_pos.y += speed; 
 			m_moved = true;
 		}
 		
 		void Camera::down() { 
-			m_pos.y += speed; 
+			m_pos.y -= speed; 
 			m_moved = true;
 		}
 		
@@ -154,7 +154,7 @@ namespace mme {
 
 		math::mat4 Camera::projMatrix(const float width, const float height) {
 			float aspect = width / height;
-			float range = tan(m_fov * 0.5f) * m_near;
+			float range = tan(m_fov * RADIANS * 0.5f) * m_near;
 			float Sx = (2.0f * m_near) / (range * aspect + range * aspect);
 			float Sy = m_near / range;
 			float Sz = -(m_far + m_near) / (m_far - m_near);

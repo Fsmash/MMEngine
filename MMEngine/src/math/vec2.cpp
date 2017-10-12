@@ -33,6 +33,14 @@ namespace mme {
 
 			return (*this);
 		}
+
+		vec2& vec2::scale(const float scale) {
+			x *= scale;
+			y *= scale;
+
+			return (*this);
+		}
+
 		vec2& vec2::divide(const vec2 &other) {
 			x /= other.x;
 			y /= other.y;

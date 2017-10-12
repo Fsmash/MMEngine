@@ -101,6 +101,14 @@ namespace mme {
 			return left.multiply(right);
 		}
 
+		vec4 operator*(mat4 left, const vec4 &right) {
+			float x = left.columns[0].scale(right.x).sum();
+			float y = left.columns[1].scale(right.y).sum();
+			float z = left.columns[2].scale(right.z).sum();
+			float w = left.columns[3].scale(right.w).sum();
+			return vec4(x, y, z, w);
+		}
+
 		std::ostream& operator<<(std::ostream &stream, const mat4 &matrix) {
 			stream << "column 1: " << matrix.columns[0] << std::endl;
 			stream << "column 2: " << matrix.columns[1] << std::endl;

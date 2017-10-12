@@ -158,7 +158,7 @@ int main() {
 		// Drawing first VAO, vao
 		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
 								// set vao as input variable for all further drawing (in this case just some vertex points)
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 3); // draw in triangle mode starting from point 0, (index 0)
 												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 
 		// update projection matrix with new width and height on resize.

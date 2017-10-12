@@ -57,6 +57,16 @@ namespace mme {
 
 			return (*this);
 		}
+
+		vec4& vec4::scale(const float scale) {
+			x *= scale;
+			y *= scale;
+			z *= scale;
+			w *= scale;
+
+			return (*this);
+		}
+
 		vec4& vec4::divide(const vec4 &other) {
 			x /= other.x;
 			y /= other.y;
@@ -77,6 +87,7 @@ namespace mme {
 		vec4 operator*(vec4 left, const vec4 &right) {
 			return left.multiply(right);
 		}
+
 
 		vec4 operator/(vec4 left, const vec4 &right) {
 			return left.divide(right);

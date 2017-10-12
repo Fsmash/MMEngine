@@ -14,6 +14,8 @@ namespace mme {
 			vec2& add(const vec2 &other);
 			vec2& subtract(const vec2 &other);
 			vec2& multiply(const vec2 &other);
+			vec2& scale(const float scale);
+			inline float sum() { return x + y; }
 			vec2& divide(const vec2 &other);
 
 			friend vec2 operator+(vec2 left, const vec2 &right);
