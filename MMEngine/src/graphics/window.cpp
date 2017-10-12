@@ -119,11 +119,17 @@ namespace mme {
 
 		void Window::update() {
 			//glViewport(0, 0, m_fwidth, m_fheight);
-			glfwGetWindowSize(m_window, &m_width, &m_height);
 			glfwGetFramebufferSize(m_window, &m_fwidth, &m_fheight);
 			glfwPollEvents();
 			glfwSwapBuffers(m_window); // flip the swap onto the screen, and screen onto nex drawing surface
-			std::cout << m_width << " " << m_height << std::endl;
+			//std::cout << m_width << " " << m_height << std::endl;
+		}
+
+		bool Window::resized() {
+			int old_w = m_width;
+			int old_h = m_height;
+			glfwGetWindowSize(m_window, &m_width, &m_height);
+			return (old_w != m_width) || (old_h != m_height);
 		}
 
 		bool Window::closed() {

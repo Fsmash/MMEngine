@@ -17,6 +17,8 @@
 #define INFO()
 #endif
 
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window);
+
 int main() {
 
 	using namespace mme;
@@ -79,11 +81,11 @@ int main() {
 	glGenVertexArrays(1, &vao); // generates 1 empty vertex attribute object (generates a name)
 	glBindVertexArray(vao); // set vao as current in openGL's state machine by "binding"
 	glEnableVertexAttribArray(0); // enable first attribute in vao (attribute 0) which is the vbo
-								  // will be at attribute 0 since only one vbo will be used
+									// will be at attribute 0 since only one vbo will be used
 	glBindBuffer(GL_ARRAY_BUFFER, points_vbo); // sets buffer as current again, see comment for glBindBuffer above
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); // defines layout of buffer object in vao.
-															  // 0 means define layout for attribute number 0
-															  // 3 means that the variables are vec3 made from every 3 floats in buffer
+																// 0 means define layout for attribute number 0
+																// 3 means that the variables are vec3 made from every 3 floats in buffer
 	glEnableVertexAttribArray(1); // enable attribute 1 for colour_vbo
 	glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -106,7 +108,7 @@ int main() {
 	std::cout << woo << std::endl;
 	std::cout << woo2 << std::endl;
 	std::cout << woo * woo2 << std::endl;
-	
+
 	std::cout << mew << std::endl;
 	std::cout << mew2 << std::endl;
 	std::cout << mew3 << std::endl;
@@ -125,23 +127,29 @@ int main() {
 	*/
 	Shader shader(VERT, FRAG);
 
-	float width = window.getWidth();
-	float height = window.getHeight();
+	int width = window.getWidth();
+	int height = window.getHeight();
 
 	Camera cam(0.0f, 0.0f, 2.0f);
-	cam.setRoll(-90.0f);
+	//cam.setRoll(0.0f);
 	//cam.setPitch(30.0f);
-	cam.update();
+	cam.speed = 0.1f;
+	cam.roll_speed = 1.5f;
+	cam.yaw_speed = 1.5f;
+	cam.pitch_speed = 1.5f;
+	cam.init();
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	shader.disable();
 
 	while (!window.closed()) {
+		keyPresses(cam, window);
 
-		if (window.isKeyPressed(GLFW_KEY_A)) {
-			std::cout << "A is PRESSED" << std::endl;
+		if (cam.update()) {
+			shader.setUniformMat4("view", cam.viewMatrix());
 		}
+
 
 		window.frameCounter();
 		window.clear();
@@ -151,11 +159,72 @@ int main() {
 		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
 								// set vao as input variable for all further drawing (in this case just some vertex points)
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
-											   // for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
-		window.update();
+												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
+
 		// update projection matrix with new width and height on resize.
-		//shader.setUniformMat4("proj", cam.projMatrix(width, height));
+		if (window.resized()) {
+			width = window.getWidth();
+			height = window.getHeight();
+			shader.setUniformMat4("proj", cam.projMatrix(width, height));
+			std::cout << "updated projection matrix" << std::endl;
+		}
+
+		window.update();
 	}
 
 	return 0;
+}
+
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window) {
+	if (window.isKeyPressed(GLFW_KEY_W)) {
+		std::cout << "W is PRESSED" << std::endl;
+		cam.forward();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_A)) {
+		std::cout << "A is PRESSED" << std::endl;
+		cam.left();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_S)) {
+		std::cout << "S is PRESSED" << std::endl;
+		cam.back();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_D)) {
+		std::cout << "D is PRESSED" << std::endl;
+		cam.right();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_Q)) {
+		cam.tiltLeft();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_E)) {
+		cam.tiltRight();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {
+		cam.up();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_PAGE_DOWN)) {
+		cam.down();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_UP)) {
+		cam.lookUp();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+		cam.lookDown();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_LEFT)) {
+		cam.turnLeft();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
+		cam.turnRight();
+	}
 }

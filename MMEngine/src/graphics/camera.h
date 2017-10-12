@@ -16,6 +16,7 @@ namespace mme {
 			
 			bool m_moved;
 			bool m_rotated;
+			bool m_init;
 			float m_pitch;		// rotation x axis
 			float m_yaw;		// y axis
 			float m_roll;		// z axis
@@ -69,7 +70,8 @@ namespace mme {
 			void tiltRight();
 			void tiltLeft();
 
-			void update();
+			void init();
+			inline bool update() { return m_moved || m_rotated; }
 			math::mat4 viewMatrix();
 			math::mat4 projMatrix(const float width, const float height);
 			//math::mat4 lookAt(math::vec3 cam_pos, math::vec3 target, math::vec3 up);

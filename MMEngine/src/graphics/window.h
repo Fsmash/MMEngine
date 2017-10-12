@@ -34,6 +34,7 @@ namespace mme {
 			~Window();
 			void clear() const;
 			void update();
+			bool resized();
 			bool closed();
 			void frameCounter() const;
 			bool isKeyPressed(unsigned int key) const;
