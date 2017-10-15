@@ -71,11 +71,11 @@ namespace mme {
 
 		void Camera::updateRotation() {
 			quatToMatrix();
-			// maintain current orientation
-			m_right	  = m_rotation * math::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			m_up	  = m_rotation * math::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = m_rotation * math::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-
+			// recalc axis to suit new orientation
+			
+			//m_right	  = m_rotation * math::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			//m_up	  = m_rotation * math::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+			//m_forward = m_rotation * math::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			//std::cout << "updated rotation x: " << m_right << std::endl;
 			//std::cout << "updated rotation y: " << m_up << std::endl;
 			//std::cout << "updated rotation z: " << m_forward << std::endl;
@@ -138,23 +138,7 @@ namespace mme {
 			m_pos.y = y;
 			m_pos.z = z;
 		}
-		/*
-		void Camera::rotateX(const float angle) {
-			m_rotation *= math::mat4::rotationMatrixX(angle);
-			m_moved = true;
-		}
 		
-		void Camera::rotateY(const float angle) {
-			m_rotation *= math::mat4::rotationMatrixX(angle);
-			m_moved = true;
-		}
-		
-		void Camera::rotateZ(const float angle) {
-			m_rotation *= math::mat4::rotationMatrixX(angle);
-			m_moved = true;
-		}
-		*/
-
 		void Camera::right() { 
 			m_vel.x += speed; 
 			m_moved = true;
@@ -191,7 +175,7 @@ namespace mme {
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
 			multVersor(q_yaw);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 		
@@ -201,7 +185,7 @@ namespace mme {
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
 			multVersor(q_yaw);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 		
@@ -211,7 +195,7 @@ namespace mme {
 			float q_pitch[4];
 			createVersor(q_pitch, m_pitch, m_right.x, m_right.y, m_right.z);
 			multVersor(q_pitch);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 		
@@ -221,7 +205,7 @@ namespace mme {
 			float q_pitch[4];
 			createVersor(q_pitch, m_pitch, m_right.x, m_right.y, m_right.z);
 			multVersor(q_pitch);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 		
@@ -231,7 +215,7 @@ namespace mme {
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
 			multVersor(q_roll);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 
@@ -241,15 +225,16 @@ namespace mme {
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
 			multVersor(q_roll);
-			updateRotation();
+			//updateRotation();
 			m_moved = true;
 		}
 
 		void Camera::init(const float angle, const float x, const float y, const float z) {
 			if (!m_init) {
 				createVersor(m_quat, angle, x, y, z);
+				normalizeVersor();
 				quatToMatrix();
-				updateTranslation();
+				//updateTranslation();
 			}
 			m_init = true;
 		}
@@ -260,22 +245,26 @@ namespace mme {
 				return math::mat4::identity();
 			}
 
-			// pretty sure I don't need to update this again.
-			//updateRotation();
+			updateRotation();
 
+			m_pos.x += m_vel.x;
+			m_pos.y += m_vel.y;
+			m_pos.z += m_vel.z;
+
+			// maintain current orientation
+			/* 
 			m_pos += math::vec3(m_right.x, m_right.y, m_right.z).scale(m_vel.x);
 			m_pos += math::vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y);
 			m_pos += math::vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z);
-
-			//std::cout << "cam position: " << m_pos << std::endl;
+			*/
 
 			updateTranslation();
 
 			m_moved = false;
-
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
 
+			// supposed to calculate inverse here. 
 			return m_rotation * m_translation;
 		}
 

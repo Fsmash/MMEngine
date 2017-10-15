@@ -27,6 +27,154 @@ namespace mme {
 			matrix[15] = diagonal;
 		}
 
+		mat4& mat4::invert()
+		{
+			double temp[16];
+
+			temp[0] = matrix[5] * matrix[10] * matrix[15] -
+				matrix[5] * matrix[11] * matrix[14] -
+				matrix[9] * matrix[6] * matrix[15] +
+				matrix[9] * matrix[7] * matrix[14] +
+				matrix[13] * matrix[6] * matrix[11] -
+				matrix[13] * matrix[7] * matrix[10];
+
+			temp[4] = -matrix[4] * matrix[10] * matrix[15] +
+				matrix[4] * matrix[11] * matrix[14] +
+				matrix[8] * matrix[6] * matrix[15] -
+				matrix[8] * matrix[7] * matrix[14] -
+				matrix[12] * matrix[6] * matrix[11] +
+				matrix[12] * matrix[7] * matrix[10];
+
+			temp[8] = matrix[4] * matrix[9] * matrix[15] -
+				matrix[4] * matrix[11] * matrix[13] -
+				matrix[8] * matrix[5] * matrix[15] +
+				matrix[8] * matrix[7] * matrix[13] +
+				matrix[12] * matrix[5] * matrix[11] -
+				matrix[12] * matrix[7] * matrix[9];
+
+			temp[12] = -matrix[4] * matrix[9] * matrix[14] +
+				matrix[4] * matrix[10] * matrix[13] +
+				matrix[8] * matrix[5] * matrix[14] -
+				matrix[8] * matrix[6] * matrix[13] -
+				matrix[12] * matrix[5] * matrix[10] +
+				matrix[12] * matrix[6] * matrix[9];
+
+			temp[1] = -matrix[1] * matrix[10] * matrix[15] +
+				matrix[1] * matrix[11] * matrix[14] +
+				matrix[9] * matrix[2] * matrix[15] -
+				matrix[9] * matrix[3] * matrix[14] -
+				matrix[13] * matrix[2] * matrix[11] +
+				matrix[13] * matrix[3] * matrix[10];
+
+			temp[5] = matrix[0] * matrix[10] * matrix[15] -
+				matrix[0] * matrix[11] * matrix[14] -
+				matrix[8] * matrix[2] * matrix[15] +
+				matrix[8] * matrix[3] * matrix[14] +
+				matrix[12] * matrix[2] * matrix[11] -
+				matrix[12] * matrix[3] * matrix[10];
+
+			temp[9] = -matrix[0] * matrix[9] * matrix[15] +
+				matrix[0] * matrix[11] * matrix[13] +
+				matrix[8] * matrix[1] * matrix[15] -
+				matrix[8] * matrix[3] * matrix[13] -
+				matrix[12] * matrix[1] * matrix[11] +
+				matrix[12] * matrix[3] * matrix[9];
+
+			temp[13] = matrix[0] * matrix[9] * matrix[14] -
+				matrix[0] * matrix[10] * matrix[13] -
+				matrix[8] * matrix[1] * matrix[14] +
+				matrix[8] * matrix[2] * matrix[13] +
+				matrix[12] * matrix[1] * matrix[10] -
+				matrix[12] * matrix[2] * matrix[9];
+
+			temp[2] = matrix[1] * matrix[6] * matrix[15] -
+				matrix[1] * matrix[7] * matrix[14] -
+				matrix[5] * matrix[2] * matrix[15] +
+				matrix[5] * matrix[3] * matrix[14] +
+				matrix[13] * matrix[2] * matrix[7] -
+				matrix[13] * matrix[3] * matrix[6];
+
+			temp[6] = -matrix[0] * matrix[6] * matrix[15] +
+				matrix[0] * matrix[7] * matrix[14] +
+				matrix[4] * matrix[2] * matrix[15] -
+				matrix[4] * matrix[3] * matrix[14] -
+				matrix[12] * matrix[2] * matrix[7] +
+				matrix[12] * matrix[3] * matrix[6];
+
+			temp[10] = matrix[0] * matrix[5] * matrix[15] -
+				matrix[0] * matrix[7] * matrix[13] -
+				matrix[4] * matrix[1] * matrix[15] +
+				matrix[4] * matrix[3] * matrix[13] +
+				matrix[12] * matrix[1] * matrix[7] -
+				matrix[12] * matrix[3] * matrix[5];
+
+			temp[14] = -matrix[0] * matrix[5] * matrix[14] +
+				matrix[0] * matrix[6] * matrix[13] +
+				matrix[4] * matrix[1] * matrix[14] -
+				matrix[4] * matrix[2] * matrix[13] -
+				matrix[12] * matrix[1] * matrix[6] +
+				matrix[12] * matrix[2] * matrix[5];
+
+			temp[3] = -matrix[1] * matrix[6] * matrix[11] +
+				matrix[1] * matrix[7] * matrix[10] +
+				matrix[5] * matrix[2] * matrix[11] -
+				matrix[5] * matrix[3] * matrix[10] -
+				matrix[9] * matrix[2] * matrix[7] +
+				matrix[9] * matrix[3] * matrix[6];
+
+			temp[7] = matrix[0] * matrix[6] * matrix[11] -
+				matrix[0] * matrix[7] * matrix[10] -
+				matrix[4] * matrix[2] * matrix[11] +
+				matrix[4] * matrix[3] * matrix[10] +
+				matrix[8] * matrix[2] * matrix[7] -
+				matrix[8] * matrix[3] * matrix[6];
+
+			temp[11] = -matrix[0] * matrix[5] * matrix[11] +
+				matrix[0] * matrix[7] * matrix[9] +
+				matrix[4] * matrix[1] * matrix[11] -
+				matrix[4] * matrix[3] * matrix[9] -
+				matrix[8] * matrix[1] * matrix[7] +
+				matrix[8] * matrix[3] * matrix[5];
+
+			temp[15] = matrix[0] * matrix[5] * matrix[10] -
+				matrix[0] * matrix[6] * matrix[9] -
+				matrix[4] * matrix[1] * matrix[10] +
+				matrix[4] * matrix[2] * matrix[9] +
+				matrix[8] * matrix[1] * matrix[6] -
+				matrix[8] * matrix[2] * matrix[5];
+
+			double determinant = matrix[0] * temp[0] + matrix[1] * temp[4] + matrix[2] * temp[8] + matrix[3] * temp[12];
+			determinant = 1.0 / determinant;
+
+			for (int i = 0; i < 4 * 4; i++)
+				matrix[i] = temp[i] * determinant;
+
+			return *this;
+		}
+
+		mat4& mat4::multiply(const mat4 &other) {
+			float data[16];
+			for (int y = 0; y < 4; y++)
+			{
+				for (int x = 0; x < 4; x++)
+				{
+					float sum = 0.0f;
+					for (int e = 0; e < 4; e++)
+					{
+						sum += matrix[x + e * 4] * other.matrix[e + y * 4];
+					}
+					data[x + y * 4] = sum;
+				}
+			}
+			memcpy(matrix, data, 16 * sizeof(float));
+
+			return *this;
+		}
+
+		mat4& mat4::operator*=(const mat4 &other) {
+			return multiply(other);
+		}
+
 		mat4 mat4::identity() {
 			return mat4(1.0f);	// explicity calling constructor and returning a copy. not returning by reference.
 		}
@@ -38,7 +186,7 @@ namespace mme {
 			tmp.columns[3].z = z;
 			return tmp;
 		}
-		
+
 		mat4 mat4::rotationMatrixX(const float angle) {
 			mat4 tmp = identity();
 			tmp.matrix[5] = cos(angle * RADIANS);
@@ -74,38 +222,25 @@ namespace mme {
 			return tmp;
 		}
 
-		mat4& mat4::multiply(const mat4 &other) {
-			float data[16];
-			for (int y = 0; y < 4; y++)
-			{
-				for (int x = 0; x < 4; x++)
-				{
-					float sum = 0.0f;
-					for (int e = 0; e < 4; e++)
-					{
-						sum += matrix[x + e * 4] * other.matrix[e + y * 4];
-					}
-					data[x + y * 4] = sum;
-				}
-			}
-			memcpy(matrix, data, 16 * sizeof(float));
-
-			return *this;
+		mat4 mat4::inverseMatrix(mat4 other) {
+			return other.invert();
 		}
 
-		mat4& mat4::operator*=(const mat4 &other) {
-			return multiply(other);
-		}
 
 		mat4 operator*(mat4 left, const mat4 &right) {
 			return left.multiply(right);
 		}
 
 		vec4 operator*(mat4 left, const vec4 &right) {
-			float x = left.columns[0].scale(right.x).sum();
-			float y = left.columns[1].scale(right.y).sum();
-			float z = left.columns[2].scale(right.z).sum();
-			float w = left.columns[3].scale(right.w).sum();
+			vec4 col1 = left.columns[0].scale(right.x);
+			vec4 col2 = left.columns[1].scale(right.y);
+			vec4 col3 = left.columns[2].scale(right.z);
+			vec4 col4 = left.columns[3].scale(right.w);
+
+			float x = col1.x + col2.x + col3.x + col4.x;
+			float y = col1.y + col2.y + col3.y + col4.y;
+			float z = col1.z + col2.z + col3.z + col4.z;
+			float w = col1.w + col2.w + col3.w + col4.w;
 			return vec4(x, y, z, w);
 		}
 

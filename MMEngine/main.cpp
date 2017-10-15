@@ -91,49 +91,12 @@ int main() {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	printf("vao name: %d\n", vao); // name of vao object in state
 
-	// MATH TEST
-	/*
-	math::vec4 moo(1.0f, 2.3f, 3.3f, 4.3f);
-	math::vec4 moo2(1.0f, 2.3f, 3.3f, 4.3f);
-	math::vec3 mew(12.3f, 4.2f, 5.5f);
-	math::vec2 baa(324.3f, 154.3f);
-	math::vec3 mew2(baa, 5.5f);
-	math::vec4 moo3(mew, 4.3f);
-	math::vec4 moo4(mew, 4.3f);
-
-	math::vec3 mew3 = mew + mew2;
-
-	math::mat4 woo(moo2, moo3, moo, moo);
-	math::mat4 woo2(moo, moo2, moo3, moo4);
-	std::cout << woo << std::endl;
-	std::cout << woo2 << std::endl;
-	std::cout << woo * woo2 << std::endl;
-
-	std::cout << mew << std::endl;
-	std::cout << mew2 << std::endl;
-	std::cout << mew3 << std::endl;
-	std::cout << baa << std::endl;
-	std::cout << woo.columns[0] << std::endl;
-	std::cout << woo.columns[1] << std::endl;
-	std::cout << woo.columns[2] << std::endl;
-	std::cout << woo.columns[3] << std::endl;
-	std::cout << woo2 << std::endl;
-
-	std::cout << moo << std::endl;
-	std::cout << moo + moo2 << std::endl;
-	std::cout << moo3 << std::endl;
-	std::cout << mew2 << std::endl;
-	std::cout << mew - mew2 << std::endl;
-	*/
-
 	Shader shader(VERT, FRAG);
 
 	int width = window.getWidth();
 	int height = window.getHeight();
 
 	Camera cam(0.0f, 0.0f, 2.0f);
-	//cam.setRoll(0.0f);
-	//cam.setPitch(30.0f);
 	cam.speed = 0.25f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
