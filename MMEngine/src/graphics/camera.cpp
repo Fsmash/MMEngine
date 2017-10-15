@@ -66,7 +66,7 @@ namespace mme {
 			using namespace math;
 			m_translation = mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
 
-			std::cout << "updated translation: " << m_pos << std::endl;
+			//std::cout << "updated translation: " << m_pos << std::endl;
 		}
 
 		void Camera::updateRotation() {
@@ -76,9 +76,9 @@ namespace mme {
 			m_up	  = m_rotation * math::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 			m_forward = m_rotation * math::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
-			std::cout << "updated rotation x: " << m_right << std::endl;
-			std::cout << "updated rotation y: " << m_up << std::endl;
-			std::cout << "updated rotation z: " << m_forward << std::endl;
+			//std::cout << "updated rotation x: " << m_right << std::endl;
+			//std::cout << "updated rotation y: " << m_up << std::endl;
+			//std::cout << "updated rotation z: " << m_forward << std::endl;
 		}
 
 		Camera::Camera() {
@@ -267,7 +267,7 @@ namespace mme {
 			m_pos += math::vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y);
 			m_pos += math::vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z);
 
-			std::cout << "cam position: " << m_pos << std::endl;
+			//std::cout << "cam position: " << m_pos << std::endl;
 
 			updateTranslation();
 

@@ -24,9 +24,6 @@ namespace mme {
 			float m_roll;		// z rotation angle
 
 			float m_quat[4];	// main quat versor, better as a float doesn't follow same behaivior as a vector
-			//float m_qpitch[4];		// versor for x
-			//float m_qyaw[4];		// versor for y
-			//float m_qroll[4];		// versor for z
 			
 			float m_near;	
 			float m_far;
@@ -52,9 +49,9 @@ namespace mme {
 
 			void setPos(const float x, const float y, const float z);
 			inline void setPos(const math::vec3 cam) { m_pos = cam; }
-			inline void setYaw(const float angle)	 { m_yaw = angle; }
-			inline void setPitch(const float angle)  { m_pitch = angle; }
-			inline void setRoll(const float angle)	 { m_roll = angle; }
+			//inline void setYaw(const float angle)	 { m_yaw = angle; }
+			//inline void setPitch(const float angle)  { m_pitch = angle; }
+			//inline void setRoll(const float angle)	 { m_roll = angle; }
 			inline void setNear(const float dist)	 { m_near = dist; }
 			inline void setFar(const float dist)	 { m_far = dist; }
 			inline void setFOV(const float angle)	 { m_fov = angle; }

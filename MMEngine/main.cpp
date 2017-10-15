@@ -149,6 +149,7 @@ int main() {
 		keyPresses(cam, window);
 
 		if (cam.update()) {
+			std::cout << "view updated" << std::endl;
 			shader.setUniformMat4("view", cam.viewMatrix());
 		}
 
@@ -179,22 +180,22 @@ int main() {
 
 void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window) {
 	if (window.isKeyPressed(GLFW_KEY_W)) {
-		std::cout << "W is PRESSED" << std::endl;
+		//std::cout << "W is PRESSED" << std::endl;
 		cam.forward();
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_A)) {
-		std::cout << "A is PRESSED" << std::endl;
+		//std::cout << "A is PRESSED" << std::endl;
 		cam.left();
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_S)) {
-		std::cout << "S is PRESSED" << std::endl;
+		//std::cout << "S is PRESSED" << std::endl;
 		cam.back();
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_D)) {
-		std::cout << "D is PRESSED" << std::endl;
+		//std::cout << "D is PRESSED" << std::endl;
 		cam.right();
 	}
 
