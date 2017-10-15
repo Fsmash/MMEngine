@@ -8,23 +8,34 @@ namespace mme {
 
 		private:
 			
-			math::vec3 m_pos;
-			math::mat4 m_translation;
-			math::mat4 m_rotation_x;
-			math::mat4 m_rotation_y;
-			math::mat4 m_rotation_z;
+			math::vec4 m_right;			// x axis, defines what is right
+			math::vec4 m_up;				// y axis
+			math::vec4 m_forward;			// z axis
+			math::vec3 m_pos;			// camera position
+			math::vec3 m_vel;
+			math::mat4 m_translation;	// translation matrix for view matrix calculation
+			math::mat4 m_rotation;		// rotation matrix for view matrix calculation
 			
 			bool m_moved;
-			bool m_rotated;
 			bool m_init;
-			float m_pitch;		// rotation x axis
-			float m_yaw;		// y axis
-			float m_roll;		// z axis
+			
+			float m_pitch;		// x rotation angle
+			float m_yaw;		// y rotation angle
+			float m_roll;		// z rotation angle
 
+			float m_quat[4];	// main quat versor, better as a float doesn't follow same behaivior as a vector
+			//float m_qpitch[4];		// versor for x
+			//float m_qyaw[4];		// versor for y
+			//float m_qroll[4];		// versor for z
+			
 			float m_near;	
 			float m_far;
 			float m_fov;
 
+			void createVersor(float *const q, const float angle, const float x, const float y, const float z);
+			void normalizeVersor();
+			void multVersor(float *const q);
+			void quatToMatrix();
 			void updateTranslation();
 			void updateRotation();
 
@@ -56,6 +67,10 @@ namespace mme {
 			inline float getFar() const		 { return m_far; }
 			inline float getFOV() const		 { return m_fov; }
 
+			//void rotateX(const float angle);
+			//void rotateY(const float angle);
+			//void rotateZ(const float angle);
+
 			void right();
 			void left();
 			void up();
@@ -70,10 +85,10 @@ namespace mme {
 			void tiltRight();
 			void tiltLeft();
 
-			void init();
-			inline bool update() { return m_moved || m_rotated; }
+			void init(const float angle, const float x, const float y, const float z);
+			inline bool update() { return m_moved; }
 			math::mat4 viewMatrix();
-			math::mat4 projMatrix(const float width, const float height);
+			math::mat4 projMatrix(const int width, const int height);
 			//math::mat4 lookAt(math::vec3 cam_pos, math::vec3 target, math::vec3 up);
 
 		};

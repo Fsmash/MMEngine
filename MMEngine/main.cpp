@@ -125,6 +125,7 @@ int main() {
 	std::cout << mew2 << std::endl;
 	std::cout << mew - mew2 << std::endl;
 	*/
+
 	Shader shader(VERT, FRAG);
 
 	int width = window.getWidth();
@@ -133,23 +134,23 @@ int main() {
 	Camera cam(0.0f, 0.0f, 2.0f);
 	//cam.setRoll(0.0f);
 	//cam.setPitch(30.0f);
-	cam.speed = 0.1f;
+	cam.speed = 0.25f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init();
+	cam.init(-45.0f, 0.0f, 0.0f, 1.0f);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	shader.disable();
 
 	while (!window.closed()) {
+
 		keyPresses(cam, window);
 
 		if (cam.update()) {
 			shader.setUniformMat4("view", cam.viewMatrix());
 		}
-
 
 		window.frameCounter();
 		window.clear();
@@ -158,8 +159,10 @@ int main() {
 		// Drawing first VAO, vao
 		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
 								// set vao as input variable for all further drawing (in this case just some vertex points)
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 3); // draw in triangle mode starting from point 0, (index 0)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
+
+		window.update();
 
 		// update projection matrix with new width and height on resize.
 		if (window.resized()) {
@@ -169,7 +172,6 @@ int main() {
 			std::cout << "updated projection matrix" << std::endl;
 		}
 
-		window.update();
 	}
 
 	return 0;
