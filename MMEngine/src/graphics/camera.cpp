@@ -78,7 +78,7 @@ namespace mme {
 			using namespace math;
 			m_right	  = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 			m_up	  = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+			m_forward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			m_pos.x = m_pos.y = m_pos.z = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
 			m_translation = m_rotation = mat4::identity();
@@ -133,22 +133,22 @@ namespace mme {
 		}
 		
 		void Camera::right() { 
-			m_vel.x += speed; 
-			m_moved = true;
-		}
-		
-		void Camera::left() {
 			m_vel.x -= speed; 
 			m_moved = true;
 		}
 		
+		void Camera::left() {
+			m_vel.x += speed; 
+			m_moved = true;
+		}
+		
 		void Camera::up() { 
-			m_vel.y += speed; 
+			m_vel.y -= speed; 
 			m_moved = true;
 		}
 		
 		void Camera::down() { 
-			m_vel.y -= speed; 
+			m_vel.y += speed; 
 			m_moved = true;
 		}
 		
@@ -163,7 +163,7 @@ namespace mme {
 		}
 			 
 		void Camera::turnRight() { 
-			m_yaw += yaw_speed;
+			m_yaw -= yaw_speed;
 			if (abs(m_yaw) > 360.0f) m_yaw = 0.0f;
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
@@ -173,7 +173,7 @@ namespace mme {
 		}
 		
 		void Camera::turnLeft() { 
-			m_yaw -= yaw_speed; 
+			m_yaw += yaw_speed; 
 			if (abs(m_yaw) > 360.0f) m_yaw = 0.0f;
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
@@ -203,7 +203,7 @@ namespace mme {
 		}
 		
 		void Camera::tiltRight() {
-			m_roll += roll_speed; 
+			m_roll -= roll_speed; 
 			if (abs(m_roll) > 360.0f) m_roll = 0.0f;
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
@@ -213,7 +213,7 @@ namespace mme {
 		}
 
 		void Camera::tiltLeft() {
-			m_roll -= roll_speed; 
+			m_roll += roll_speed; 
 			if (abs(m_roll) > 360.0f) m_roll = 0.0f;
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
@@ -227,7 +227,9 @@ namespace mme {
 				createVersor(m_quat, angle, x, y, z);
 				normalizeVersor();
 				updateOrientation();
+				//m_pos probably needs to be updated with new orientation.
 				m_translation = math::mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
+				std::cout << m_pos << std::endl;
 			}
 			m_init = true;
 		}
@@ -256,11 +258,13 @@ namespace mme {
 			//m_pos.z += m_vel.z;
 
 			// maintain current orientation
-			m_pos += vec3(m_right.x, m_right.y, m_right.z).scale(m_vel.x);
-			m_pos += vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y);
-			m_pos += vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z);
+			m_pos = m_pos + (vec3(m_right.x, m_right.y, m_right.z).scale(m_vel.x));
+			m_pos = m_pos + (vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y));
+			m_pos = m_pos + (vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z));
 
-			m_translation = mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
+			m_translation = mat4::translationMatrix(-m_pos.x, -m_pos.y, m_pos.z);
+
+			std::cout << m_pos << std::endl;
 
 			m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;

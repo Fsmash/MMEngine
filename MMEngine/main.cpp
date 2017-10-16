@@ -102,7 +102,7 @@ int main() {
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(45.0f, 0.0f, 0.0f, 1.0f);
+	cam.init(0.0f, 0.0f, 1.0f, 0.0f);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
@@ -112,13 +112,6 @@ int main() {
 	//std::cout << mat4::inverseMatrix(bruh) * bruh << std::endl;
 
 	while (!window.closed()) {
-
-		keyPresses(cam, window);
-
-		if (cam.update()) {
-			std::cout << "view updated" << std::endl;
-			shader.setUniformMat4("view", cam.viewMatrixUpdate());
-		}
 
 		window.frameCounter();
 		window.clear();
@@ -132,12 +125,19 @@ int main() {
 
 		window.update();
 
+		keyPresses(cam, window);
+
 		// update projection matrix with new width and height on resize.
 		if (window.resized()) {
 			width = window.getWidth();
 			height = window.getHeight();
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
 			std::cout << "updated projection matrix" << std::endl;
+		}
+
+		if (cam.update()) {
+			std::cout << "view updated" << std::endl;
+			shader.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
 
 	}
