@@ -102,7 +102,7 @@ int main() {
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(0.0f, 0.0f, 1.0f, 0.0f);
+	cam.init(40.0f, 0.0f, 0.0f, 1.0f);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));

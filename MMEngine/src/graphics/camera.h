@@ -33,7 +33,6 @@ namespace mme {
 			void normalizeVersor();
 			void multVersor(float *const q);
 			void quatToMatrix();
-			void updateOrientation();
 
 		public:
 
@@ -48,9 +47,6 @@ namespace mme {
 
 			void setPos(const float x, const float y, const float z);
 			inline void setPos(const math::vec3 cam) { m_pos = cam; }
-			//inline void setYaw(const float angle)	 { m_yaw = angle; }
-			//inline void setPitch(const float angle)  { m_pitch = angle; }
-			//inline void setRoll(const float angle)	 { m_roll = angle; }
 			inline void setNear(const float dist)	 { m_near = dist; }
 			inline void setFar(const float dist)	 { m_far = dist; }
 			inline void setFOV(const float angle)	 { m_fov = angle; }
@@ -62,10 +58,6 @@ namespace mme {
 			inline float getNear() const	 { return m_near; }
 			inline float getFar() const		 { return m_far; }
 			inline float getFOV() const		 { return m_fov; }
-
-			//void rotateX(const float angle);
-			//void rotateY(const float angle);
-			//void rotateZ(const float angle);
 
 			void right();
 			void left();
