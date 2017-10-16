@@ -23,6 +23,7 @@ int main() {
 
 	using namespace mme;
 	using namespace graphics;
+	using namespace math;
 
 	if (!INIT_LOG()) { // if unable to open and start new log file for every program run, exit
 		system("PAUSE");
@@ -101,11 +102,14 @@ int main() {
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(-45.0f, 0.0f, 0.0f, 1.0f);
+	cam.init(45.0f, 0.0f, 0.0f, 1.0f);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	shader.disable();
+
+	//mat4 bruh(vec4(4,0,0,1), vec4(0,0,1,0), vec4(0,2,2,0), vec4(0,0,0,1));
+	//std::cout << mat4::inverseMatrix(bruh) * bruh << std::endl;
 
 	while (!window.closed()) {
 
@@ -113,7 +117,7 @@ int main() {
 
 		if (cam.update()) {
 			std::cout << "view updated" << std::endl;
-			shader.setUniformMat4("view", cam.viewMatrix());
+			shader.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
 
 		window.frameCounter();

@@ -33,8 +33,7 @@ namespace mme {
 			void normalizeVersor();
 			void multVersor(float *const q);
 			void quatToMatrix();
-			void updateTranslation();
-			void updateRotation();
+			void updateOrientation();
 
 		public:
 
@@ -82,9 +81,10 @@ namespace mme {
 			void tiltRight();
 			void tiltLeft();
 
-			void init(const float angle, const float x, const float y, const float z);
 			inline bool update() { return m_moved; }
+			void init(const float angle, const float x, const float y, const float z);
 			math::mat4 viewMatrix();
+			math::mat4 viewMatrixUpdate();
 			math::mat4 projMatrix(const int width, const int height);
 			//math::mat4 lookAt(math::vec3 cam_pos, math::vec3 target, math::vec3 up);
 

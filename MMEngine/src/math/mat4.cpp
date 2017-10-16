@@ -27,129 +27,24 @@ namespace mme {
 			matrix[15] = diagonal;
 		}
 
-		mat4& mat4::invert()
-		{
-			double temp[16];
-
-			temp[0] = matrix[5] * matrix[10] * matrix[15] -
-				matrix[5] * matrix[11] * matrix[14] -
-				matrix[9] * matrix[6] * matrix[15] +
-				matrix[9] * matrix[7] * matrix[14] +
-				matrix[13] * matrix[6] * matrix[11] -
-				matrix[13] * matrix[7] * matrix[10];
-
-			temp[4] = -matrix[4] * matrix[10] * matrix[15] +
-				matrix[4] * matrix[11] * matrix[14] +
-				matrix[8] * matrix[6] * matrix[15] -
-				matrix[8] * matrix[7] * matrix[14] -
-				matrix[12] * matrix[6] * matrix[11] +
-				matrix[12] * matrix[7] * matrix[10];
-
-			temp[8] = matrix[4] * matrix[9] * matrix[15] -
-				matrix[4] * matrix[11] * matrix[13] -
-				matrix[8] * matrix[5] * matrix[15] +
-				matrix[8] * matrix[7] * matrix[13] +
-				matrix[12] * matrix[5] * matrix[11] -
-				matrix[12] * matrix[7] * matrix[9];
-
-			temp[12] = -matrix[4] * matrix[9] * matrix[14] +
-				matrix[4] * matrix[10] * matrix[13] +
-				matrix[8] * matrix[5] * matrix[14] -
-				matrix[8] * matrix[6] * matrix[13] -
-				matrix[12] * matrix[5] * matrix[10] +
-				matrix[12] * matrix[6] * matrix[9];
-
-			temp[1] = -matrix[1] * matrix[10] * matrix[15] +
-				matrix[1] * matrix[11] * matrix[14] +
-				matrix[9] * matrix[2] * matrix[15] -
-				matrix[9] * matrix[3] * matrix[14] -
-				matrix[13] * matrix[2] * matrix[11] +
-				matrix[13] * matrix[3] * matrix[10];
-
-			temp[5] = matrix[0] * matrix[10] * matrix[15] -
-				matrix[0] * matrix[11] * matrix[14] -
-				matrix[8] * matrix[2] * matrix[15] +
-				matrix[8] * matrix[3] * matrix[14] +
-				matrix[12] * matrix[2] * matrix[11] -
-				matrix[12] * matrix[3] * matrix[10];
-
-			temp[9] = -matrix[0] * matrix[9] * matrix[15] +
-				matrix[0] * matrix[11] * matrix[13] +
-				matrix[8] * matrix[1] * matrix[15] -
-				matrix[8] * matrix[3] * matrix[13] -
-				matrix[12] * matrix[1] * matrix[11] +
-				matrix[12] * matrix[3] * matrix[9];
-
-			temp[13] = matrix[0] * matrix[9] * matrix[14] -
-				matrix[0] * matrix[10] * matrix[13] -
-				matrix[8] * matrix[1] * matrix[14] +
-				matrix[8] * matrix[2] * matrix[13] +
-				matrix[12] * matrix[1] * matrix[10] -
-				matrix[12] * matrix[2] * matrix[9];
-
-			temp[2] = matrix[1] * matrix[6] * matrix[15] -
-				matrix[1] * matrix[7] * matrix[14] -
-				matrix[5] * matrix[2] * matrix[15] +
-				matrix[5] * matrix[3] * matrix[14] +
-				matrix[13] * matrix[2] * matrix[7] -
-				matrix[13] * matrix[3] * matrix[6];
-
-			temp[6] = -matrix[0] * matrix[6] * matrix[15] +
-				matrix[0] * matrix[7] * matrix[14] +
-				matrix[4] * matrix[2] * matrix[15] -
-				matrix[4] * matrix[3] * matrix[14] -
-				matrix[12] * matrix[2] * matrix[7] +
-				matrix[12] * matrix[3] * matrix[6];
-
-			temp[10] = matrix[0] * matrix[5] * matrix[15] -
-				matrix[0] * matrix[7] * matrix[13] -
-				matrix[4] * matrix[1] * matrix[15] +
-				matrix[4] * matrix[3] * matrix[13] +
-				matrix[12] * matrix[1] * matrix[7] -
-				matrix[12] * matrix[3] * matrix[5];
-
-			temp[14] = -matrix[0] * matrix[5] * matrix[14] +
-				matrix[0] * matrix[6] * matrix[13] +
-				matrix[4] * matrix[1] * matrix[14] -
-				matrix[4] * matrix[2] * matrix[13] -
-				matrix[12] * matrix[1] * matrix[6] +
-				matrix[12] * matrix[2] * matrix[5];
-
-			temp[3] = -matrix[1] * matrix[6] * matrix[11] +
-				matrix[1] * matrix[7] * matrix[10] +
-				matrix[5] * matrix[2] * matrix[11] -
-				matrix[5] * matrix[3] * matrix[10] -
-				matrix[9] * matrix[2] * matrix[7] +
-				matrix[9] * matrix[3] * matrix[6];
-
-			temp[7] = matrix[0] * matrix[6] * matrix[11] -
-				matrix[0] * matrix[7] * matrix[10] -
-				matrix[4] * matrix[2] * matrix[11] +
-				matrix[4] * matrix[3] * matrix[10] +
-				matrix[8] * matrix[2] * matrix[7] -
-				matrix[8] * matrix[3] * matrix[6];
-
-			temp[11] = -matrix[0] * matrix[5] * matrix[11] +
-				matrix[0] * matrix[7] * matrix[9] +
-				matrix[4] * matrix[1] * matrix[11] -
-				matrix[4] * matrix[3] * matrix[9] -
-				matrix[8] * matrix[1] * matrix[7] +
-				matrix[8] * matrix[3] * matrix[5];
-
-			temp[15] = matrix[0] * matrix[5] * matrix[10] -
-				matrix[0] * matrix[6] * matrix[9] -
-				matrix[4] * matrix[1] * matrix[10] +
-				matrix[4] * matrix[2] * matrix[9] +
-				matrix[8] * matrix[1] * matrix[6] -
-				matrix[8] * matrix[2] * matrix[5];
-
-			double determinant = matrix[0] * temp[0] + matrix[1] * temp[4] + matrix[2] * temp[8] + matrix[3] * temp[12];
-			determinant = 1.0 / determinant;
-
-			for (int i = 0; i < 4 * 4; i++)
-				matrix[i] = temp[i] * determinant;
-
-			return *this;
+		mat4::mat4(float a, float b, float c, float d, float e, float f, float g, float h,
+			float i, float j, float k, float l, float m, float n, float o, float p) {
+			matrix[0] = a;
+			matrix[1] = b;
+			matrix[2] = c;
+			matrix[3] = d;
+			matrix[4] = e;
+			matrix[5] = f;
+			matrix[6] = g;
+			matrix[7] = h;
+			matrix[8] = i;
+			matrix[9] = j;
+			matrix[10] = k;
+			matrix[11] = l;
+			matrix[12] = m;
+			matrix[13] = n;
+			matrix[14] = o;
+			matrix[15] = p;
 		}
 
 		mat4& mat4::multiply(const mat4 &other) {
@@ -173,6 +68,33 @@ namespace mme {
 
 		mat4& mat4::operator*=(const mat4 &other) {
 			return multiply(other);
+		}
+
+		float mat4::determinant(const mat4 &mm) {
+			return mm.matrix[12] * mm.matrix[9] * mm.matrix[6] * mm.matrix[3] -
+				mm.matrix[8] * mm.matrix[13] * mm.matrix[6] * mm.matrix[3] -
+				mm.matrix[12] * mm.matrix[5] * mm.matrix[10] * mm.matrix[3] +
+				mm.matrix[4] * mm.matrix[13] * mm.matrix[10] * mm.matrix[3] +
+				mm.matrix[8] * mm.matrix[5] * mm.matrix[14] * mm.matrix[3] -
+				mm.matrix[4] * mm.matrix[9] * mm.matrix[14] * mm.matrix[3] -
+				mm.matrix[12] * mm.matrix[9] * mm.matrix[2] * mm.matrix[7] +
+				mm.matrix[8] * mm.matrix[13] * mm.matrix[2] * mm.matrix[7] +
+				mm.matrix[12] * mm.matrix[1] * mm.matrix[10] * mm.matrix[7] -
+				mm.matrix[0] * mm.matrix[13] * mm.matrix[10] * mm.matrix[7] -
+				mm.matrix[8] * mm.matrix[1] * mm.matrix[14] * mm.matrix[7] +
+				mm.matrix[0] * mm.matrix[9] * mm.matrix[14] * mm.matrix[7] +
+				mm.matrix[12] * mm.matrix[5] * mm.matrix[2] * mm.matrix[11] -
+				mm.matrix[4] * mm.matrix[13] * mm.matrix[2] * mm.matrix[11] -
+				mm.matrix[12] * mm.matrix[1] * mm.matrix[6] * mm.matrix[11] +
+				mm.matrix[0] * mm.matrix[13] * mm.matrix[6] * mm.matrix[11] +
+				mm.matrix[4] * mm.matrix[1] * mm.matrix[14] * mm.matrix[11] -
+				mm.matrix[0] * mm.matrix[5] * mm.matrix[14] * mm.matrix[11] -
+				mm.matrix[8] * mm.matrix[5] * mm.matrix[2] * mm.matrix[15] +
+				mm.matrix[4] * mm.matrix[9] * mm.matrix[2] * mm.matrix[15] +
+				mm.matrix[8] * mm.matrix[1] * mm.matrix[6] * mm.matrix[15] -
+				mm.matrix[0] * mm.matrix[9] * mm.matrix[6] * mm.matrix[15] -
+				mm.matrix[4] * mm.matrix[1] * mm.matrix[10] * mm.matrix[15] +
+				mm.matrix[0] * mm.matrix[5] * mm.matrix[10] * mm.matrix[15];
 		}
 
 		mat4 mat4::identity() {
@@ -222,10 +144,68 @@ namespace mme {
 			return tmp;
 		}
 
-		mat4 mat4::inverseMatrix(mat4 other) {
-			return other.invert();
-		}
+		
+		mat4 mat4::inverseMatrix(const mat4 &mm) {
+			
+			float det = determinant(mm);
+			
+			if (0.0f == det) {
+				fprintf(stderr, "WARNING. matrix has no determinant. can not invert\n");
+				return mm;
+			}
+			
+			float inv_det = 1.0f / det;
 
+			return mat4(
+				inv_det * (mm.matrix[9] * mm.matrix[14] * mm.matrix[7] - mm.matrix[13] * mm.matrix[10] * mm.matrix[7] +
+					mm.matrix[13] * mm.matrix[6] * mm.matrix[11] - mm.matrix[5] * mm.matrix[14] * mm.matrix[11] -
+					mm.matrix[9] * mm.matrix[6] * mm.matrix[15] + mm.matrix[5] * mm.matrix[10] * mm.matrix[15]),
+				inv_det * (mm.matrix[13] * mm.matrix[10] * mm.matrix[3] - mm.matrix[9] * mm.matrix[14] * mm.matrix[3] -
+					mm.matrix[13] * mm.matrix[2] * mm.matrix[11] + mm.matrix[1] * mm.matrix[14] * mm.matrix[11] +
+					mm.matrix[9] * mm.matrix[2] * mm.matrix[15] - mm.matrix[1] * mm.matrix[10] * mm.matrix[15]),
+				inv_det * (mm.matrix[5] * mm.matrix[14] * mm.matrix[3] - mm.matrix[13] * mm.matrix[6] * mm.matrix[3] +
+					mm.matrix[13] * mm.matrix[2] * mm.matrix[7] - mm.matrix[1] * mm.matrix[14] * mm.matrix[7] -
+					mm.matrix[5] * mm.matrix[2] * mm.matrix[15] + mm.matrix[1] * mm.matrix[6] * mm.matrix[15]),
+				inv_det * (mm.matrix[9] * mm.matrix[6] * mm.matrix[3] - mm.matrix[5] * mm.matrix[10] * mm.matrix[3] -
+					mm.matrix[9] * mm.matrix[2] * mm.matrix[7] + mm.matrix[1] * mm.matrix[10] * mm.matrix[7] +
+					mm.matrix[5] * mm.matrix[2] * mm.matrix[11] - mm.matrix[1] * mm.matrix[6] * mm.matrix[11]),
+				inv_det * (mm.matrix[12] * mm.matrix[10] * mm.matrix[7] - mm.matrix[8] * mm.matrix[14] * mm.matrix[7] -
+					mm.matrix[12] * mm.matrix[6] * mm.matrix[11] + mm.matrix[4] * mm.matrix[14] * mm.matrix[11] +
+					mm.matrix[8] * mm.matrix[6] * mm.matrix[15] - mm.matrix[4] * mm.matrix[10] * mm.matrix[15]),
+				inv_det * (mm.matrix[8] * mm.matrix[14] * mm.matrix[3] - mm.matrix[12] * mm.matrix[10] * mm.matrix[3] +
+					mm.matrix[12] * mm.matrix[2] * mm.matrix[11] - mm.matrix[0] * mm.matrix[14] * mm.matrix[11] -
+					mm.matrix[8] * mm.matrix[2] * mm.matrix[15] + mm.matrix[0] * mm.matrix[10] * mm.matrix[15]),
+				inv_det * (mm.matrix[12] * mm.matrix[6] * mm.matrix[3] - mm.matrix[4] * mm.matrix[14] * mm.matrix[3] -
+					mm.matrix[12] * mm.matrix[2] * mm.matrix[7] + mm.matrix[0] * mm.matrix[14] * mm.matrix[7] +
+					mm.matrix[4] * mm.matrix[2] * mm.matrix[15] - mm.matrix[0] * mm.matrix[6] * mm.matrix[15]),
+				inv_det * (mm.matrix[4] * mm.matrix[10] * mm.matrix[3] - mm.matrix[8] * mm.matrix[6] * mm.matrix[3] +
+					mm.matrix[8] * mm.matrix[2] * mm.matrix[7] - mm.matrix[0] * mm.matrix[10] * mm.matrix[7] -
+					mm.matrix[4] * mm.matrix[2] * mm.matrix[11] + mm.matrix[0] * mm.matrix[6] * mm.matrix[11]),
+				inv_det * (mm.matrix[8] * mm.matrix[13] * mm.matrix[7] - mm.matrix[12] * mm.matrix[9] * mm.matrix[7] +
+					mm.matrix[12] * mm.matrix[5] * mm.matrix[11] - mm.matrix[4] * mm.matrix[13] * mm.matrix[11] -
+					mm.matrix[8] * mm.matrix[5] * mm.matrix[15] + mm.matrix[4] * mm.matrix[9] * mm.matrix[15]),
+				inv_det * (mm.matrix[12] * mm.matrix[9] * mm.matrix[3] - mm.matrix[8] * mm.matrix[13] * mm.matrix[3] -
+					mm.matrix[12] * mm.matrix[1] * mm.matrix[11] + mm.matrix[0] * mm.matrix[13] * mm.matrix[11] +
+					mm.matrix[8] * mm.matrix[1] * mm.matrix[15] - mm.matrix[0] * mm.matrix[9] * mm.matrix[15]),
+				inv_det * (mm.matrix[4] * mm.matrix[13] * mm.matrix[3] - mm.matrix[12] * mm.matrix[5] * mm.matrix[3] +
+					mm.matrix[12] * mm.matrix[1] * mm.matrix[7] - mm.matrix[0] * mm.matrix[13] * mm.matrix[7] -
+					mm.matrix[4] * mm.matrix[1] * mm.matrix[15] + mm.matrix[0] * mm.matrix[5] * mm.matrix[15]),
+				inv_det * (mm.matrix[8] * mm.matrix[5] * mm.matrix[3] - mm.matrix[4] * mm.matrix[9] * mm.matrix[3] -
+					mm.matrix[8] * mm.matrix[1] * mm.matrix[7] + mm.matrix[0] * mm.matrix[9] * mm.matrix[7] +
+					mm.matrix[4] * mm.matrix[1] * mm.matrix[11] - mm.matrix[0] * mm.matrix[5] * mm.matrix[11]),
+				inv_det * (mm.matrix[12] * mm.matrix[9] * mm.matrix[6] - mm.matrix[8] * mm.matrix[13] * mm.matrix[6] -
+					mm.matrix[12] * mm.matrix[5] * mm.matrix[10] + mm.matrix[4] * mm.matrix[13] * mm.matrix[10] +
+					mm.matrix[8] * mm.matrix[5] * mm.matrix[14] - mm.matrix[4] * mm.matrix[9] * mm.matrix[14]),
+				inv_det * (mm.matrix[8] * mm.matrix[13] * mm.matrix[2] - mm.matrix[12] * mm.matrix[9] * mm.matrix[2] +
+					mm.matrix[12] * mm.matrix[1] * mm.matrix[10] - mm.matrix[0] * mm.matrix[13] * mm.matrix[10] -
+					mm.matrix[8] * mm.matrix[1] * mm.matrix[14] + mm.matrix[0] * mm.matrix[9] * mm.matrix[14]),
+				inv_det * (mm.matrix[12] * mm.matrix[5] * mm.matrix[2] - mm.matrix[4] * mm.matrix[13] * mm.matrix[2] -
+					mm.matrix[12] * mm.matrix[1] * mm.matrix[6] + mm.matrix[0] * mm.matrix[13] * mm.matrix[6] +
+					mm.matrix[4] * mm.matrix[1] * mm.matrix[14] - mm.matrix[0] * mm.matrix[5] * mm.matrix[14]),
+				inv_det * (mm.matrix[4] * mm.matrix[9] * mm.matrix[2] - mm.matrix[8] * mm.matrix[5] * mm.matrix[2] +
+					mm.matrix[8] * mm.matrix[1] * mm.matrix[6] - mm.matrix[0] * mm.matrix[9] * mm.matrix[6] -
+					mm.matrix[4] * mm.matrix[1] * mm.matrix[10] + mm.matrix[0] * mm.matrix[5] * mm.matrix[10]));
+		}
 
 		mat4 operator*(mat4 left, const mat4 &right) {
 			return left.multiply(right);

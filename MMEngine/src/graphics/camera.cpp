@@ -41,41 +41,34 @@ namespace mme {
 			float y = m_quat[2];
 			float z = m_quat[3];
 			
-			m_rotation.columns[0].x = 1.0f - 2.0f * y * y - 2.0f * z * z;
-			m_rotation.columns[0].y = 2.0f * x * y + 2.0f * w * z;
-			m_rotation.columns[0].z = 2.0f * x * z - 2.0f * w * y;
-			m_rotation.columns[0].w = 0.0f;
-
-			m_rotation.columns[1].x = 2.0f * x * y - 2.0f * w * z;
-			m_rotation.columns[1].y = 1.0f - 2.0f * x * x - 2.0f * z * z;
-			m_rotation.columns[1].z = 2.0f * y * z + 2.0f * w * x;
-			m_rotation.columns[1].w = 0.0f;
-
-			m_rotation.columns[2].x = 2.0f * x * z + 2.0f * w * y;
-			m_rotation.columns[2].y = 2.0f * y * z - 2.0f * w * x;
-			m_rotation.columns[2].z = 1.0f - 2.0f * x * x - 2.0f * y * y;
-			m_rotation.columns[2].w = 0.0f;
-
-			m_rotation.columns[3].x = 0.0f;
-			m_rotation.columns[3].y = 0.0f;
-			m_rotation.columns[3].z = 0.0f;
-			m_rotation.columns[3].w = 1.0f;
+			m_rotation.matrix[0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
+			m_rotation.matrix[1] = 2.0f * x * y + 2.0f * w * z;
+			m_rotation.matrix[2] = 2.0f * x * z - 2.0f * w * y;
+			m_rotation.matrix[3] = 0.0f;
+					   
+			m_rotation.matrix[4] = 2.0f * x * y - 2.0f * w * z;
+			m_rotation.matrix[5] = 1.0f - 2.0f * x * x - 2.0f * z * z;
+			m_rotation.matrix[6] = 2.0f * y * z + 2.0f * w * x;
+			m_rotation.matrix[7] = 0.0f;
+					   
+			m_rotation.matrix[8] = 2.0f * x * z + 2.0f * w * y;
+			m_rotation.matrix[9] = 2.0f * y * z - 2.0f * w * x;
+			m_rotation.matrix[10] = 1.0f - 2.0f * x * x - 2.0f * y * y;
+			m_rotation.matrix[11] = 0.0f;
+					   
+			m_rotation.matrix[12] = 0.0f;
+			m_rotation.matrix[13] = 0.0f;
+			m_rotation.matrix[14] = 0.0f;
+			m_rotation.matrix[15] = 1.0f;
 		}
 
-		void Camera::updateTranslation() {
-			using namespace math;
-			m_translation = mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
-
-			//std::cout << "updated translation: " << m_pos << std::endl;
-		}
-
-		void Camera::updateRotation() {
+		void Camera::updateOrientation() {
 			quatToMatrix();
 			// recalc axis to suit new orientation
 			
-			//m_right	  = m_rotation * math::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			//m_up	  = m_rotation * math::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			//m_forward = m_rotation * math::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+			m_right	  = m_rotation * math::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			m_up	  = m_rotation * math::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+			m_forward = m_rotation * math::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			//std::cout << "updated rotation x: " << m_right << std::endl;
 			//std::cout << "updated rotation y: " << m_up << std::endl;
 			//std::cout << "updated rotation z: " << m_forward << std::endl;
@@ -85,7 +78,7 @@ namespace mme {
 			using namespace math;
 			m_right	  = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 			m_up	  = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+			m_forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 			m_pos.x = m_pos.y = m_pos.z = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
 			m_translation = m_rotation = mat4::identity();
@@ -175,7 +168,7 @@ namespace mme {
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
 			multVersor(q_yaw);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 		
@@ -185,7 +178,7 @@ namespace mme {
 			float q_yaw[4];
 			createVersor(q_yaw, m_yaw, m_up.x, m_up.y, m_up.z);
 			multVersor(q_yaw);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 		
@@ -195,7 +188,7 @@ namespace mme {
 			float q_pitch[4];
 			createVersor(q_pitch, m_pitch, m_right.x, m_right.y, m_right.z);
 			multVersor(q_pitch);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 		
@@ -205,7 +198,7 @@ namespace mme {
 			float q_pitch[4];
 			createVersor(q_pitch, m_pitch, m_right.x, m_right.y, m_right.z);
 			multVersor(q_pitch);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 		
@@ -215,7 +208,7 @@ namespace mme {
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
 			multVersor(q_roll);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 
@@ -225,7 +218,7 @@ namespace mme {
 			float q_roll[4];
 			createVersor(q_roll, m_roll, m_forward.x, m_forward.y, m_forward.z);
 			multVersor(q_roll);
-			//updateRotation();
+			updateOrientation();
 			m_moved = true;
 		}
 
@@ -233,8 +226,8 @@ namespace mme {
 			if (!m_init) {
 				createVersor(m_quat, angle, x, y, z);
 				normalizeVersor();
-				quatToMatrix();
-				//updateTranslation();
+				updateOrientation();
+				m_translation = math::mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
 			}
 			m_init = true;
 		}
@@ -245,27 +238,38 @@ namespace mme {
 				return math::mat4::identity();
 			}
 
-			updateRotation();
+			return m_rotation * m_translation;
+		}
 
-			m_pos.x += m_vel.x;
-			m_pos.y += m_vel.y;
-			m_pos.z += m_vel.z;
+		math::mat4 Camera::viewMatrixUpdate() {
+			using namespace math;
+
+			if (!m_init) {
+				std::cout << "Need to initialize eye view first." << std::endl;
+				return math::mat4::identity();
+			}
+
+			quatToMatrix();
+
+			//m_pos.x += m_vel.x;
+			//m_pos.y += m_vel.y;
+			//m_pos.z += m_vel.z;
 
 			// maintain current orientation
-			/* 
-			m_pos += math::vec3(m_right.x, m_right.y, m_right.z).scale(m_vel.x);
-			m_pos += math::vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y);
-			m_pos += math::vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z);
-			*/
+			m_pos += vec3(m_right.x, m_right.y, m_right.z).scale(m_vel.x);
+			m_pos += vec3(m_up.x, m_up.y, m_up.z).scale(m_vel.y);
+			m_pos += vec3(m_forward.x, m_forward.y, m_forward.z).scale(-m_vel.z);
 
-			updateTranslation();
+			m_translation = mat4::translationMatrix(-m_pos.x, -m_pos.y, -m_pos.z);
 
 			m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
 
+			mat4 view = mat4::inverseMatrix(m_rotation) * mat4::inverseMatrix(m_translation);
+			//mat4 view = m_rotation * m_translation;
 			// supposed to calculate inverse here. 
-			return m_rotation * m_translation;
+			return view;
 		}
 
 		math::mat4 Camera::projMatrix(const int width, const int height) {
