@@ -15,6 +15,8 @@ namespace mme {
 			math::vec3 m_vel;
 			math::mat4 m_translation;	// translation matrix for view matrix calculation
 			math::mat4 m_rotation;		// rotation matrix for view matrix calculation
+			math::mat4 m_view;
+			math::mat4 m_projection;
 			
 			bool m_moved;
 			bool m_init;
@@ -78,6 +80,7 @@ namespace mme {
 			math::mat4 viewMatrix();
 			math::mat4 viewMatrixUpdate();
 			math::mat4 projMatrix(const int width, const int height);
+			math::vec3 wolrdRayVec(const float xpos, const float ypos, const float width, const float height);
 			//math::mat4 lookAt(math::vec3 cam_pos, math::vec3 target, math::vec3 up);
 
 		};

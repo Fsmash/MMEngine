@@ -97,26 +97,22 @@ int main() {
 	int width = window.getWidth();
 	int height = window.getHeight();
 
-	Camera cam(0.0f, 0.0f, 2.0f);
+	Camera cam(0.0f, 0.0f, 3.0f);
 	cam.speed = 0.25f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(40.0f, 0.0f, 0.0f, 1.0f);
+	cam.init(-45.0f, 0.0f, 0.0f, 1.0f);	// start with the camera rotated -45 degrees about the z axis
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
-	shader.disable();
-
-	//mat4 bruh(vec4(4,0,0,1), vec4(0,0,1,0), vec4(0,2,2,0), vec4(0,0,0,1));
-	//std::cout << mat4::inverseMatrix(bruh) * bruh << std::endl;
 
 	while (!window.closed()) {
 
 		window.frameCounter();
 		window.clear();
 
-		shader.enable();
+		//shader.enable();
 		// Drawing first VAO, vao
 		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
 								// set vao as input variable for all further drawing (in this case just some vertex points)
@@ -126,21 +122,29 @@ int main() {
 		window.update();
 
 		keyPresses(cam, window);
+		
+		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
+			vec3 ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
+			std::cout << "mouse world pos " << ray_world << std::endl;
+			//std::cout << "click clack" << std::endl;
+		}
 
 		// update projection matrix with new width and height on resize.
 		if (window.resized()) {
 			width = window.getWidth();
 			height = window.getHeight();
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
-			std::cout << "updated projection matrix" << std::endl;
 		}
 
 		if (cam.update()) {
-			std::cout << "view updated" << std::endl;
 			shader.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
 
 	}
+
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &points_vbo);
+	glDeleteBuffers(1, &colours_vbo);
 
 	return 0;
 }

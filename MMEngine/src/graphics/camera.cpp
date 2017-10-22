@@ -87,7 +87,7 @@ namespace mme {
 			m_pos.y = y;
 			m_pos.z = z;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
-			m_translation = m_rotation =  mat4::identity();
+			m_translation = m_rotation = mat4::identity();
 			m_init = m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_near = 0.1f;
@@ -229,7 +229,6 @@ namespace mme {
 		}
 
 		void Camera::init(const float angle, const float x, const float y, const float z) {
-			using namespace math;
 			if (!m_init) {
 				createVersor(m_quat, angle, x, y, z);
 				normalizeVersor();
@@ -248,7 +247,9 @@ namespace mme {
 				return math::mat4::identity();
 			}
 
-			return math::mat4::inverseMatrix(m_rotation) * m_translation;
+			m_view = math::mat4::inverseMatrix(m_rotation) * m_translation;
+
+			return m_view;
 		}
 
 		math::mat4 Camera::viewMatrixUpdate() {
@@ -272,10 +273,14 @@ namespace mme {
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
 
-			return mat4::inverseMatrix(m_rotation) * mat4::inverseMatrix(m_translation);
+			m_view = mat4::inverseMatrix(m_rotation) * mat4::inverseMatrix(m_translation);
+
+			return m_view;
 		}
 
 		math::mat4 Camera::projMatrix(const int width, const int height) {
+			using namespace math;
+
 			float aspect = (float) width / (float) height;
 			float range = tan(m_fov * RADIANS * 0.5f) * m_near;
 			float Sx = (2.0f * m_near) / (range * aspect + range * aspect);
@@ -283,13 +288,32 @@ namespace mme {
 			float Sz = -(m_far + m_near) / (m_far - m_near);
 			float Pz = -(2.0f * m_far * m_near) / (m_far - m_near);
 
-			math::mat4 projection;
-			projection.columns[0] = math::vec4(Sx, 0.0f, 0.0f, 0.0f);
-			projection.columns[1] = math::vec4(0.0f, Sy, 0.0f, 0.0f);
-			projection.columns[2] = math::vec4(0.0f, 0.0f, Sz, -1.0f);
-			projection.columns[3] = math::vec4(0.0f, 0.0f, Pz, 0.0f);
+			m_projection.columns[0] = vec4(Sx, 0.0f, 0.0f, 0.0f);
+			m_projection.columns[1] = vec4(0.0f, Sy, 0.0f, 0.0f);
+			m_projection.columns[2] = vec4(0.0f, 0.0f, Sz, -1.0f);
+			m_projection.columns[3] = vec4(0.0f, 0.0f, Pz, 0.0f);
 			
-			return projection;
+			return m_projection;
+		}
+
+		math::vec3 Camera::wolrdRayVec(const float xpos, const float ypos, const float width, const float height) {
+			using namespace math;
+
+			// viewport to NDC space
+			float x = (2.0f * xpos) / width - 1.0f;
+			float y = 1.0f - (2.0f * ypos) / height;
+			// NDC to Homogeneous Clip space
+			vec4 ray(x, y, 1.0, 1.0);
+			// Homo. Clip to Eye space
+			ray = mat4::inverseMatrix(m_projection) * ray;
+			// Eye to World space
+			ray = mat4::inverseMatrix(m_view) * ray;
+			// Normalize vec3
+			float mag = sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z);
+			if (mag == 0.0f)
+				return vec3(0.0f, 0.0f, 0.0f);
+
+			return vec3(ray.x / mag, ray.y / mag, ray.z / mag);
 		}
 
 	}

@@ -34,7 +34,7 @@ namespace mme {
 			glfwSetFramebufferSizeCallback(m_window, frameBufResize);	// call back function called when framebuffer is resized
 			glfwSetKeyCallback(m_window, keyCallback);	// call back functions for key presses
 			glfwSetMouseButtonCallback(m_window, mouseButtonCallback);	// call back functions for key presses
-			glfwSetCursorPosCallback(m_window, cursorCallback);
+			//glfwSetCursorPosCallback(m_window, cursorCallback);
 
 			return true;
 		}
@@ -79,11 +79,13 @@ namespace mme {
 		void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
 			win->m_mouse[button] = action != GLFW_RELEASE;
+			glfwGetCursorPos(window, &(win->m_xpos), &(win->m_ypos));
 			//std::cout << button << std::endl;
-			std::cout << win->m_xpos << std::endl;
-			std::cout << win->m_ypos << std::endl;
+			//std::cout << win->m_xpos << std::endl;
+			//std::cout << win->m_ypos << std::endl;
 		}
 
+		/*
 		void cursorCallback(GLFWwindow *window, double x, double y) {
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
 			win->m_xpos = x;
@@ -91,6 +93,7 @@ namespace mme {
 			//std::cout << win->m_xpos << std::endl;
 			//std::cout << win->m_ypos << std::endl;
 		}
+		*/
 		// END OF CALL BACK FUNCTIONS
 
 		Window::Window(const char *title, int width, int height) {
@@ -149,6 +152,16 @@ namespace mme {
 			}
 
 			return m_keys[key];
+		}
+
+		bool Window::isMousePressed(unsigned int button) const {
+
+			if (button >= MAX_BUTTONS || button < 0) {
+				gl_log("Error: Mouse button pressed out of range. key = %d\n", button);
+				return false;
+			}
+
+			return m_mouse[button];
 		}
 
 	}
