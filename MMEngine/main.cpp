@@ -116,15 +116,18 @@ int main() {
 	int width = window.getWidth();
 	int height = window.getHeight();
 
-	Camera cam(0.0f, 1.0f, 3.0f);
+	Camera cam(0.0f, 0.0f, 3.0f);
 	cam.speed = 0.25f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(0.0f, 0.0f, 1.0f, 0.0f);	// start with the camera rotated -45 degrees about the z axis
+	cam.init(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis. 
+	
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
+
+	vec3 ray_world;
 
 	while (!window.closed()) {
 
@@ -143,9 +146,8 @@ int main() {
 		keyPresses(cam, window);
 		
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
-			vec3 ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
+			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
-			//std::cout << "click clack" << std::endl;
 		}
 
 		// update projection matrix with new width and height on resize.

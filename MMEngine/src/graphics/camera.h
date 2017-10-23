@@ -1,3 +1,10 @@
+/*	Code by Bryant Dinh for Senior Sem 2017 Project : Misunderstood Magician Engine
+	
+	This Camera class holds all the relevant data to construct a view and projection matrix for the Transformation Pipeline. 
+	Also handles all changes to camera position (translation) and orientation (rotation) with member functions. 
+	Additionally, this class also has a member function that return ray cast of mouse position as calculations for that require the projection and view matrix. 
+*/
+
 #pragma once
 #include "../math/mat4.h"
 
@@ -9,27 +16,27 @@ namespace mme {
 		private:
 			
 			math::vec4 m_right;			// x axis, defines what is right
-			math::vec4 m_up;				// y axis
-			math::vec4 m_forward;			// z axis
+			math::vec4 m_up;			// y axis
+			math::vec4 m_forward;		// z axis
 			math::vec3 m_pos;			// camera position
-			math::vec3 m_vel;
-			math::mat4 m_translation;	// translation matrix for view matrix calculation
-			math::mat4 m_rotation;		// rotation matrix for view matrix calculation
-			math::mat4 m_view;
-			math::mat4 m_projection;
+			math::vec3 m_vel;			// velocity component to translate camera
+			math::mat4 m_translation;	// translation matrix, for view matrix calculation
+			math::mat4 m_rotation;		// rotation matrix, for view matrix calculation
+			math::mat4 m_view;			// view matrix
+			math::mat4 m_projection;	// projection matrix
 			
-			bool m_moved;
-			bool m_init;
+			bool m_moved;		// update view if camera moved
+			bool m_init;		// check whether camera has been initialized
 			
 			float m_pitch;		// x rotation angle
 			float m_yaw;		// y rotation angle
 			float m_roll;		// z rotation angle
 
-			float m_quat[4];	// main quat versor, better as a float doesn't follow same behaivior as a vector
+			float m_quat[4];	// main quat versor, better as a float. doesn't follow same behaivior as a vector
 			
-			float m_near;	
-			float m_far;
-			float m_fov;
+			float m_near;		// set cut off near plane for projection frustrum
+			float m_far;		// set cut off far plane for projection frustrum
+			float m_fov;		// angle in degrees of field of vision
 
 			void createVersor(float *const q, const float angle, const float x, const float y, const float z);
 			void normalizeVersor();
@@ -38,10 +45,10 @@ namespace mme {
 
 		public:
 
-			float speed;
-			float yaw_speed;
-			float pitch_speed;
-			float roll_speed;
+			float speed;		// speed of translation
+			float yaw_speed;	// speed of y axis rotation
+			float pitch_speed;	// speed of x axis rotation
+			float roll_speed;	// speed of z axis rotation
 
 			Camera();
 			Camera(const float x, const float y, const float z);

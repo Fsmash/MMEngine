@@ -3,6 +3,9 @@
 namespace mme {
 	namespace graphics {
 
+		// PRIVATE MEMBER FUNCTIONS
+
+		// Initializes a quaternion for rotation (versor). Takes in angle and x, y, and z componentes representing axis to be rotated.
 		void Camera::createVersor(float *const q, const float angle, const float x, const float y, const float z) {
 			float rad = angle * RADIANS;
 			q[0] = cos(rad * 0.5f);		// w, angle
@@ -11,6 +14,7 @@ namespace mme {
 			q[3] = sin(rad * 0.5f) * z;	// z comp
 		}
 
+		// Normalize the quaternion (versor), i.e. give it a magitude of 1 making it a direction.
 		void Camera::normalizeVersor() {
 			float sum = m_quat[0] * m_quat[0] + m_quat[1] * m_quat[1] + m_quat[2] * m_quat[2] + m_quat[3] * m_quat[3];
 			// only compute sqrt if sum meets threshold
@@ -21,6 +25,7 @@ namespace mme {
 			}
 		}
 
+		// Multiplies a rotation quaternion (versor) with private member m_quat[4] to keep track of all rotations.
 		void Camera::multVersor(float *const r) {
 			float s0 = m_quat[0];
 			float s1 = m_quat[1];
@@ -35,6 +40,7 @@ namespace mme {
 			normalizeVersor();
 		}
 
+		// Converts 4D quaternion with w, x, y, z components (w, being angle in 4D space) to 3D rotation matrix, m_rotation.
 		void Camera::quatToMatrix() {
 			float w = m_quat[0];
 			float x = m_quat[1];
@@ -62,14 +68,12 @@ namespace mme {
 			m_rotation.matrix[15] = 1.0f;
 		}
 
+		// END OF PRIVATE MEMBER FUNCTIONS
+
+		// Constructor to set default values for camera position, rotation angles, and projection matrix components
 		Camera::Camera() {
-			using namespace math;
-			m_right	  = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			m_up	  = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			m_pos.x = m_pos.y = m_pos.z = 0.0f;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
-			m_translation = m_rotation = mat4::identity();
 			m_init = m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_near = 0.1f;
@@ -78,16 +82,12 @@ namespace mme {
 			speed = yaw_speed = pitch_speed = roll_speed = 0.1f;
 		}
 
+		// Constructor to set default values for rotation angles, and projection matrix components
 		Camera::Camera(const float x, const float y, const float z) {
-			using namespace math;
-			m_right	  = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			m_up	  = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			m_pos.x = x;
 			m_pos.y = y;
 			m_pos.z = z;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
-			m_translation = m_rotation = mat4::identity();
 			m_init = m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_near = 0.1f;
@@ -96,16 +96,12 @@ namespace mme {
 			speed = yaw_speed = pitch_speed = roll_speed = 0.1f;
 		}
 
+		// Constructor to set default values for rotation angles, and projection matrix components
 		Camera::Camera(const math::vec3 cam_pos) {
-			using namespace math;
-			m_right	  = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			m_up	  = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-			m_forward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 			m_pos.x = cam_pos.x;
 			m_pos.y = cam_pos.y;
 			m_pos.z = cam_pos.z;
 			m_vel.x = m_vel.y = m_vel.z = 0.0f;
-			m_translation = m_rotation = mat4::identity();
 			m_init = m_moved = false;
 			m_yaw = m_pitch = m_roll = 0.0f;
 			m_near = 0.1f;
@@ -114,17 +110,20 @@ namespace mme {
 			speed = yaw_speed = pitch_speed = roll_speed = 0.1f;
 		}
 
+		// Mutator to set camera position
 		void Camera::setPos(const float x, const float y, const float z) {
 			m_pos.x = x;
 			m_pos.y = y;
 			m_pos.z = z;
 		}
 		
+		// Increase m_vel in the positive x direction
 		void Camera::right() { 
 			m_vel.x += speed; 
 			m_moved = true;
 		}
 		
+		// Increase translation values (m_vel) of camera
 		void Camera::left() {
 			m_vel.x -= speed; 
 			m_moved = true;
@@ -149,7 +148,8 @@ namespace mme {
 			m_vel.z += speed; 
 			m_moved = true;
 		}
-			 
+
+		// Construct quaternions based off of angle and axis of rotation. 	 
 		void Camera::turnRight() { 
 			m_yaw -= yaw_speed;
 			if (abs(m_yaw) > 360.0f) m_yaw = 0.0f;
@@ -228,6 +228,7 @@ namespace mme {
 			m_moved = true;
 		}
 
+		// Initialize camera orientation given angle and axis of rotation.
 		void Camera::init(const float angle, const float x, const float y, const float z) {
 			if (!m_init) {
 				createVersor(m_quat, angle, x, y, z);
@@ -241,6 +242,7 @@ namespace mme {
 			m_init = true;
 		}
 
+		// Construct initial view matrix
 		math::mat4 Camera::viewMatrix() {
 			if (!m_init) {
 				std::cout << "Need to initialize eye view first." << std::endl;
@@ -252,6 +254,7 @@ namespace mme {
 			return m_view;
 		}
 
+		// Construct view matrix after translation or rotation occurs i.e. m_move set to true
 		math::mat4 Camera::viewMatrixUpdate() {
 			using namespace math;
 
@@ -278,6 +281,7 @@ namespace mme {
 			return m_view;
 		}
 
+		// Construct projection matrix based off of window width and height
 		math::mat4 Camera::projMatrix(const int width, const int height) {
 			using namespace math;
 
@@ -296,6 +300,7 @@ namespace mme {
 			return m_projection;
 		}
 
+		// Constructs a vec3 "ray" cast of mouse given mouse position and window width and height
 		math::vec3 Camera::wolrdRayVec(const float xpos, const float ypos, const float width, const float height) {
 			using namespace math;
 
