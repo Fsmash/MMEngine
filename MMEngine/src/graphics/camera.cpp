@@ -131,12 +131,12 @@ namespace mme {
 		}
 		
 		void Camera::up() { 
-			m_vel.y -= speed; 
+			m_vel.y += speed; 
 			m_moved = true;
 		}
 		
 		void Camera::down() { 
-			m_vel.y += speed; 
+			m_vel.y -= speed; 
 			m_moved = true;
 		}
 		

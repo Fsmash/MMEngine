@@ -41,7 +41,7 @@ int main() {
 
 		glEnable(GL_DEPTH_TEST);	// enable depth testing
 		glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
-		glClearColor(0.2f, 0.3f, 0.8f, 1.0f);	// set up clear color for glfw
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	// set up clear color for glfw
 	}
 	else {
 		system("PAUSE");
@@ -58,10 +58,18 @@ int main() {
 
 	// vertex color 
 	GLfloat colours[] = {
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
+		0.5f, 0.0f, 0.5f,
+		0.5f, 0.0f, 0.5f,
+		0.5f, 0.0f, 0.5f,
+		0.5f, 0.0f, 0.5f
+	};
+
+	// vertex normals
+	GLfloat normals[] = {
 		0.0f, 0.0f, 1.0f,
-		1.0f, 1.0f, 0.0f
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f
 	};
 
 	// Vertex Buffer Object
@@ -77,10 +85,17 @@ int main() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colours), colours, GL_STATIC_DRAW);
 	printf("colours_vbo name: %d\n", colours_vbo); // name of vbo object in state
 
+	GLuint normals_vbo = 0;
+	glGenBuffers(1, &normals_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
+	printf("normals_vbo name: %d\n", normals_vbo); // name of vbo object in state
+	
 	// Vertex Array Object
 	GLuint vao = 0;
 	glGenVertexArrays(1, &vao); // generates 1 empty vertex attribute object (generates a name)
 	glBindVertexArray(vao); // set vao as current in openGL's state machine by "binding"
+	
 	glEnableVertexAttribArray(0); // enable first attribute in vao (attribute 0) which is the vbo
 									// will be at attribute 0 since only one vbo will be used
 	glBindBuffer(GL_ARRAY_BUFFER, points_vbo); // sets buffer as current again, see comment for glBindBuffer above
@@ -90,6 +105,10 @@ int main() {
 	glEnableVertexAttribArray(1); // enable attribute 1 for colour_vbo
 	glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	printf("vao name: %d\n", vao); // name of vao object in state
 
 	Shader shader(VERT, FRAG);
@@ -97,12 +116,12 @@ int main() {
 	int width = window.getWidth();
 	int height = window.getHeight();
 
-	Camera cam(0.0f, 0.0f, 3.0f);
+	Camera cam(0.0f, 1.0f, 3.0f);
 	cam.speed = 0.25f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(-45.0f, 0.0f, 0.0f, 1.0f);	// start with the camera rotated -45 degrees about the z axis
+	cam.init(0.0f, 0.0f, 1.0f, 0.0f);	// start with the camera rotated -45 degrees about the z axis
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
