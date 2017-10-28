@@ -17,6 +17,12 @@
 #define INFO()
 #endif
 
+struct Vertex {
+	mme::math::vec3 pos;
+	mme::math::vec3 color;
+	mme::math::vec3 normal;
+};
+
 void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window);
 
 int main() {
@@ -48,68 +54,40 @@ int main() {
 		return 1;
 	}
 
-	// Points for triangle. Points passed in clockwise order to vbo.
-	GLfloat points[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.5f, 0.5f, 0.0f
-	};
+	// Vertices for VBO. Attribute data interleaved in Vertex struct. Vertices passed in clockwise order.
+	Vertex vertices[4];
+	vertices[0].pos = vec3(-0.5f, -0.5f, 0.0f);
+	vertices[0].color = vec3(1.0f, 0.0f, 0.0f);
+	vertices[0].normal = vec3(0.0f, 0.0f, 1.0f);
 
-	// vertex color 
-	GLfloat colours[] = {
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-		0.5f, 0.0f, 0.5f
-	};
+	vertices[1].pos = vec3(0.0f, 0.5f, 0.0f);
+	vertices[1].color = vec3(0.0f, 1.0f, 0.0f);
+	vertices[1].normal = vec3(0.0f, 0.0f, 1.0f);
 
-	// vertex normals
-	GLfloat normals[] = {
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f
-	};
+	vertices[2].pos = vec3(0.5f, -0.5f, 0.0f);
+	vertices[2].color = vec3(0.0f, 0.0f, 1.0f);
+	vertices[2].normal = vec3(0.0f, 0.0f, 1.0f);
+
+	vertices[3].pos = vec3(0.5f, 0.5f, 0.0f);
+	vertices[3].color = vec3(0.5f, 0.0f, 0.5f);
+	vertices[3].normal = vec3(0.0f, 0.0f, 1.0f);
 
 	// Vertex Buffer Object
-	GLuint points_vbo = 0;	// vbo that will hold vertices
-	glGenBuffers(1, &points_vbo); // generates 1 empty buffer, (generates a "name")
-	glBindBuffer(GL_ARRAY_BUFFER, points_vbo); // set as current buffer in openGL's state machine by "binding"
-	glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW); // copies over points to currenltly bound buffer.
-	printf("points_vbo name: %d\n", points_vbo); // name of vbo object in state
+	GLuint vbo = 0;
+	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);	// Copy all data into buffer on vram
+	printf("vbo name: %d\n", vbo); // name of vbo object in state
+	printf("size of vertices: %d", sizeof(vertices));
 
-	GLuint colours_vbo = 0;	// vbo that will hold interpolated colors for each vertex
-	glGenBuffers(1, &colours_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colours), colours, GL_STATIC_DRAW);
-	printf("colours_vbo name: %d\n", colours_vbo); // name of vbo object in state
-
-	GLuint normals_vbo = 0;
-	glGenBuffers(1, &normals_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(normals), normals, GL_STATIC_DRAW);
-	printf("normals_vbo name: %d\n", normals_vbo); // name of vbo object in state
+	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 36, 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
 	
-	// Vertex Array Object
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao); // generates 1 empty vertex attribute object (generates a name)
-	glBindVertexArray(vao); // set vao as current in openGL's state machine by "binding"
+	glEnableVertexAttribArray(1); // enables attribute (attribute 1, color)
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 36, (const void *)12); // defines layout of buffer.
 	
-	glEnableVertexAttribArray(0); // enable first attribute in vao (attribute 0) which is the vbo
-									// will be at attribute 0 since only one vbo will be used
-	glBindBuffer(GL_ARRAY_BUFFER, points_vbo); // sets buffer as current again, see comment for glBindBuffer above
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); // defines layout of buffer object in vao.
-																// 0 means define layout for attribute number 0
-																// 3 means that the variables are vec3 made from every 3 floats in buffer
-	glEnableVertexAttribArray(1); // enable attribute 1 for colour_vbo
-	glBindBuffer(GL_ARRAY_BUFFER, colours_vbo);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, normals_vbo);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	printf("vao name: %d\n", vao); // name of vao object in state
+	glEnableVertexAttribArray(2); // enables attribute (attribute 2, normals)
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 36, (const void *)24); // defines layout of buffer.
 
 	Shader shader(VERT, FRAG);
 
@@ -121,7 +99,7 @@ int main() {
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.init(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis. 
+	cam.init(45.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
 	
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
@@ -129,15 +107,13 @@ int main() {
 
 	vec3 ray_world;
 
+	//glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
+
 	while (!window.closed()) {
 
 		window.frameCounter();
 		window.clear();
 
-		//shader.enable();
-		// Drawing first VAO, vao
-		glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
-								// set vao as input variable for all further drawing (in this case just some vertex points)
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 
@@ -163,9 +139,7 @@ int main() {
 
 	}
 
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &points_vbo);
-	glDeleteBuffers(1, &colours_vbo);
+	glDeleteBuffers(1, &vbo);
 
 	return 0;
 }
