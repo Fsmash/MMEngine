@@ -203,7 +203,7 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 			int height = window.getHeight();
 
 			shader.enable();
-			shader.setUniformMat4("view", cam.viewMatrix());
+			shader.setUniformMat4("view", cam.viewMatrixUpdate());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
 			printf("It Worked!");
 		}
