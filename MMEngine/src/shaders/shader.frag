@@ -19,12 +19,12 @@ out vec4 frag_colour;
 
 void main() {
 
-	// ambient intensity
+	// *** AMBIENT INTENSITY CALCULATIONS
 	vec3 Ia = La * Ka;
 
 	// *** DIFFUSE INTENSITY CALCULATIONS
 	
-	// vertex positions in eye space
+	// light source's vertex positions in eye space
 	vec3 light_pos_eye = vec3(view * vec4(light_pos_world, 1.0));
 
 	// distance from surface to light source

@@ -10,9 +10,9 @@ out vec3 Kd, eye_pos, eye_normal;
 
 void main() {
 	
-	eye_pos = vec3(view * vec4(vp, 1.0));		// vertex positions in eye space
+	eye_pos = vec3(view * vec4(vp, 1.0));		// vertex positions (vp) in eye space
 	eye_normal = vec3(view * vec4(vn, 0.0));	// normals in eye space
-	Kd = vc;									// surface reflection property
+	Kd = vc;									// surface reflection color
 	gl_Position= proj * view * vec4(vp, 1.0);	
 
 }
