@@ -84,6 +84,7 @@ namespace mme {
 
 			inline bool update() { return m_moved; }
 			void init(const float angle, const float x, const float y, const float z);
+			void setOrientation(const float angle, const float x, const float y, const float z);
 			math::mat4 viewMatrix();
 			math::mat4 viewMatrixUpdate();
 			math::mat4 projMatrix(const int width, const int height);

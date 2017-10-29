@@ -242,6 +242,12 @@ namespace mme {
 			m_init = true;
 		}
 
+		// Sets camera back to specified orientation.
+		void Camera::setOrientation(const float angle, const float x, const float y, const float z) {
+			m_init = false;
+			init(angle, x, y, z);
+		}
+
 		// Construct initial view matrix
 		math::mat4 Camera::viewMatrix() {
 			if (!m_init) {
