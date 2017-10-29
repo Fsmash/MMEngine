@@ -64,6 +64,18 @@ namespace mme {
 			glUseProgram(0);
 		}
 
+		bool Shader::reloadShader(const char * vert, const char * frag) {
+			// Delete previous program to start shader compilation over
+			glDeleteProgram(m_program);
+
+			if (!init(vert, frag)) {
+				std::cout << "Something went wrong. Check gl.log." << std::endl;
+				return false;
+			}
+
+			return true;
+		}
+
 		void Shader::setUniform1f(const GLchar* name, GLfloat value) {
 			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
 			if (unifLoc < 0) {

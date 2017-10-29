@@ -31,6 +31,7 @@ namespace mme {
 			~Shader();
 			void enable() const;
 			void disable() const;
+			bool reloadShader(const char *vert, const char *frag);
 
 			void setUniform1f(const GLchar* name, GLfloat value);
 			void setUniform1fv(const GLchar* name, GLfloat* value, GLsizei count);

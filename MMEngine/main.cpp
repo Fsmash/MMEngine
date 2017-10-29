@@ -23,7 +23,7 @@ struct Vertex {
 	mme::math::vec3 normal;
 };
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window);
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader);
 
 int main() {
 
@@ -119,7 +119,7 @@ int main() {
 
 		window.update();
 
-		keyPresses(cam, window);
+		keyPresses(cam, window, shader);
 		
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
@@ -144,7 +144,7 @@ int main() {
 	return 0;
 }
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window) {
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader) {
 	if (window.isKeyPressed(GLFW_KEY_W)) {
 		//std::cout << "W is PRESSED" << std::endl;
 		cam.forward();
@@ -195,5 +195,20 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window) {
 
 	if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
 		cam.turnRight();
+	}
+
+	if (window.isKeyPressed(GLFW_KEY_R)) {
+		if (shader.reloadShader(VERT, FRAG)) {
+			int width = window.getWidth();
+			int height = window.getHeight();
+
+			shader.enable();
+			shader.setUniformMat4("view", cam.viewMatrix());
+			shader.setUniformMat4("proj", cam.projMatrix(width, height));
+			printf("It Worked!");
+		}
+		else {
+			printf("you done fucked up son");
+		}
 	}
 }
