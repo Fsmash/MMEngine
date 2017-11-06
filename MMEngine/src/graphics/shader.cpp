@@ -66,8 +66,8 @@ namespace mme {
 
 		bool Shader::reloadShader(const char * vert, const char * frag) {
 			// Delete previous program to start shader compilation over
-			glDeleteShader(m_vertex);
-			glDeleteShader(m_fragment);
+			//glDeleteShader(m_vertex);
+			//glDeleteShader(m_fragment);
 			glDeleteProgram(m_program);
 
 			if (!init(vert, frag)) {

@@ -72,13 +72,18 @@ int main() {
 	vertices[3].color = vec3(0.5f, 0.0f, 0.5f);
 	vertices[3].normal = vec3(0.0f, 0.0f, 1.0f);
 
-	// Vertex Buffer Object
+	GLuint indices[] = {
+		0, 1, 2,
+		1, 3, 2
+	};
+
+	// Vertex Buffer Object, vertices stored in ARRAY BUFFER
 	GLuint vbo = 0;
 	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);	// Copy all data into buffer on vram
 	printf("vbo name: %d\n", vbo); // name of vbo object in state
-	printf("size of vertices: %d", sizeof(vertices));
+	//printf("size of vertices: %d", sizeof(vertices));
 
 	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 36, 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
@@ -89,6 +94,14 @@ int main() {
 	glEnableVertexAttribArray(2); // enables attribute (attribute 2, normals)
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 36, (const void *)24); // defines layout of buffer.
 
+	// VBO, indices stroed in ELEMENT ARRAY BUFFER
+	GLuint ibo = 0;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	printf("ibo name: %d\n", ibo); // name of vbo object in state
+
+	// Shader and Camera set up
 	Shader shader(VERT, FRAG);
 
 	int width = window.getWidth();
@@ -113,8 +126,10 @@ int main() {
 
 		window.frameCounter();
 		window.clear();
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
+		
+		// Index (Element) Buffer must be unsigned ints
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // ibo currently bound, can just have nullptr as last parameter. 
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 
 		window.update();
@@ -204,7 +219,7 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 
 			shader.enable();
 			cam.setPos(0.0f, 0.0f, 3.0f);
-			cam.setOrientation(45.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis.
+			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
 			printf("It Worked!");
