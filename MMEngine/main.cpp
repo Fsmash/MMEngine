@@ -120,8 +120,6 @@ int main() {
 
 	vec3 ray_world;
 
-	//glBindVertexArray(vao); // bind again cause the vbo was bound last. need to make vao current
-
 	while (!window.closed()) {
 
 		window.frameCounter();

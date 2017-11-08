@@ -13,7 +13,7 @@ vec3 La = vec3(0.2, 0.2, 0.2);				// grey ambient light colour
 // Surface properties
 vec3 Ks = vec3(1.0, 1.0, 1.0);				// fully reflect specular light
 vec3 Ka = vec3(1.0, 1.0, 1.0);				// fully reflect ambient light
-float specular_exponent = 100.0;			// specular power
+float specular_exponent = 400.0;			// specular power
 
 out vec4 frag_colour;
 
@@ -27,10 +27,10 @@ void main() {
 	// light source's vertex positions in eye space
 	vec3 light_pos_eye = vec3(view * vec4(light_pos_world, 1.0));
 
-	// distance from surface to light source
+	// distance of light source to sruface
 	vec3 dist_from_eye = light_pos_eye - eye_pos; 
 
-	// direction to light from surface
+	// direction of surface to light
 	vec3 direction_to_eye = normalize(dist_from_eye);
 
 	// dot product of direction light vec and normal (surface).
@@ -47,17 +47,14 @@ void main() {
 	
 	// *** SPECULAR INTENSITY CALCULATIONS
 
-	// refleciton of light around surface normal
-	vec3 reflection_eye = reflect(-direction_to_eye, eye_normal);
-
 	// direction of observer in respect to direction of reflection 
 	vec3 surface_to_viewer = normalize(-eye_pos);
 
-	// dot product of specular light, surface and observer direction
-	float dot_prod_specular = dot(reflection_eye, surface_to_viewer);
+	// direction half way between surface to camera and surface to light, used to approximate reflection
+	vec3 half_way_eye = normalize(surface_to_viewer + direction_to_eye);
 
-	// negative dot product possible so set max value to 0.0
-	dot_prod_specular = max(dot_prod_specular, 0.0);
+	// dot product of reflection approx. and surface normal. maximum set to zero, (possible negative dot product)
+	float dot_prod_specular = max(0.0, dot(half_way_eye, eye_normal));
 
 	// specular intensity raised to power of specular exponent
 	float specular_factor = pow(dot_prod_specular, specular_exponent);
@@ -65,7 +62,6 @@ void main() {
 	// *** END OF SPECULAR INTENSITY CALCULATIONS
 
 	// specular intensity
-	//vec3 Is = vec3(0.0, 0.0, 0.0); 
 	vec3 Is = Ls * Ks * specular_factor;
 	
 	frag_colour=vec4(Is + Id + Ia, 1.0);
