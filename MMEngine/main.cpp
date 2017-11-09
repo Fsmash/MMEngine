@@ -72,16 +72,37 @@ int main() {
 	vertices[3].color = vec3(0.5f, 0.0f, 0.5f);
 	vertices[3].normal = vec3(0.0f, 0.0f, 1.0f);
 
+	Vertex vertices2[4];
+	vertices2[0].pos = vec3(0.65f, -0.5f, 0.0f);
+	vertices2[0].color = vec3(1.0f, 0.0f, 0.0f);
+	vertices2[0].normal = vec3(0.0f, 0.0f, 1.0f);
+	
+	vertices2[1].pos = vec3(0.65f, 0.5f, 0.0f);
+	vertices2[1].color = vec3(0.0f, 1.0f, 0.0f);
+	vertices2[1].normal = vec3(0.0f, 0.0f, 1.0f);
+
+	vertices2[2].pos = vec3(0.95f, 0.5f, 0.0f);
+	vertices2[2].color = vec3(0.0f, 0.0f, 1.0f);
+	vertices2[2].normal = vec3(0.0f, 0.0f, 1.0f);
+
+	vertices2[3].pos = vec3(0.95f, -0.5f, 0.0f);
+	vertices2[3].color = vec3(0.5f, 0.0f, 0.5f);
+	vertices2[3].normal = vec3(0.0f, 0.0f, 1.0f);
+
 	GLuint indices[] = {
 		0, 1, 2,
-		1, 3, 2
+		1, 3, 2,
+		4, 5, 6, 
+		6, 7, 4
 	};
 
 	// Vertex Buffer Object, vertices stored in ARRAY BUFFER
 	GLuint vbo = 0;
 	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);	// Copy all data into buffer on vram
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(vertices2), 0, GL_STATIC_DRAW);	// Copy all data into buffer on vram
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(vertices2), vertices2);
 	printf("vbo name: %d\n", vbo); // name of vbo object in state
 	//printf("size of vertices: %d", sizeof(vertices));
 
@@ -126,7 +147,7 @@ int main() {
 		window.clear();
 		
 		// Index (Element) Buffer must be unsigned ints
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); // ibo currently bound, can just have nullptr as last parameter. 
+		glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr); // ibo currently bound, can just have nullptr as last parameter. 
 		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
 												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
 
