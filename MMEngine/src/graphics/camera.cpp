@@ -320,7 +320,7 @@ namespace mme {
 			// Eye to World space
 			ray = mat4::inverseMatrix(m_view) * ray;
 			// Normalize vec3
-			float mag = sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z);
+			float mag = sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z);	// magnitude
 			if (mag == 0.0f)
 				return vec3(0.0f, 0.0f, 0.0f);
 

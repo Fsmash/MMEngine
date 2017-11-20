@@ -28,6 +28,10 @@ namespace mme {
 				return false;
 			}
 
+			glEnable(GL_DEPTH_TEST);	// enable depth testing
+			glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	// set up clear color
+
 			// set call back functions here.
 			glfwSetWindowUserPointer(m_window, this);
 			glfwSetErrorCallback(glfw_error_log);	// register error call-back function for glfw error function
@@ -118,6 +122,14 @@ namespace mme {
 
 		void Window::clear() const {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear drawing surface
+		}
+
+		void Window::setClearColor(const float r, const float g, const float b, const float alpha) const {
+			if ((r < 0) || (r > 1) || (g < 0) || (g > 1) || (b < 0) || (b > 1) || (alpha < 0) || (alpha > 1)) {
+				std::cout << "Color must be in range of 0 - 1." << std::endl;
+				return;
+			}
+			glClearColor(r, g, b, alpha);
 		}
 
 		void Window::update() {

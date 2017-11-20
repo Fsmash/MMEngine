@@ -36,7 +36,8 @@ namespace mme {
 			glAttachShader(m_program, m_vertex);	// attach shader to program
 			glAttachShader(m_program, m_fragment);
 			glLinkProgram(m_program); // link shaders together
-										   // After being linked, delete uneeded shaders to free up space 
+			glDeleteShader(m_vertex);
+			glDeleteShader(m_fragment);	   // After being linked, delete uneeded shaders to free up space 
 										   //glDetachShader(shader_program, fs); done when shader program is deleted.
 
 			if (gl_program_error(m_program)) return false;
@@ -51,8 +52,6 @@ namespace mme {
 		}
 
 		Shader::~Shader() {
-			glDeleteShader(m_vertex);
-			glDeleteShader(m_fragment);
 			glDeleteProgram(m_program);
 		}
 

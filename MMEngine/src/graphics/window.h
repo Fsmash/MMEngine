@@ -33,6 +33,7 @@ namespace mme {
 			Window(const char* title, int width, int height);
 			~Window();
 			void clear() const;
+			void setClearColor(const float r, const float g, const float b, const float alpha) const;
 			void update();
 			bool resized();
 			bool closed();

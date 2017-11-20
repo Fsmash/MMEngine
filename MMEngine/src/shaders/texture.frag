@@ -1,25 +1,29 @@
 // Fragment Shader
-#version 410
+#version 420
 
-// uniform when view updates
-uniform mat4 view, model_matrix;
+// texture
+layout (binding = 0) uniform sampler2D basic_texture;	// specify sampler variable should read from active texture slot 0
+
+// uniform for when view updates
+uniform mat4 view;
 
 // input from vertex shader for lighting calculations
-in vec3 Kd, eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
+in vec2 tex_coord;
+in vec3 eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
 
 // Light properties
 vec3 light_pos_world = vec3(0.0, 0.0, 4.0);	// position of light source in world space
 
 vec3 Ls = vec3(1.0, 1.0, 1.0);				// white specular light colour
 vec3 Ld = vec3(0.7, 0.7, 0.7);				// dull white diffuse light color
-vec3 La = vec3(0.2, 0.2, 0.2);				// grey ambient light colour
+vec3 La = vec3(0.1, 0.1, 0.1);				// grey ambient light colour
 
 // Surface properties
 vec3 Ks = vec3(1.0, 1.0, 1.0);				// fully reflect specular light
 vec3 Ka = vec3(1.0, 1.0, 1.0);				// fully reflect ambient light
 float specular_exponent = 400.0;			// specular power
 
-// final output color 
+// final output color
 out vec4 frag_colour;
 
 void main() {
@@ -30,7 +34,7 @@ void main() {
 	// *** DIFFUSE INTENSITY CALCULATIONS
 	
 	// light source's vertex positions in eye space
-	vec3 light_pos_eye = vec3(view * model_matrix * vec4(light_pos_world, 1.0));
+	vec3 light_pos_eye = vec3(view * vec4(light_pos_world, 1.0));
 
 	// distance of light source to sruface
 	vec3 dist_from_eye = light_pos_eye - eye_pos; 
@@ -48,7 +52,8 @@ void main() {
 	// *** END DIFFUSE INTENSITY CALCULATIONS
 
 	// diffuse intensity
-	vec3 Id = Ld * Kd * dot_prod;
+	vec4 Kd = texture(basic_texture, tex_coord);
+	vec3 Id = Ld * Kd.xyz * dot_prod;
 	
 	// *** SPECULAR INTENSITY CALCULATIONS
 
@@ -69,6 +74,7 @@ void main() {
 	// specular intensity
 	vec3 Is = Ls * Ks * specular_factor;
 	
-	frag_colour=vec4(Is + Id + Ia, 1.0);
+	frag_colour=vec4(Ia + Id + Is, 1.0);
+	//frag_colour=vec4(Kd.xyz, 1.0);
 
 }
