@@ -10,6 +10,8 @@ namespace mme {
 
 			//static Shape makePyramid();
 			static Shape makeCube();
+			//static Shape makeArrow();
+			//static Shape makeOctahedron();
 			//static Shape makeDiamond();
 
 		};

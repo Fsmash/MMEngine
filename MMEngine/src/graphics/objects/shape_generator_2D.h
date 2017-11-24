@@ -10,7 +10,10 @@ namespace mme {
 
 			static Shape makeTriangle();
 			static Shape makeSquare();
-			//static Shame makeCircle();
+			//static Shape makePentagon();
+			//static Shape makeDiamond();
+			//static Shape makeCircle();
+			//static Shape makeStar();
 
 		};
 	}

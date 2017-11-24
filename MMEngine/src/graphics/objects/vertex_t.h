@@ -7,9 +7,14 @@ namespace mme {
 	namespace graphics {
 
 		struct VertexT {
+
 			mme::math::vec3 pos;
 			mme::math::vec2 uv;
 			mme::math::vec3 normal;
+
+			void updatePos(const float x, const float y, const float z) {
+				pos.add(mme::math::vec3(x, y, z));
+			}
 
 			static GLsizeiptr vertexSize() {
 				return sizeof(float) * 9;

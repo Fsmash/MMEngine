@@ -153,6 +153,7 @@
     <ClCompile Include="src\graphics\objects\shape_generator_2D.cpp" />
     <ClCompile Include="src\graphics\objects\shape_generator_3D.cpp" />
     <ClCompile Include="src\graphics\shader.cpp" />
+    <ClCompile Include="src\graphics\shape_renderer.cpp" />
     <ClCompile Include="src\graphics\window.cpp" />
     <ClCompile Include="src\math\mat4.cpp" />
     <ClCompile Include="src\math\vec2.cpp" />
@@ -165,12 +166,15 @@
     <ClInclude Include="src\graphics\buffers\buffer.h" />
     <ClInclude Include="src\graphics\buffers\index_buffer.h" />
     <ClInclude Include="src\graphics\camera.h" />
+    <ClInclude Include="src\graphics\objects\renderable.h" />
     <ClInclude Include="src\graphics\objects\shape.h" />
     <ClInclude Include="src\graphics\objects\shape_generator_2D.h" />
     <ClInclude Include="src\graphics\objects\shape_generator_3D.h" />
     <ClInclude Include="src\graphics\objects\vertex_t.h" />
     <ClInclude Include="src\graphics\objects\vertex_c.h" />
+    <ClInclude Include="src\graphics\renderer.h" />
     <ClInclude Include="src\graphics\shader.h" />
+    <ClInclude Include="src\graphics\shape_renderer.h" />
     <ClInclude Include="src\graphics\window.h" />
     <ClInclude Include="src\math\mat4.h" />
     <ClInclude Include="src\math\vec2.h" />
@@ -183,8 +187,10 @@
     <ClInclude Include="src\utility\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\shaders\shader.frag" />
-    <None Include="src\shaders\shader.vert" />
+    <None Include="src\shaders\basic.frag" />
+    <None Include="src\shaders\basic.vert" />
+    <None Include="src\shaders\light.frag" />
+    <None Include="src\shaders\light.vert" />
     <None Include="src\shaders\texture.frag" />
     <None Include="src\shaders\texture.vert" />
   </ItemGroup>

@@ -5,7 +5,10 @@ namespace mme {
 	namespace graphics {
 
 		Shape ShapeGenerator2D::makeTriangle() {
+			
 			Shape triangle;
+			triangle.clean = false;
+
 			// Array of vertex structs, (really just 3 vec3). vertex position, color and normal.
 			VertexC vertices[] = {
 				// Vertex 0
@@ -24,7 +27,7 @@ namespace mme {
 
 			triangle.num_vertices = NUM_ARRAY_ELEMENTS(vertices);		// set number of vertices
 			triangle.vertices = new VertexC[triangle.num_vertices];
-			memcpy(triangle.vertices, vertices, sizeof(vertices));	// copy vertices into the shape
+			memcpy(triangle.vertices, vertices, sizeof(vertices));		// copy vertices into the shape
 
 			GLuint indices[] = {
 				0, 1, 2
@@ -38,7 +41,10 @@ namespace mme {
 		}
 
 		Shape ShapeGenerator2D::makeSquare() {
+			
 			Shape square;
+			square.clean = false;
+
 			// Array of vertex structs, (really just 3 vec3). vertex position, color and normal.
 			VertexC vertices[] = {
 				// Vertex 0

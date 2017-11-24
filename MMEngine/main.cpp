@@ -5,12 +5,13 @@
 #include "src/graphics/camera.h"
 #include "src/graphics/objects/shape_generator_2D.h"
 #include "src/graphics/objects/shape_generator_3D.h"
+#include "src/graphics/shape_renderer.h"
 #include "src/graphics/buffers/buffer.h"
 #include "src/graphics/buffers/index_buffer.h"
 
 #define DEBUG 1
-#define VERT "src/shaders/shader.vert"
-#define FRAG "src/shaders/shader.frag"
+#define VERT "src/shaders/light.vert"
+#define FRAG "src/shaders/light.frag"
 
 #define VERT_TEX "src/shaders/texture.vert"
 #define FRAG_TEX "src/shaders/texture.frag"
@@ -53,113 +54,23 @@ int main() {
 		system("PAUSE");
 		return 1;
 	}
-	/*
-	// Vertices for VBO. Attribute data interleaved in Vertex struct. Vertices passed in clockwise order.
-	Vertex vertices[4];
-	vertices[0].pos = vec3(-0.8f, -0.5f, 0.0f);
-	vertices[0].uv = vec2(0.0f, 0.0f);
-	//vertices[0].color = vec3(1.0f, 0.0f, 0.0f);
-	vertices[0].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	vertices[1].pos = vec3(-0.5f, 0.5f, 0.0f);
-	vertices[1].uv = vec2(0.0f, 1.0f);
-	//vertices[1].color = vec3(0.0f, 1.0f, 0.0f);
-	vertices[1].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	vertices[2].pos = vec3(0.5f, 0.5f, 0.0f);
-	vertices[2].uv = vec2(1.0f, 1.0f);
-	//vertices[2].color = vec3(0.0f, 0.0f, 1.0f);
-	vertices[2].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	vertices[3].pos = vec3(0.5f, -0.5f, 0.0f);
-	vertices[3].uv = vec2(1.0f, 0.0f);
-	//vertices[3].color = vec3(0.5f, 0.0f, 0.5f);
-	vertices[3].normal = vec3(0.0f, 0.0f, 1.0f);
 	
-	Vertex vertices2[4];
-	vertices2[0].pos = vec3(0.65f, -0.5f, 0.0f);
-	vertices2[0].uv = vec2(0.0f, 0.0f);
-	//vertices2[0].color = vec3(1.0f, 0.0f, 0.0f);
-	vertices2[0].normal = vec3(0.0f, 0.0f, 1.0f);
-	
-	vertices2[1].pos = vec3(0.65f, 0.5f, 0.0f);
-	vertices2[1].uv = vec2(0.0f, 1.0f);
-	//vertices2[1].color = vec3(0.0f, 1.0f, 0.0f);
-	vertices2[1].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	vertices2[2].pos = vec3(0.95f, 0.5f, 0.0f);
-	vertices2[2].uv = vec2(1.0f, 1.0f);
-	//vertices2[2].color = vec3(0.0f, 0.0f, 1.0f);
-	vertices2[2].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	vertices2[3].pos = vec3(0.95f, -0.5f, 0.0f);
-	vertices2[3].uv = vec2(1.0f, 0.0f);
-	//vertices2[3].color = vec3(0.5f, 0.0f, 0.5f);
-	vertices2[3].normal = vec3(0.0f, 0.0f, 1.0f);
-
-	GLuint indices[] = {
-		0, 1, 2,
-		2, 3, 0,
-		4, 5, 6, 
-		6, 7, 4
-	};
-	*/
-
 	Shape triangle = ShapeGenerator2D::makeTriangle();
+	Shape square = ShapeGenerator2D::makeSquare();
 	Shape cube = ShapeGenerator3D::makeCube();
 
-	Buffer vbo(triangle.vertices, triangle.vertexBufferSize());
-	IndexBuffer ibo(triangle.indices, triangle.indexBufferSize());
-
-	Buffer vbo2(cube.vertices, cube.vertexBufferSize());
-	IndexBuffer ibo2(cube.indices, cube.indexBufferSize());
+	square.updatePos(-1.0f, -1.0f, 0.0f);
+	cube.updatePos(1.0f, -1.0f, -2.0f);
+	triangle.updatePos(0.0f, 1.0f, -1.0f);
 	
-	GLuint vao = 0;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-	// Vertex Buffer Object, vertices and indices stored in ARRAY BUFFER
-	//GLuint vbo = 0;
-	//glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
-	//glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
-	//glBufferData(GL_ARRAY_BUFFER, triangle.vertexBufferSize(), triangle.vertices, GL_STATIC_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(vertices2), 0, GL_STATIC_DRAW);	// Specify size of buffer required to store all data
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-	//glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(vertices2), vertices2);
-	//glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(indices), indices);
-	//printf("vbo name: %d\n", vbo); // name of vbo object in state
-	//printf("size of vertices: %d", sizeof(vertices));
-	//glBindVertexArray(vao);
-	vbo.bind();
-	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
+	GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + cube.vertexBufferSize();
+	GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + cube.indexBufferSize();
+
+	Shape shapes[] = { triangle, square, cube };
+
+	ShapeRenderer a;
+	a.submit(shapes, 3, bufferSize, ibufferSize);
 	
-	glEnableVertexAttribArray(1); // enables attribute (attribute 1, color)
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset1()); // defines layout of buffer.
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, (const void *)12); // defines layout of buffer.
-	
-	glEnableVertexAttribArray(2); // enables attribute (attribute 2, normals)
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset2()); // defines layout of buffer.
-	ibo.bind();
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo);
-
-	//GLuint offset = sizeof(vertices);
-	triangle.cleanUp();
-	
-	GLuint vao2 = 0;
-	glGenVertexArrays(1, &vao2);
-	glBindVertexArray(vao2);
-	vbo2.bind();
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), 0);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset1());
-
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset2());
-	ibo2.bind();
-	cube.cleanUp();
-
 	/*
 	// Texture Data
 	int x, y, n;
@@ -211,13 +122,13 @@ int main() {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	*/
-	// Shader and Camera set up
-	Shader shader(VERT, FRAG);
-	//Shader shader(VERT_TEX, FRAG_TEX);
+
+	// Camera and Shader set up
 
 	int width = window.getWidth();
 	int height = window.getHeight();
 	math::mat4 translate;
+	translate = math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
 	Camera cam(0.0f, 0.0f, 3.0f);
 	cam.speed = 0.12f;
@@ -226,10 +137,11 @@ int main() {
 	cam.pitch_speed = 1.5f;
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
 	
+	Shader shader(VERT, FRAG);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
-	//shader.setUniformMat4("model_matrix", translate);
+	shader.setUniformMat4("model_matrix", translate);
 
 	vec3 ray_world;
 
@@ -240,31 +152,8 @@ int main() {
 		window.frameCounter();
 		window.clear();
 		
-		//glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBindVertexArray(vao);
-		// Index (Element) Buffer must be unsigned ints
-		translate = math::mat4::translationMatrix(-4.0f, 1.0f, -2.0f);
-		shader.setUniformMat4("model_matrix", translate);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr); // ibo currently bound, can just have nullptr as last parameter. 
-		translate = math::mat4::translationMatrix(0.0f, 1.0f, 0.0f);
-		shader.setUniformMat4("model_matrix", translate);
-		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-
-		//glBindBuffer(GL_ARRAY_BUFFER, vbo2);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo2);
-		glBindVertexArray(vao2);
-		// Index (Element) Buffer must be unsigned ints
-		translate = math::mat4::translationMatrix(-4.0f, -1.0f, -2.0f);
-		shader.setUniformMat4("model_matrix", translate);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr); // ibo currently bound, can just have nullptr as last parameter. 
-		translate = math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
-		shader.setUniformMat4("model_matrix", translate);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void *)(sizeof(GLuint) * 6)); // ibo currently bound, can just have nullptr as last parameter. 
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); // draw in triangle mode starting from point 0, (index 0)
-												// for 4 indices (1 index consist of 3 points as defined by glVertexAttribPointer)
-
+		a.flush();
+												 
 		window.update();
 
 		keyPresses(cam, window, shader);
@@ -287,8 +176,7 @@ int main() {
 
 	}
 
-	//glDeleteBuffers(1, &vbo);
-	//glDeleteBuffers(1, &ibo);
+	a.clean();
 
 	return 0;
 }
@@ -351,11 +239,15 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 			int width = window.getWidth();
 			int height = window.getHeight();
 
+			mme::math::mat4 translate;
+			translate = mme::math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
+
 			shader.enable();
 			cam.setPos(0.0f, 0.0f, 3.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
+			shader.setUniformMat4("model_matrix", translate);
 			printf("It Worked!");
 		}
 		else {

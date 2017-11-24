@@ -1,18 +1,36 @@
 #pragma once
-
+#include "renderable.h"
 #include "vertex_c.h"
 
 namespace mme {
 	namespace graphics {
 
-		struct Shape {
-
-			Shape() : vertices(0), num_vertices(0), indices(0), num_indices(0) {}
+		struct Shape : public Renderable {
 
 			VertexC *vertices;
-			GLuint num_vertices;
-			GLuint *indices;
-			GLuint num_indices;
+			bool clean;
+
+			Shape() : Renderable(), vertices(nullptr), clean(true) { }
+
+			~Shape() {
+
+				if (clean) {
+										
+					if (vertices != nullptr) {
+						delete[] vertices;
+						vertices = nullptr;
+					}
+
+					if (indices != nullptr) {
+						delete[] indices;
+						indices = nullptr;
+					}
+				}
+
+				num_vertices = num_indices = 0;
+			}
+			
+			//void loader(const char *file);
 
 			GLsizeiptr vertexBufferSize() const {
 				return num_vertices * sizeof(VertexC);
@@ -22,11 +40,28 @@ namespace mme {
 				return num_indices * sizeof(GLuint);
 			}
 
+			void updatePos(const float x, const float y, const float z) {
+				if (vertices == nullptr) return;
+				for (int i = 0; i < num_vertices; i++) {
+					vertices[i].updatePos(x, y, z);
+				}
+			}
+
 			void cleanUp() {
-				delete[] vertices;
-				delete[] indices;
+
+				if (vertices != nullptr) {
+					delete[] vertices;
+					vertices = nullptr;
+				}
+
+				if (indices != nullptr) {
+					delete[] indices;
+					indices = nullptr;
+				}
+
 				num_vertices = num_indices = 0;
 			}
+
 		};
 	}
 }
