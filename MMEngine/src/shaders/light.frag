@@ -1,5 +1,5 @@
 // Fragment Shader
-#version 450
+#version 410
 
 // uniform when view updates
 uniform mat4 view;

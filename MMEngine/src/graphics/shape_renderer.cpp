@@ -141,20 +141,20 @@ namespace mme {
 			}
 
 			glGenBuffers(1, &m_matrixID);
-			printf("matrix buffer object name: %d\n", m_matrixID);
+			//printf("matrix buffer object name: %d\n", m_matrixID);
 			glBindBuffer(GL_ARRAY_BUFFER, m_matrixID);
 			glBufferData(GL_ARRAY_BUFFER, m_matBufSz, 0, GL_DYNAMIC_DRAW);
 
 			for (int i = 0; i < m_numInstances; i++) {
 
 				if (m_bufOffset[2] + bufSz > buf) {
-					std::cout << "Memory out of bounds. Matrix buffer." << std::endl;
+					//std::cout << "Memory out of bounds. Matrix buffer." << std::endl;
 					clean();
 					return;
 				}
 
 				glBufferSubData(GL_ARRAY_BUFFER, m_bufOffset[2], bufSz, matrices[i].matrix);
-				std::cout << "Matrix " << i << " " << matrices[i] << std::endl;
+				//std::cout << "Matrix " << i << " " << matrices[i] << std::endl;
 				m_bufOffset[2] += bufSz;
 			}
 

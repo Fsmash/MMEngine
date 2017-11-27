@@ -1,5 +1,5 @@
 // Vertex Shader
-#version 450
+#version 410
 layout(location = 0) in vec3 vp;	// vertex positions
 layout(location = 1) in vec3 vc;	// vertex colour
 layout(location = 2) in vec3 vn;	// vertex normals

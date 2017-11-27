@@ -17,6 +17,7 @@
 #define FRAG_TEX "src/shaders/texture.frag"
 
 #define VERT_INST "src/shaders/instanced.vert"
+#define FRAG_BASIC "src/shaders/basic.frag"
 
 #if DEBUG
 #include "src/utility/log.h"
@@ -60,20 +61,21 @@ int main() {
 	Shape square = ShapeGenerator2D::makeSquare();
 	Shape cube = ShapeGenerator3D::makeCube();
 
-	square.updatePos(-1.0f, -1.0f, 0.0f);
-	cube.updatePos(0.0f, -1.0f, -2.0f);
-	triangle.updatePos(0.0f, 1.0f, -1.0f);
+	//square.updatePos(-1.0f, -1.0f, 0.0f);
+	//cube.updatePos(0.0f, -1.0f, -2.0f);
+	//triangle.updatePos(0.0f, 1.0f, -1.0f);
 	
-	GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + 7 * cube.vertexBufferSize();
-	GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + 7 * cube.indexBufferSize();
+	//GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + 7 * cube.vertexBufferSize();
+	//GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + 7 * cube.indexBufferSize();
 
-	Shape shapes[] = { cube, triangle };
-	Shape shapes2[] = { square };
+	//Shape shapes[] = { cube, triangle };
+	//Shape shapes2[] = { square };
 
-	ShapeRenderer a(shapes, 7, bufferSize, ibufferSize);
-	ShapeRenderer b(shapes2, 2, bufferSize, ibufferSize);
-	//ShapeRenderer c(cube);
-
+	//ShapeRenderer a(shapes, 7, bufferSize, ibufferSize);
+	//ShapeRenderer b(shapes2, 2, bufferSize, ibufferSize);
+	ShapeRenderer c(cube);
+	
+	/*
 	mat4 matrix1;
 	mat4 matrix2;
 	mat4 matrix3;
@@ -91,12 +93,28 @@ int main() {
 	matrix7 = mat4::translationMatrix(3.0f, -1.0f, -5.0f);
 
 	GLsizeiptr matBuf = sizeof(mat4) * 7;
+	*/
+	//mat4 matrices[] = { matrix1, matrix2, matrix3, matrix4, matrix5, matrix6, matrix7 };
+	mat4 *matrices = new mat4[1000];
+	GLsizeiptr matBuf = sizeof(mat4) * 1000;
+	float r1;
+	float r2;
+	float r3;
 
-	mat4 matrices[] = { matrix1, matrix2, matrix3, matrix4, matrix5, matrix6, matrix7 };
-	
-	a.submitMat(matrices, 7, 3, matBuf);
-	b.submitMat(matrices, 7, 3, matBuf);
-	//c.submitMat(matrices, 7, 3, matBuf);
+	for (int i = 0; i < 1000; i++) {
+
+		r1 = 50.0f * float(i) / 4.0f;
+		r2 = 50.0f * float(i) / 5.0f;
+		r3 = 50.0f * float(i) / 6.0f;
+
+
+		matrices[i] = mat4::rotationMatrixX(r1) * mat4::rotationMatrixY(r2)
+			* mat4::rotationMatrixZ(r3) * mat4::translationMatrix(0.01f + (r1 / 100.0f), 0.04f + (r2 / 100.f), 0.05f + (r3 / 100.f));
+	}
+
+	//a.submitMat(matrices, 1000, 3, matBuf);
+	//b.submitMat(matrices, 1000, 3, matBuf);
+	c.submitMat(matrices, 1000, 3, matBuf);
 
 
 	/*
@@ -183,9 +201,9 @@ int main() {
 		//a.flush();
 		//b.flush();
 		//c.flush();
-		a.flushInstanced();
-		b.flushInstanced();
-		//c.flushInstanced();
+		//a.flushInstanced();
+		//b.flushInstanced();
+		c.flushInstanced();
 												 
 		window.update();
 
@@ -209,9 +227,9 @@ int main() {
 
 	}
 
-	a.clean();
-	b.clean();
-	//c.clean();
+	//a.clean();
+	//b.clean();
+	c.clean();
 
 	return 0;
 }
