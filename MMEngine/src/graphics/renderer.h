@@ -11,14 +11,18 @@ namespace mme {
 
 		protected:
 
-			GLuint m_vao;
-			GLuint m_vbo;
-			GLuint m_ibo;
+			GLuint m_bufID[2];
+			GLuint m_numIndices;
+			bool m_init;
+			//GLuint m_vbo;
+			//GLuint m_ibo;
 			//std::vector<Renderable> mem;
 
 		public:
 
-			Renderer() : m_vao(0) {}
+			Renderer() : m_numIndices(0), m_init(false) {
+				m_bufID[0] = m_bufID[1] = 0;
+			}
 			//virtual void submit(Renderable *buf) = 0;
 			virtual void flush() const = 0;
 			virtual void clean() = 0;

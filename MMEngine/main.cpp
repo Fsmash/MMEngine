@@ -16,6 +16,7 @@
 #define VERT_TEX "src/shaders/texture.vert"
 #define FRAG_TEX "src/shaders/texture.frag"
 
+#define VERT_INST "src/shaders/instanced.vert"
 
 #if DEBUG
 #include "src/utility/log.h"
@@ -60,17 +61,44 @@ int main() {
 	Shape cube = ShapeGenerator3D::makeCube();
 
 	square.updatePos(-1.0f, -1.0f, 0.0f);
-	cube.updatePos(1.0f, -1.0f, -2.0f);
+	cube.updatePos(0.0f, -1.0f, -2.0f);
 	triangle.updatePos(0.0f, 1.0f, -1.0f);
 	
-	GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + cube.vertexBufferSize();
-	GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + cube.indexBufferSize();
+	GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + 7 * cube.vertexBufferSize();
+	GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + 7 * cube.indexBufferSize();
 
-	Shape shapes[] = { triangle, square, cube };
+	Shape shapes[] = { cube, triangle };
+	Shape shapes2[] = { square };
 
-	ShapeRenderer a;
-	a.submit(shapes, 3, bufferSize, ibufferSize);
+	ShapeRenderer a(shapes, 7, bufferSize, ibufferSize);
+	ShapeRenderer b(shapes2, 2, bufferSize, ibufferSize);
+	//ShapeRenderer c(cube);
+
+	mat4 matrix1;
+	mat4 matrix2;
+	mat4 matrix3;
+	mat4 matrix4;
+	mat4 matrix5;
+	mat4 matrix6;
+	mat4 matrix7;
+
+	matrix1 = mat4::translationMatrix(0.0f, -1.0f, -2.0f);
+	matrix2 = mat4::translationMatrix(0.5f, -1.0f, -2.5f);
+	matrix3 = mat4::translationMatrix(1.0f, -1.0f, -3.0f);
+	matrix4 = mat4::translationMatrix(1.5f, -1.0f, -3.5f);
+	matrix5 = mat4::translationMatrix(2.0f, -1.0f, -4.0f);
+	matrix6 = mat4::translationMatrix(2.5f, -1.0f, -4.5f);
+	matrix7 = mat4::translationMatrix(3.0f, -1.0f, -5.0f);
+
+	GLsizeiptr matBuf = sizeof(mat4) * 7;
+
+	mat4 matrices[] = { matrix1, matrix2, matrix3, matrix4, matrix5, matrix6, matrix7 };
 	
+	a.submitMat(matrices, 7, 3, matBuf);
+	b.submitMat(matrices, 7, 3, matBuf);
+	//c.submitMat(matrices, 7, 3, matBuf);
+
+
 	/*
 	// Texture Data
 	int x, y, n;
@@ -127,8 +155,8 @@ int main() {
 
 	int width = window.getWidth();
 	int height = window.getHeight();
-	math::mat4 translate;
-	translate = math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
+	//mat4 translate;
+	//translate = mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
 	Camera cam(0.0f, 0.0f, 3.0f);
 	cam.speed = 0.12f;
@@ -137,22 +165,27 @@ int main() {
 	cam.pitch_speed = 1.5f;
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
 	
-	Shader shader(VERT, FRAG);
+	Shader shader(VERT_INST, FRAG);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
-	shader.setUniformMat4("model_matrix", translate);
+	//shader.setUniformMat4("model_matrix", translate);
 
 	vec3 ray_world;
 
-	window.setClearColor(0.0f, 0.4f, 0.8f, 1.0f);
+	//window.setClearColor(0.0f, 0.4f, 0.8f, 1.0f);
 
 	while (!window.closed()) {
 
 		window.frameCounter();
 		window.clear();
 		
-		a.flush();
+		//a.flush();
+		//b.flush();
+		//c.flush();
+		a.flushInstanced();
+		b.flushInstanced();
+		//c.flushInstanced();
 												 
 		window.update();
 
@@ -177,6 +210,8 @@ int main() {
 	}
 
 	a.clean();
+	b.clean();
+	//c.clean();
 
 	return 0;
 }
@@ -235,19 +270,19 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_R)) {
-		if (shader.reloadShader(VERT, FRAG)) {
+		if (shader.reloadShader(VERT_INST, FRAG)) {
 			int width = window.getWidth();
 			int height = window.getHeight();
 
-			mme::math::mat4 translate;
-			translate = mme::math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
+			//mme::math::mat4 translate;
+			//translate = mme::math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
 			shader.enable();
 			cam.setPos(0.0f, 0.0f, 3.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
-			shader.setUniformMat4("model_matrix", translate);
+			//shader.setUniformMat4("model_matrix", translate);
 			printf("It Worked!");
 		}
 		else {

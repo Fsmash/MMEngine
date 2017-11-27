@@ -1,10 +1,11 @@
 // Vertex Shader
-#version 410
+#version 450
 layout(location = 0) in vec3 vp;	// vertex positions
 layout(location = 1) in vec3 vc;	// vertex colour
 layout(location = 2) in vec3 vn;	// vertex normals
+layout(location = 3) in mat4 model_matrix; // mat4 model matrix per intance
 
-uniform mat4 view, proj, model_matrix;			// view and projection matrices from camera
+uniform mat4 view, proj;			// view and projection matrices from camera
 
 out vec3 Kd, eye_pos, eye_normal;	// outputs to fragment shader after raserization for lighting calc.
 

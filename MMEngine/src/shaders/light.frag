@@ -1,8 +1,8 @@
 // Fragment Shader
-#version 410
+#version 450
 
 // uniform when view updates
-uniform mat4 view, model_matrix;
+uniform mat4 view;
 
 // input from vertex shader for lighting calculations
 in vec3 Kd, eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
@@ -30,7 +30,7 @@ void main() {
 	// *** DIFFUSE INTENSITY CALCULATIONS
 	
 	// light source's vertex positions in eye space
-	vec3 light_pos_eye = vec3(view * model_matrix * vec4(light_pos_world, 1.0));
+	vec3 light_pos_eye = vec3(view * vec4(light_pos_world, 1.0));
 
 	// distance of light source to sruface
 	vec3 dist_from_eye = light_pos_eye - eye_pos; 
