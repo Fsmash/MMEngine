@@ -5,7 +5,7 @@
 uniform mat4 view;
 
 // input from vertex shader for lighting calculations
-in vec3 Kd, eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
+in vec3 Kd, eye_pos, eye_normal, normal; // should probably rename eye_pos and eye_normal
 
 // Light properties
 vec3 light_pos_world = vec3(0.0, 0.0, 4.0);	// position of light source in world space
@@ -69,6 +69,7 @@ void main() {
 	// specular intensity
 	vec3 Is = Ls * Ks * specular_factor;
 	
-	frag_colour=vec4(Is + Id + Ia, 1.0);
+	//frag_colour=vec4(Is + Id + Ia, 1.0);
+	frag_colour=vec4(normal, 1.0);
 
 }
