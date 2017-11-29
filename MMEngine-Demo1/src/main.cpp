@@ -10,14 +10,14 @@
 #include "graphics/buffers/index_buffer.h"
 
 #define DEBUG 1
-#define VERT "shaders/light.vert"
+#define VERT "src/shaders/light.vert"
 #define FRAG "src/shaders/light.frag"
 
-#define VERT_TEX "shaders/texture.vert"
-#define FRAG_TEX "shaders/texture.frag"
+#define VERT_TEX "src/shaders/texture.vert"
+#define FRAG_TEX "src/shaders/texture.frag"
 
 #define VERT_INST "src/shaders/instanced.vert"
-#define FRAG_BASIC "shaders/basic.frag"
+#define FRAG_BASIC "src/shaders/basic.frag"
 
 #if DEBUG
 #include "utility/log.h"
@@ -60,7 +60,6 @@ int main() {
 	Shape cube = ShapeGenerator3D::makeCube();
 
 	ShapeRenderer c(cube);
-	cube.cleanUp();
 	mat4 *matrices = new mat4[500000];
 	GLsizeiptr matBuf = sizeof(mat4) * 500000;
 

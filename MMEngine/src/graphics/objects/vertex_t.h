@@ -17,7 +17,7 @@ namespace mme {
 			}
 
 			static GLsizeiptr vertexSize() {
-				return sizeof(float) * 9;
+				return sizeof(float) * 8;
 			}
 
 			static const void* offset1() {
@@ -25,7 +25,7 @@ namespace mme {
 			}
 
 			static const void* offset2() {
-				return (const void *)(sizeof(float) * 6);
+				return (const void *)(sizeof(float) * 5);
 			}
 
 			static void components(GLuint &a1, GLuint &a2, GLuint &a3) {
