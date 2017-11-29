@@ -30,7 +30,10 @@ namespace mme {
 
 			glEnable(GL_DEPTH_TEST);	// enable depth testing
 			glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	// set up clear color
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			glFrontFace(GL_CCW);
+			glClearColor(2.0f, 2.0f, 2.0f, 1.0f);	// set up clear color
 
 			// set call back functions here.
 			glfwSetWindowUserPointer(m_window, this);
