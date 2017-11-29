@@ -1,26 +1,26 @@
 //#define STB_IMAGE_IMPLEMENTATION
-#include "src/utility/stb_image.h"
-#include "src/graphics/window.h"
-#include "src/graphics/shader.h"
-#include "src/graphics/camera.h"
-#include "src/graphics/objects/shape_generator_2D.h"
-#include "src/graphics/objects/shape_generator_3D.h"
-#include "src/graphics/shape_renderer.h"
-#include "src/graphics/buffers/buffer.h"
-#include "src/graphics/buffers/index_buffer.h"
+#include "utility/stb_image.h"
+#include "graphics/window.h"
+#include "graphics/shader.h"
+#include "graphics/camera.h"
+#include "graphics/objects/shape_generator_2D.h"
+#include "graphics/objects/shape_generator_3D.h"
+#include "graphics/shape_renderer.h"
+#include "graphics/buffers/buffer.h"
+#include "graphics/buffers/index_buffer.h"
 
 #define DEBUG 1
-#define VERT "src/shaders/light.vert"
+#define VERT "shaders/light.vert"
 #define FRAG "src/shaders/light.frag"
 
-#define VERT_TEX "src/shaders/texture.vert"
-#define FRAG_TEX "src/shaders/texture.frag"
+#define VERT_TEX "shaders/texture.vert"
+#define FRAG_TEX "shaders/texture.frag"
 
 #define VERT_INST "src/shaders/instanced.vert"
-#define FRAG_BASIC "src/shaders/basic.frag"
+#define FRAG_BASIC "shaders/basic.frag"
 
 #if DEBUG
-#include "src/utility/log.h"
+#include "utility/log.h"
 #define INIT_LOG() restart_gl_log()
 #define LOG(x, ...) gl_log(x, __VA_ARGS__)
 #define INFO() log_gl_params()
@@ -56,28 +56,14 @@ int main() {
 		system("PAUSE");
 		return 1;
 	}
-	
-	//Shape triangle = ShapeGenerator2D::makeTriangle();
-	//Shape square = ShapeGenerator2D::makeSquare();
+
 	Shape cube = ShapeGenerator3D::makeCube();
 
-	//square.updatePos(-1.0f, -1.0f, 0.0f);
-	//cube.updatePos(0.0f, -1.0f, -2.0f);
-	//triangle.updatePos(0.0f, 1.0f, -1.0f);
-	
-	//GLuint bufferSize = triangle.vertexBufferSize() + square.vertexBufferSize() + 7 * cube.vertexBufferSize();
-	//GLuint ibufferSize = triangle.indexBufferSize() + square.indexBufferSize() + 7 * cube.indexBufferSize();
-
-	//Shape shapes[] = { cube, triangle };
-	//Shape shapes2[] = { square };
-
-	//ShapeRenderer a(shapes, 7, bufferSize, ibufferSize);
-	//ShapeRenderer b(shapes2, 2, bufferSize, ibufferSize);
-	
 	ShapeRenderer c(cube);
+	cube.cleanUp();
 	mat4 *matrices = new mat4[500000];
 	GLsizeiptr matBuf = sizeof(mat4) * 500000;
-	
+
 	float r1;
 	float r2;
 	float r3;
@@ -93,8 +79,6 @@ int main() {
 			* mat4::rotationMatrixZ(r3) * mat4::translationMatrix(0.01f + (r1 / 1000.0f), 0.02f + (r2 / 1000.f), 0.03f + (r3 / 1000.f));
 	}
 
-	//a.submitMat(matrices, 1000, 3, matBuf);
-	//b.submitMat(matrices, 1000, 3, matBuf);
 	c.submitMat(matrices, 500000, 3, matBuf);
 
 
@@ -107,17 +91,17 @@ int main() {
 	unsigned char *img_data = stbi_load(img, &x, &y, &n, force_channels);
 
 	if (!img_data) {
-		fprintf(stderr, "ERROR: could not load image data %s\n", img);
+	fprintf(stderr, "ERROR: could not load image data %s\n", img);
 	}
 	else {
-		fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
+	fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
 	}
 
 	if (x & (x - 1) != 0 || y & (y - 1) != 0) {
-		fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", img);
+	fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", img);
 	}
 
-	// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner. 
+	// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
 	int width_in_bytes = x * 4;
 	unsigned char *top = NULL;
 	unsigned char *bottom = NULL;
@@ -125,25 +109,25 @@ int main() {
 	int half_height = y / 2;
 
 	for (int row = 0; row < half_height; row++) {
-		top = img_data + row * width_in_bytes;
-		bottom = img_data + (y - row - 1) * width_in_bytes;
-		for (int col = 0; col < width_in_bytes; col++) {
-			temp = *top;
-			*top = *bottom;
-			*bottom = temp;
-			top++;
-			bottom++;
-		}
+	top = img_data + row * width_in_bytes;
+	bottom = img_data + (y - row - 1) * width_in_bytes;
+	for (int col = 0; col < width_in_bytes; col++) {
+	temp = *top;
+	*top = *bottom;
+	*bottom = temp;
+	top++;
+	bottom++;
 	}
-	
+	}
+
 
 	// Texture Buffer
 	GLuint tex = 0;
 	glGenTextures(1, &tex);	// generate texture id (name) used to reference texture
 	glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
-	glBindTexture(GL_TEXTURE_2D, tex);	// bind 
+	glBindTexture(GL_TEXTURE_2D, tex);	// bind
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-	
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -164,7 +148,7 @@ int main() {
 	cam.pitch_speed = 1.5f;
 	cam.setFar(500.0f);
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
-	
+
 	Shader shader(VERT_INST, FRAG);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
@@ -179,18 +163,13 @@ int main() {
 
 		window.frameCounter();
 		window.clear();
-		
-		//a.flush();
-		//b.flush();
-		//c.flush();
-		//a.flushInstanced();
-		//b.flushInstanced();
+
 		c.flushInstanced();
-												 
+
 		window.update();
 
 		keyPresses(cam, window, shader);
-		
+
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
@@ -204,13 +183,11 @@ int main() {
 		}
 
 		if (cam.update()) {
-			shader.setUniformMat4("view", cam.viewMatrixUpdate()); 
+			shader.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
 
 	}
 
-	//a.clean();
-	//b.clean();
 	c.clean();
 
 	return 0;

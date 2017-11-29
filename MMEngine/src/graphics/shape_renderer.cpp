@@ -192,7 +192,6 @@ namespace mme {
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset1()); // defines layout of buffer.
 				glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VertexC::vertexSize(), VertexC::offset2()); // defines layout of buffer.
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufID[1]);
-				//glBindBuffer(GL_ARRAY_BUFFER, m_matrixID);
 
 				glDrawElementsInstanced(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, nullptr, m_numInstances);
 			}
