@@ -1,5 +1,5 @@
 //#define STB_IMAGE_IMPLEMENTATION
-#include "utility/stb_image.h"
+//#include "utility/stb_image.h"
 #include "graphics/window.h"
 #include "graphics/shader.h"
 #include "graphics/camera.h"
