@@ -1,3 +1,11 @@
+/*	Code by Bryant Dinh for Senior Sem 2017 Project : Misunderstood Magician Engine
+
+	This class, Window, handles all the glew and glfw set up to creat and bind an OpenGL context to a window.
+	It has member functions that handle glfw settings for specifying a window set up such as aliasing options and clear color.
+	It also handles keyboard and mouse inputs.
+
+*/
+
 #pragma once
 #include <GL/glew.h>
 #define GLFW_DLL
@@ -13,13 +21,14 @@ namespace mme {
 		class Window {
 
 		private:
+
 			const char *m_title;		// title of window
 			int m_width, m_height;		// window size
 			int m_fwidth, m_fheight;	// frame buffer size of window
-			GLFWwindow *m_window;
-			bool m_closed;
-			bool m_keys[MAX_KEYS];
-			bool m_mouse[MAX_BUTTONS];
+			GLFWwindow *m_window;		// GLFWwindow pointer to created context
+			bool m_closed;				// is window closed
+			bool m_keys[MAX_KEYS];		// bool array for whether key is pressed
+			bool m_mouse[MAX_BUTTONS];	// bool array for whether mouse button is pressed
 			double m_xpos, m_ypos;		// mouse positions
 
 			bool init();
@@ -30,6 +39,7 @@ namespace mme {
 			//friend static void cursorCallback(GLFWwindow *window, double x, double y);
 
 		public:
+
 			Window(const char* title, int width, int height);
 			~Window();
 			void clear() const;

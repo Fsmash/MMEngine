@@ -1,4 +1,5 @@
 #pragma once
+#include <GL\glew.h>
 #include <time.h>
 #include <stdarg.h>	// let functions take a variable number of arguments
 

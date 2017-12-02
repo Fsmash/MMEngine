@@ -171,10 +171,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\buffers\buffer.cpp" />
-    <ClCompile Include="src\graphics\buffers\index_buffer.cpp" />
     <ClCompile Include="src\graphics\camera.cpp" />
     <ClCompile Include="src\graphics\objects\shape_generator_2D.cpp" />
     <ClCompile Include="src\graphics\objects\shape_generator_3D.cpp" />
+    <ClCompile Include="src\graphics\renderer.cpp" />
     <ClCompile Include="src\graphics\shader.cpp" />
     <ClCompile Include="src\graphics\shape_renderer.cpp" />
     <ClCompile Include="src\graphics\window.cpp" />
@@ -187,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphics\buffers\buffer.h" />
-    <ClInclude Include="src\graphics\buffers\index_buffer.h" />
     <ClInclude Include="src\graphics\camera.h" />
     <ClInclude Include="src\graphics\objects\renderable.h" />
     <ClInclude Include="src\graphics\objects\shape.h" />

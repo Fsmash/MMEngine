@@ -7,7 +7,6 @@
 #include "graphics/objects/shape_generator_3D.h"
 #include "graphics/shape_renderer.h"
 #include "graphics/buffers/buffer.h"
-#include "graphics/buffers/index_buffer.h"
 
 #include <assimp/cimport.h>
 #include <assimp/scene.h>

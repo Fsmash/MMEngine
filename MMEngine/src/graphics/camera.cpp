@@ -123,7 +123,7 @@ namespace mme {
 			m_moved = true;
 		}
 		
-		// Increase translation values (m_vel) of camera
+		// Increase translation values (m_vel) of camera. Moves camera around.
 		void Camera::left() {
 			m_vel.x -= speed; 
 			m_moved = true;
@@ -149,7 +149,7 @@ namespace mme {
 			m_moved = true;
 		}
 
-		// Construct quaternions based off of angle and axis of rotation. 	 
+		// Construct quaternions based off of angle and axis of rotation. Rotates the camera.
 		void Camera::turnRight() { 
 			m_yaw -= yaw_speed;
 			if (abs(m_yaw) > 360.0f) m_yaw = 0.0f;

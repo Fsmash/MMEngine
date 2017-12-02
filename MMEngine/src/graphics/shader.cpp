@@ -3,6 +3,8 @@
 namespace mme {
 	namespace graphics {
 
+		// PRIVATE MEMBER FUNCTION
+		// Gnerates and compiles shaders. Then attaches and links them to generated shader program.
 		bool Shader::init(const char *vert, const char *frag) {
 
 			// Shader strings load in from files and coverted to c string
@@ -44,29 +46,33 @@ namespace mme {
 
 			return true;
 		}
+		// END OF PRIVATE MEMBER FUNCTIONS
 
+		// Constructor, initializes shader programs
 		Shader::Shader(const char *vert, const char *frag) {
 			if (!init(vert, frag)) {
 				std::cout << "Something went wrong. Check gl.log." << std::endl;
 			}
 		}
 
+		// Destructor, deletes shader program
 		Shader::~Shader() {
 			glDeleteProgram(m_program);
 		}
 
+		// "Use" shader program, sets as current in OpenGL context
 		void Shader::enable() const {
 			glUseProgram(m_program);
 		}
 
+		// Unbinds shader program
 		void Shader::disable() const {
 			glUseProgram(0);
 		}
 
+		// Reinitializes shader program
 		bool Shader::reloadShader(const char * vert, const char * frag) {
 			// Delete previous program to start shader compilation over
-			//glDeleteShader(m_vertex);
-			//glDeleteShader(m_fragment);
 			glDeleteProgram(m_program);
 
 			if (!init(vert, frag)) {
@@ -77,6 +83,7 @@ namespace mme {
 			return true;
 		}
 
+		// Set uniform functions
 		void Shader::setUniform1f(const GLchar* name, GLfloat value) {
 			GLint unifLoc = glGetUniformLocation(m_program, name); // get location of uniform variable in shader
 			if (unifLoc < 0) {

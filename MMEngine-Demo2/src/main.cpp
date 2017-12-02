@@ -1,5 +1,5 @@
 //#define STB_IMAGE_IMPLEMENTATION
-//#include "utility/stb_image.h"
+#include "utility/stb_image.h"
 #include "graphics/window.h"
 #include "graphics/shader.h"
 #include "graphics/camera.h"
@@ -7,7 +7,6 @@
 #include "graphics/objects/shape_generator_3D.h"
 #include "graphics/shape_renderer.h"
 #include "graphics/buffers/buffer.h"
-#include "graphics/buffers/index_buffer.h"
 
 #define DEBUG 1
 #define VERT "src/shaders/light.vert"

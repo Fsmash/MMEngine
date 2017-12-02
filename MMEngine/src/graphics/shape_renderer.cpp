@@ -30,7 +30,14 @@ namespace mme {
 				clean();
 		}
 
-		void ShapeRenderer::submit(Shape *shapes, const GLuint num, const GLsizeiptr buf, const GLsizeiptr idx) {
+		void ShapeRenderer::submit(Renderable *shapes, const GLuint num, const GLsizeiptr buf, const GLsizeiptr idx) {
+
+			Shape *ptr = dynamic_cast<Shape *>(shapes);
+
+			if (!ptr) {
+				std::cout << "Can not cast to Shape, wrong data type" << std::endl;
+				return;
+			}
 
 			if (m_init) {
 				std::cout << "Buffers already initialized" << std::endl;
@@ -57,7 +64,7 @@ namespace mme {
 
 			for (int i = 0; i < m_numShapes; i++) {
 
-				bufSz = shapes[i].vertexBufferSize();
+				bufSz = ptr[i].vertexBufferSize();
 
 				if (m_bufOffset[0] + bufSz > buf) {
 					std::cout << "Memory out of bounds. VBO buffer." << std::endl;
@@ -65,7 +72,7 @@ namespace mme {
 					return;
 				}
 
-				idxSz = shapes[i].indexBufferSize();
+				idxSz = ptr[i].indexBufferSize();
 
 				if (m_bufOffset[1] + idxSz > idx) {
 					std::cout << "Memory out of bounds. IBO buffer" << std::endl;
@@ -73,20 +80,20 @@ namespace mme {
 					return;
 				}
 
-				glBufferSubData(GL_ARRAY_BUFFER, m_bufOffset[0], bufSz, shapes[i].vertices);
+				glBufferSubData(GL_ARRAY_BUFFER, m_bufOffset[0], bufSz, ptr[i].vertices);
 
 				if (i != 0) {
 					shapes[i].offsetIdx(elementOffset);
 					std::cout << "offsetting by: " << elementOffset << std::endl;
 				}
 
-				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_bufOffset[1], idxSz, shapes[i].indices);
+				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_bufOffset[1], idxSz, ptr[i].indices);
 
 				m_bufOffset[0] += bufSz;
 				m_bufOffset[1] += idxSz;
 
-				elementOffset += shapes[i].num_vertices;
-				m_numIndices += shapes[i].num_indices;
+				elementOffset += ptr[i].num_vertices;
+				m_numIndices += ptr[i].num_indices;
 				std::cout << "i: " << i << " offset: " << elementOffset << " num indices: " << m_numIndices << std::endl;
 			}
 
@@ -95,14 +102,22 @@ namespace mme {
 			m_init = true;
 		}
 
-		void ShapeRenderer::submit(const Shape &shape) {
+		void ShapeRenderer::submit(Renderable &shape) {
+
+			Shape *ptr = dynamic_cast<Shape *>(&shape);
+
+			if (!ptr) {
+				std::cout << "Can not cast to Shape, wrong data type" << std::endl;
+				return;
+			}
 
 			if (m_init) {
 				std::cout << "Buffers already initialized" << std::endl;
 				return;
 			}
+
 			m_numShapes = 1;
-			m_numIndices = shape.num_indices;
+			m_numIndices = ptr->num_indices;
 
 			glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
 			glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, color)
@@ -113,53 +128,13 @@ namespace mme {
 			printf("ibo name: %d\n", m_bufID[1]);
 
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufID[0]);
-			glBufferData(GL_ARRAY_BUFFER, shape.vertexBufferSize(), shape.vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, ptr->vertexBufferSize(), ptr->vertices, GL_STATIC_DRAW);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufID[1]);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.indexBufferSize(), shape.indices, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, ptr->indexBufferSize(), shape.indices, GL_STATIC_DRAW);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			m_init = true;
-		}
-
-		void ShapeRenderer::submitMat(const math::mat4 *matrices, const GLuint num, const GLint attribLoc, const GLsizeiptr buf) {
-
-			if (m_matrixID != 0) {
-				std::cout << "Matrix Buffer already initialized" << std::endl;
-				return;
-			}
-
-			m_matAttribLoc = attribLoc;
-			m_matBufSz = buf;
-			m_numInstances = num;
-			GLsizeiptr bufSz = sizeof(math::mat4);
-
-			for (int i = 0; i < 4; i++) {
-				glEnableVertexAttribArray(m_matAttribLoc + i);
-				glVertexAttribDivisor(m_matAttribLoc + i, 1);
-			}
-
-			glGenBuffers(1, &m_matrixID);
-			//printf("matrix buffer object name: %d\n", m_matrixID);
-			glBindBuffer(GL_ARRAY_BUFFER, m_matrixID);
-			glBufferData(GL_ARRAY_BUFFER, m_matBufSz, 0, GL_DYNAMIC_DRAW);
-
-			for (int i = 0; i < m_numInstances; i++) {
-
-				if (m_bufOffset[2] + bufSz > buf) {
-					//std::cout << "Memory out of bounds. Matrix buffer." << std::endl;
-					clean();
-					return;
-				}
-
-				glBufferSubData(GL_ARRAY_BUFFER, m_bufOffset[2], bufSz, matrices[i].matrix);
-				//std::cout << "Matrix " << i << " " << matrices[i] << std::endl;
-				m_bufOffset[2] += bufSz;
-			}
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			m_init = true;
 		}
 

@@ -1,7 +1,7 @@
 /*	Code by Bryant Dinh for Senior Sem 2017 Project : Misunderstood Magician Engine
 	
-	This Camera class holds all the relevant data to construct a view and projection matrix for the Transformation Pipeline. 
-	Also handles all changes to camera position (translation) and orientation (rotation) with member functions. 
+	This class, Camera, holds all the relevant data to construct a view and projection matrix for the Transformation Pipeline. 
+	It handles all changes to camera position (translation) and orientation (rotation) with member functions. 
 	Additionally, this class also has a member function that return ray cast of mouse position as calculations for that require the projection and view matrix. 
 */
 
@@ -89,6 +89,7 @@ namespace mme {
 			math::mat4 viewMatrixUpdate();
 			math::mat4 projMatrix(const int width, const int height);
 			math::vec3 wolrdRayVec(const float xpos, const float ypos, const float width, const float height);
+			// TO DO: work on look at function eventually.
 			//math::mat4 lookAt(math::vec3 cam_pos, math::vec3 target, math::vec3 up);
 
 		};

@@ -3,6 +3,7 @@
 namespace mme {
 	namespace graphics {
 
+		// Initialize glew and glfw set up
 		bool Window::init() {
 
 			if (!glfwInit()) {
@@ -102,6 +103,7 @@ namespace mme {
 		*/
 		// END OF CALL BACK FUNCTIONS
 
+		// Constructor, initialize window 
 		Window::Window(const char *title, int width, int height) {
 			m_title = title;
 			m_width = width;
@@ -118,14 +120,17 @@ namespace mme {
 			}
 		}
 
+		// Destructor terminating glfw context
 		Window::~Window() {
 			glfwTerminate();
 		}
 
+		// Clears frame buffer
 		void Window::clear() const {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear drawing surface
 		}
 
+		// Sets clear color of window
 		void Window::setClearColor(const float r, const float g, const float b, const float alpha) const {
 			if ((r < 0) || (r > 1) || (g < 0) || (g > 1) || (b < 0) || (b > 1) || (alpha < 0) || (alpha > 1)) {
 				std::cout << "Color must be in range of 0 - 1." << std::endl;
@@ -134,6 +139,7 @@ namespace mme {
 			glClearColor(r, g, b, alpha);
 		}
 
+		// Updates window context
 		void Window::update() {
 			//glViewport(0, 0, m_fwidth, m_fheight);
 			glfwGetFramebufferSize(m_window, &m_fwidth, &m_fheight);
@@ -142,6 +148,7 @@ namespace mme {
 			//std::cout << m_width << " " << m_height << std::endl;
 		}
 
+		// Returns bool on whether window has been resized
 		bool Window::resized() {
 			int old_w = m_width;
 			int old_h = m_height;
@@ -149,15 +156,18 @@ namespace mme {
 			return (old_w != m_width) || (old_h != m_height);
 		}
 
+		// Returns bool for whether window is closed
 		bool Window::closed() {
 			m_closed = glfwWindowShouldClose(m_window) == 1;
 			return m_closed;
 		}
 
+		// Frame counter for window
 		void Window::frameCounter() const {
 			fpsCounter(m_window);
 		}
 
+		// Returns bool on whether key is pressed
 		bool Window::isKeyPressed(unsigned int key) const {
 			
 			if (key >= MAX_KEYS || key < 0) {
@@ -168,6 +178,7 @@ namespace mme {
 			return m_keys[key];
 		}
 
+		// Returns bool on whether button is pressed
 		bool Window::isMousePressed(unsigned int button) const {
 
 			if (button >= MAX_BUTTONS || button < 0) {

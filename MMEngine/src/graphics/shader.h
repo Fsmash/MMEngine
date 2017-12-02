@@ -1,8 +1,9 @@
 /*	Code by Bryant Dinh for Senior Sem 2017 Project : Misunderstood Magician Engine
+	
 	The Shader class holds all shader indexes(names) for a corresponding shader program, stored as a index(name).
 	Have member functions that load in shader program from text file, create shader object, create shader program, attach shader objects, 
 	compile, and link shader program together. 
-	Wil also have functions to set uniform varialbes.
+	Wil also have functions to set uniform variables.
 */
 
 #pragma 
@@ -19,10 +20,10 @@ namespace mme {
 
 		private:
 
-			GLuint m_vertex;
-			GLuint m_fragment;
+			GLuint m_vertex;	// shader id for vertex shader
+			GLuint m_fragment;	// ... for fragment shader
 			//GLuint m_geometry;
-			GLuint m_program;
+			GLuint m_program;	// shader program id
 			bool init(const char *vert, const char *frag);
 
 		public:

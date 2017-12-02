@@ -51,10 +51,10 @@
     <ClCompile Include="src\graphics\buffers\buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\buffers\index_buffer.cpp">
+    <ClCompile Include="src\graphics\shape_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\shape_renderer.cpp">
+    <ClCompile Include="src\graphics\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,9 +105,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\buffers\buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\buffers\index_buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\renderer.h">
