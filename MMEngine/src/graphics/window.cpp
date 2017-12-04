@@ -125,6 +125,14 @@ namespace mme {
 			glfwTerminate();
 		}
 
+		// Logs opengl context info
+		void Window::logContextInfo() {
+			gl_log("GLFW Version %s\n", glfwGetVersionString());	// log version of glfw starting
+			gl_log("Renderer: %s\n", glGetString(GL_RENDERER));	// get gc model);
+			gl_log("OpenGL version supported: %s\n", glGetString(GL_VERSION));	// get opengl version	
+			log_gl_params();	//	Get hardware info
+		}
+
 		// Clears frame buffer
 		void Window::clear() const {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear drawing surface

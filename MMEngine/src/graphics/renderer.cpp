@@ -3,6 +3,31 @@
 namespace mme {
 	namespace graphics {
 
+		// Initialize shader 
+		void Renderer::initShader(const char *vert, const char *frag) {
+			m_shader = new Shader(vert, frag);
+		}
+
+		void Renderer::enableShader() {
+			m_shader->enable();
+		}
+
+		void Renderer::disableShader() {
+			m_shader->disable();
+		}
+
+		bool Renderer::reloadShader(const char *vert, const char *frag) {
+			return m_shader->reloadShader(vert, frag);
+		}
+
+		void Renderer::setUniformMat4(const GLchar * name, const math::mat4 &matrix) {
+			m_shader->setUniformMat4(name, matrix);
+		}
+
+		void Renderer::setUniform1f(const GLchar * name, const GLfloat value) {
+			m_shader->setUniform1f(name, value);
+		}
+
 		// This generates a buffer for matrices used in mat4 attributes in instanced rendering. 
 		void Renderer::submitMat(const math::mat4 *matrices, const GLuint num, const GLint attribLoc, const GLsizeiptr buf) {
 

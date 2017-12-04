@@ -8,6 +8,7 @@
 #pragma once
 #include "GL/glew.h"
 #include <iostream>
+#include "../../math/mat4.h"
 
 namespace mme {
 	namespace graphics {
@@ -17,6 +18,9 @@ namespace mme {
 			GLuint num_vertices;	// number of vertices
 			GLuint *indices;		// pointer to array of indices for index rendering
 			GLuint num_indices;		// number of indices
+			math::vec3 pos;
+			math::vec3 vel;
+
 
 			Renderable() : num_vertices(0), indices(nullptr), num_indices(0) { }
 

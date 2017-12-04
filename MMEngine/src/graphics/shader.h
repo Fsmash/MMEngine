@@ -6,7 +6,7 @@
 	Wil also have functions to set uniform variables.
 */
 
-#pragma 
+#pragma once
 #include <GL/glew.h>
 #include <map>
 #include "../utility/fileutil.h"
@@ -33,6 +33,9 @@ namespace mme {
 			void enable() const;
 			void disable() const;
 			bool reloadShader(const char *vert, const char *frag);
+			void deleteVertexShader();
+			void deleteFragmentShader();
+			void deleteShaderProgram();
 
 			void setUniform1f(const GLchar* name, GLfloat value);
 			void setUniform1fv(const GLchar* name, GLfloat* value, GLsizei count);
@@ -43,7 +46,6 @@ namespace mme {
 			void setUniform4f(const GLchar* name, const math::vec4& vector);
 			void setUniformMat4(const GLchar* name, const math::mat4& matrix);
 			
-
 			inline GLuint getVert() const { return m_vertex; }
 			inline GLuint getFrag() const { return m_fragment; }
 			//inline GLuint getGeom() const { return m_geometry; }

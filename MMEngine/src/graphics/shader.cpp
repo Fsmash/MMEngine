@@ -24,24 +24,28 @@ namespace mme {
 
 			// load shader strings into GL shaders
 			m_vertex = glCreateShader(GL_VERTEX_SHADER);	// create fragment shader and gives it a "name" (index) stored in vs. vs is a shader index
+			std::cout << "Vertex shader ID: " << m_vertex << std::endl;
 			glShaderSource(m_vertex, 1, &vertex_shader, NULL);	// copy code from c string containing shader
 			glCompileShader(m_vertex);	// compiles the shader referenced by the name assigned to vs
 			if (gl_shader_error(m_vertex)) return false;
 
 			m_fragment = glCreateShader(GL_FRAGMENT_SHADER);
+			std::cout << "Fragment shader ID: " << m_fragment << std::endl;
 			glShaderSource(m_fragment, 1, &fragment_shader, NULL);
 			glCompileShader(m_fragment);
 			if (gl_shader_error(m_fragment)) return false;
 
 			// create shader program then attach and link shader objects
 			m_program = glCreateProgram(); // create empty shader program. shader_program index (name) to gpu program
+			std::cout << "Program shader ID: " << m_program << std::endl;
 			glAttachShader(m_program, m_vertex);	// attach shader to program
 			glAttachShader(m_program, m_fragment);
 			glLinkProgram(m_program); // link shaders together
-			glDeleteShader(m_vertex);
-			glDeleteShader(m_fragment);	   // After being linked, delete uneeded shaders to free up space 
-										   //glDetachShader(shader_program, fs); done when shader program is deleted.
-
+		    // After being linked, delete uneeded shaders to free up space
+			deleteVertexShader();
+			deleteFragmentShader();
+		    //glDetachShader(shader_program, fs); done when shader program is deleted.
+			m_vertex = m_fragment = -1;
 			if (gl_program_error(m_program)) return false;
 
 			return true;
@@ -50,6 +54,7 @@ namespace mme {
 
 		// Constructor, initializes shader programs
 		Shader::Shader(const char *vert, const char *frag) {
+			m_program = m_vertex = m_fragment = -1;
 			if (!init(vert, frag)) {
 				std::cout << "Something went wrong. Check gl.log." << std::endl;
 			}
@@ -58,6 +63,7 @@ namespace mme {
 		// Destructor, deletes shader program
 		Shader::~Shader() {
 			glDeleteProgram(m_program);
+			m_program = m_vertex = m_fragment = -1;
 		}
 
 		// "Use" shader program, sets as current in OpenGL context
@@ -73,7 +79,7 @@ namespace mme {
 		// Reinitializes shader program
 		bool Shader::reloadShader(const char * vert, const char * frag) {
 			// Delete previous program to start shader compilation over
-			glDeleteProgram(m_program);
+			deleteShaderProgram();
 
 			if (!init(vert, frag)) {
 				std::cout << "Something went wrong. Check gl.log." << std::endl;
@@ -81,6 +87,28 @@ namespace mme {
 			}
 
 			return true;
+		}
+
+		void Shader::deleteVertexShader() {
+			if (m_vertex != -1) {
+				glDeleteShader(m_vertex);
+				m_vertex = -1;
+			}
+		}
+
+		void Shader::deleteFragmentShader() {
+			if (m_fragment != -1) {
+				glDeleteShader(m_fragment);
+				m_fragment = -1;
+			}
+		}
+
+		// Delete shaders
+		void Shader::deleteShaderProgram() {
+			if (m_program != -1) {
+				glDeleteProgram(m_program);
+				m_program = m_vertex = m_fragment = -1;
+			}
 		}
 
 		// Set uniform functions

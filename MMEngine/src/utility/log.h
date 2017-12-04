@@ -8,6 +8,7 @@ namespace mme {
 	// opens log file and prints date and time at top. 
 	// print version number of code here
 	bool restart_gl_log();
+	
 	// main logging function
 	bool gl_log(const char *msg, ...);
 

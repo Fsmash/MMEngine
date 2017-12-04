@@ -18,18 +18,24 @@
 #define VERT_INST "src/shaders/instanced.vert"
 #define FRAG_BASIC "src/shaders/basic.frag"
 
+#define PAGE_UP		266
+#define PAGE_DOWN	267
+#define UP_KEY		265
+#define DOWN_KEY	264
+#define LEFT_KEY	263
+#define RIGHT_KEY	262
+
 #if DEBUG
 #include "utility/log.h"
 #define INIT_LOG() restart_gl_log()
-#define LOG(x, ...) gl_log(x, __VA_ARGS__)
-#define INFO() log_gl_params()
+#define LOG() window.logContextInfo()
 #else
 #define INIT_LOG() true
-#define LOG(x, y)
-#define INFO()
+#define LOG() 
 #endif
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader);
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ShapeRenderer &shader, 
+				const char *vert, const char *frag);
 
 int main() {
 
@@ -46,21 +52,32 @@ int main() {
 
 	if (!window.isClosed()) {
 		// Log created context info
-		LOG("GLFW Version %s\n", glfwGetVersionString());	// log version of glfw starting
-		LOG("Renderer: %s\n", glGetString(GL_RENDERER));	// get gc model);
-		LOG("OpenGL version supported: %s\n", glGetString(GL_VERSION));	// get opengl version	
-		INFO();	//	Get hardware info
+		LOG();
 	}
 	else {
 		system("PAUSE");
 		return 1;
 	}
 
-
 	Shape cube = ShapeGenerator3D::makeCube();
+	Shape triangle = ShapeGenerator2D::makeTriangle();
+	Shape square = ShapeGenerator2D::makeSquare();
 
 	ShapeRenderer c(cube);
+	square.updatePos(0.0f, -1.0f, -50.0f);
+	cube.updatePos(0.0f, -1.0f, -52.0f);
+	triangle.updatePos(0.0f, 1.0f, -51.0f);
+
+	Shape arr[] = { triangle, square, cube };
+	GLsizeiptr buf = triangle.vertexBufferSize() + square.vertexBufferSize() + cube.vertexBufferSize();
+	GLsizeiptr idx = triangle.indexBufferSize() + square.indexBufferSize() + cube.vertexBufferSize();
+
+	ShapeRenderer b(arr, 3, buf, idx);
+	
 	cube.cleanUp();
+	triangle.cleanUp();
+	square.cleanUp();
+
 	mat4 *matrices = new mat4[500000];
 	GLsizeiptr matBuf = sizeof(mat4) * 500000;
 
@@ -74,13 +91,11 @@ int main() {
 		r2 = 2.5f * float(i) / 5.0f;
 		r3 = 2.5f * float(i) / 6.0f;
 
-
 		matrices[i] = mat4::rotationMatrixX(r1) * mat4::rotationMatrixY(r2)
 			* mat4::rotationMatrixZ(r3) * mat4::translationMatrix(0.01f + (r1 / 1000.0f), 0.02f + (r2 / 1000.f), 0.03f + (r3 / 1000.f));
 	}
 
 	c.submitMat(matrices, 500000, 3, matBuf);
-
 
 	/*
 	// Texture Data
@@ -134,19 +149,25 @@ int main() {
 	//mat4 translate;
 	//translate = mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
-	Camera cam(0.0f, 0.0f, -50.0f);
+	Camera cam(0.0f, 0.0f, -20.0f);
 	cam.speed = 0.12f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
 	cam.setFar(500.0f);
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
+	
+	b.initShader(VERT, FRAG);
+	b.enableShader();
+	b.setUniformMat4("view", cam.viewMatrix());
+	b.setUniformMat4("proj", cam.projMatrix(width, height));
+	b.disableShader();
 
-	Shader shader(VERT_INST, FRAG);
-	shader.enable();
-	shader.setUniformMat4("view", cam.viewMatrix());
-	shader.setUniformMat4("proj", cam.projMatrix(width, height));
-	//shader.setUniformMat4("model_matrix", translate);
+	c.initShader(VERT_INST, FRAG);
+	c.enableShader();
+	c.setUniformMat4("view", cam.viewMatrix());
+	c.setUniformMat4("proj", cam.projMatrix(width, height));
+	c.disableShader();
 
 	vec3 ray_world;
 
@@ -157,98 +178,111 @@ int main() {
 		window.frameCounter();
 		window.clear();
 
+		b.flush();
+		keyPresses(cam, window, b, VERT, FRAG);
+
+		if (window.resized()) {
+			width = window.getWidth();
+			height = window.getHeight();
+			b.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
+		if (cam.update()) {
+			b.setUniformMat4("view", cam.viewMatrixUpdate());
+		}
+
 		c.flushInstanced();
+		keyPresses(cam, window, c, VERT_INST, FRAG);
+
+		if (window.resized()) {
+			width = window.getWidth();
+			height = window.getHeight();
+			c.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
+		if (cam.update()) {
+			c.setUniformMat4("view", cam.viewMatrixUpdate());
+		}
 
 		window.update();
-
-		keyPresses(cam, window, shader);
 
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
 
-		// update projection matrix with new width and height on resize.
-		if (window.resized()) {
-			width = window.getWidth();
-			height = window.getHeight();
-			shader.setUniformMat4("proj", cam.projMatrix(width, height));
-		}
-
-		if (cam.update()) {
-			shader.setUniformMat4("view", cam.viewMatrixUpdate());
-		}
-
 	}
 
+	b.clean();
 	c.clean();
 
 	return 0;
 }
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader) {
-	if (window.isKeyPressed(GLFW_KEY_W)) {
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ShapeRenderer &shader,
+				const char *vert, const char * frag) {
+	if (window.isKeyPressed(int('W'))) {
 		//std::cout << "W is PRESSED" << std::endl;
 		cam.forward();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_A)) {
+	if (window.isKeyPressed(int('A'))) {
 		//std::cout << "A is PRESSED" << std::endl;
 		cam.left();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_S)) {
+	if (window.isKeyPressed(int('S'))) {
 		//std::cout << "S is PRESSED" << std::endl;
 		cam.back();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_D)) {
+	if (window.isKeyPressed(int('D'))) {
 		//std::cout << "D is PRESSED" << std::endl;
 		cam.right();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_Q)) {
+	if (window.isKeyPressed(int('Q'))) {
 		cam.tiltLeft();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_E)) {
+	if (window.isKeyPressed(int('E'))) {
 		cam.tiltRight();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_PAGE_UP)) {
+	if (window.isKeyPressed(PAGE_UP)) {
 		cam.up();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_PAGE_DOWN)) {
+	if (window.isKeyPressed(PAGE_DOWN)) {
 		cam.down();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_UP)) {
+	if (window.isKeyPressed(UP_KEY)) {
 		cam.lookUp();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_DOWN)) {
+	if (window.isKeyPressed(DOWN_KEY)) {
 		cam.lookDown();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_LEFT)) {
+	if (window.isKeyPressed(LEFT_KEY)) {
 		cam.turnLeft();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
+	if (window.isKeyPressed(RIGHT_KEY)) {
 		cam.turnRight();
 	}
 
-	if (window.isKeyPressed(GLFW_KEY_R)) {
-		if (shader.reloadShader(VERT_INST, FRAG)) {
+	if (window.isKeyPressed(int('R'))) {
+		if (shader.reloadShader(vert, frag)) {
 			int width = window.getWidth();
 			int height = window.getHeight();
 
 			//mme::math::mat4 translate;
 			//translate = mme::math::mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
-			shader.enable();
-			cam.setPos(0.0f, 0.0f, -50.0f);
+			shader.enableShader();
+			cam.setPos(0.0f, 0.0f, 5.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));
