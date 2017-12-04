@@ -7,10 +7,7 @@
 #include "graphics/objects/shape_generator_3D.h"
 #include "graphics/shape_renderer.h"
 #include "graphics/buffers/buffer.h"
-
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "graphics/objects/model.h"
 
 #define DEBUG 1
 #define VERT "src/shaders/light.vert"
@@ -36,7 +33,7 @@
 #endif
 
 void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader);
-bool loadMesh(const char *file_name, GLuint *vao, int *point_count);
+
 
 int main() {
 
@@ -64,9 +61,13 @@ int main() {
 	}
 
 	//model importing
-	GLuint monkey_vao;
-	int monkey_point_count = 0;
+	//GLuint monkey_vao;
+	/*int monkey_point_count = 0;
 	loadMesh(MESH_FILE, &monkey_vao, &monkey_point_count);
+	*/
+
+	Model model(MESH_FILE);
+	model.bufferModel();
 	
 	/*
 	// Texture Data
@@ -143,23 +144,24 @@ int main() {
 
 	vec3 ray_world;
 
-	//window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	while (!window.closed()) {
 
 		window.frameCounter();
-		window.clear();
+		window.clear();		
 
 		//draw monkey guy
-		glBindVertexArray(monkey_vao);
-		glDrawArrays(GL_TRIANGLES, 0, monkey_point_count);
-
+		//glBindVertexArray(monkey_vao);
+		//glDrawArrays(GL_TRIANGLES, 0, monkey_point_count);
+		model.flush();
+		
 		window.update();
 
 		keyPresses(cam, window, shader);
 
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
-			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
+			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
 
@@ -176,6 +178,7 @@ int main() {
 
 	}
 
+	model.clean();
 	return 0;
 }
 
@@ -251,101 +254,4 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 			printf("you done fucked up son");
 		}
 	}
-}
-
-bool loadMesh(const char *file_name, GLuint *vao, int *point_count) {
-	//load a file with assimp and print scene information
-	const aiScene *scene = aiImportFile(file_name, aiProcess_Triangulate);
-	
-	if (!scene) {
-		fprintf(stderr, "ERROR: reading mesh %s\n", file_name);
-		return false;
-	}
-
-	printf("  %i animations\n", scene->mNumAnimations);
-	printf("  %i cameras\n", scene->mNumCameras);
-	printf("  %i lights\n", scene->mNumLights);
-	printf("  %i materials\n", scene->mNumMaterials);
-	printf("  %i meshes\n", scene->mNumMeshes);
-	printf("  %i textures\n", scene->mNumTextures);
-
-	//get first mesh in file only
-	const aiMesh *mesh = scene->mMeshes[0];
-	printf("    %i vertices in mesh[0]\n", mesh->mNumVertices);
-
-	*point_count = mesh->mNumVertices;
-	
-	glGenVertexArrays(1, vao);
-	glBindVertexArray(*vao);
-
-	//grab model data from assimp
-	GLfloat *points = NULL;		 // array of vertex points
-	GLfloat *normals = NULL;	 // array of vertex normals
-	GLfloat *texcoords = NULL; // array of texture coordinates
-	if (mesh->HasPositions()) {
-		points = (GLfloat *)malloc(*point_count * 3 * sizeof(GLfloat));
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D *vp = &(mesh->mVertices[i]);
-			points[i * 3] = (GLfloat)vp->x;
-			points[i * 3 + 1] = (GLfloat)vp->y;
-			points[i * 3 + 2] = (GLfloat)vp->z;
-		}
-	}
-	if (mesh->HasNormals()) {
-		normals = (GLfloat *)malloc(*point_count * 3 * sizeof(GLfloat));
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D *vn = &(mesh->mNormals[i]);
-			normals[i * 3] = (GLfloat)vn->x;
-			normals[i * 3 + 1] = (GLfloat)vn->y;
-			normals[i * 3 + 2] = (GLfloat)vn->z;
-		}
-	}
-	if (mesh->HasTextureCoords(0)) {
-		texcoords = (GLfloat *)malloc(*point_count * 2 * sizeof(GLfloat));
-		for (int i = 0; i < *point_count; i++) {
-			const aiVector3D *vt = &(mesh->mTextureCoords[0][i]);
-			texcoords[i * 2] = (GLfloat)vt->x;
-			texcoords[i * 2 + 1] = (GLfloat)vt->y;
-		}
-	}
-
-	//copy data into vbos
-	if (mesh->HasPositions()) {
-		GLuint vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 3 * *point_count * sizeof(GLfloat), points,
-			GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
-		free(points);
-	}
-	if (mesh->HasNormals()) {
-		GLuint vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 3 * *point_count * sizeof(GLfloat), normals,
-			GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(2);
-		free(normals);
-	}
-	if (mesh->HasTextureCoords(0)) {
-		GLuint vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 2 * *point_count * sizeof(GLfloat), texcoords,
-			GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(1);
-		free(texcoords);
-	}
-	if (mesh->HasTangentsAndBitangents()) {
-		// NB: could store/print tangents here
-	}
-
-	aiReleaseImport(scene);
-	printf("mesh loaded\n");
-
-	return true;
 }

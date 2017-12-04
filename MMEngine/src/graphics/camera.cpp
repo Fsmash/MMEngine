@@ -307,7 +307,7 @@ namespace mme {
 		}
 
 		// Constructs a vec3 "ray" cast of mouse given mouse position and window width and height
-		math::vec3 Camera::wolrdRayVec(const float xpos, const float ypos, const float width, const float height) {
+		math::vec3 Camera::worldRayVec(const float xpos, const float ypos, const float width, const float height) {
 			using namespace math;
 
 			// viewport to NDC space

@@ -164,7 +164,7 @@ int main() {
 		keyPresses(cam, window, shader);
 
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
-			ray_world = cam.wolrdRayVec(window.getX(), window.getY(), width, height);
+			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
 
