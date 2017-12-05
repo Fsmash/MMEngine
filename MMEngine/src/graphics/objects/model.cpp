@@ -3,6 +3,7 @@
 namespace mme {
 	namespace graphics {
 
+		/*
 		bool loadMesh(const char *file_name, GLuint *vao, int *point_count) {
 			//load a file with assimp and print scene information
 			const aiScene *scene = aiImportFile(file_name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
@@ -99,14 +100,27 @@ namespace mme {
 			printf("mesh loaded\n");
 
 			return true;
-		}
+		}*/
 
 		Model::Model(const char* file_name) {
 			loadModelFile(file_name);
 		}
 
 		Model::~Model() {
+			if (clean) {
 
+				if (vertices != nullptr) {
+					delete[] vertices;
+					vertices = nullptr;
+				}
+
+				if (indices != nullptr) {
+					delete[] indices;
+					indices = nullptr;
+				}
+			}
+
+			num_vertices = num_indices = 0;
 		}
 
 		bool Model::loadModelFile(const char *file_name) {
@@ -138,7 +152,7 @@ namespace mme {
 					const aiVector3D *vp = &(mesh->mVertices[i]);
 					vertices[i].pos.x = (GLfloat)vp->x;
 					vertices[i].pos.y = (GLfloat)vp->y;
-					vertices[i].pos.y = (GLfloat)vp->z;
+					vertices[i].pos.z = (GLfloat)vp->z;
 				}
 			}
 			if (mesh->HasNormals()) {
@@ -160,23 +174,25 @@ namespace mme {
 				unsigned int num_faces = mesh->mNumFaces;
 				num_indices = mesh->mNumFaces * 3;
 				
-				std::cout << "num_indices = " << num_indices << std::endl;
+				//std::cout << "num_indices = " << num_indices << std::endl;
 				std::cout << "num_faces = " << num_faces << std::endl;
 
 				indices = new GLuint[num_indices];
 				for (unsigned int i = 0; i < num_faces; i++) {	
 					aiFace *face = &mesh->mFaces[i];
-					indices[i * 3] = face->mIndices[0]+1;
-					indices[i * 3 + 1] = face->mIndices[1]+1;
-					indices[i * 3 + 2] = face->mIndices[2]+1;
+					//std::cout << "indices #" << i << ": " << face->mIndices[0] << " " << face->mIndices[1] << " " << face->mIndices[2] << std::endl;
+					indices[i * 3] = face->mIndices[0];
+					indices[i * 3 + 1] = face->mIndices[1];
+					indices[i * 3 + 2] = face->mIndices[2];
 				}
-				std::cout << "indices: " << indices[2902] << std::endl;
+				//std::cout << "indices: " << indices[2902] << std::endl;
 			}
 
 			aiReleaseImport(scene);
 			return true;
 		}
 
+		/*
 		void Model::bufferModel() {
 			
 			glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
@@ -226,6 +242,7 @@ namespace mme {
 			}
 
 			delete[] vertices;
-		}
+		} */
+
 	}
 }

@@ -27,7 +27,7 @@ namespace mme {
 		// Gerates buffer if not already generated.
 		void Buffer::generate(GLvoid *vertices, GLsizeiptr buf, GLsizeiptr sz) {
 			
-			if (m_bufferID == 0) {
+			if (m_bufferID != 0) {
 				std::cout << "Buffer ID already generated." << std::endl;
 				return;
 			}

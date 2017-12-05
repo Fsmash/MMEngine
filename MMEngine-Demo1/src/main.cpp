@@ -67,7 +67,41 @@ int main() {
 	*/
 
 	Model model(MESH_FILE);
-	model.bufferModel();
+	std::cout << "num_indices = " << model.num_indices << std::endl;
+	std::cout << "num_vertices = " << model.num_vertices << std::endl;
+
+	/*
+	for (int i = 0; i < model.num_vertices; i++) {
+		std::cout << "pos = " << model.vertices[i].pos << std::endl;
+		std::cout << "tex coord = " << model.vertices[i].uv << std::endl;
+		std::cout << "normal = " << model.vertices[i].normal << std::endl;
+	}*/
+
+	GLuint vbo = 0;
+	GLuint ibo = 0;
+
+	GLsizeiptr bufferSz = model.vertexBufferSize();
+
+	std::cout << "vertex buffer size = " << bufferSz << std::endl;
+	std::cout << "vertex size = " << sizeof(VertexT) << std::endl;
+
+	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
+	glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, color)
+	glEnableVertexAttribArray(2); // enables generic vertex attribute array (attribute 2, normal)
+
+	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
+	glBufferData(GL_ARRAY_BUFFER, bufferSz, model.vertices, GL_STATIC_DRAW);
+
+	bufferSz = model.indexBufferSize();
+	std::cout << "index buffer size = " << bufferSz << std::endl;
+	std::cout << "index size = " << sizeof(GLuint) << std::endl;
+
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);	// Bind buffer "vbo" as current in context
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufferSz, model.indices, GL_STATIC_DRAW);
+
+	//model.bufferModel();
 	
 	/*
 	// Texture Data
@@ -136,7 +170,7 @@ int main() {
 	cam.setFar(500.0f);
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
 
-	Shader shader(VERT_INST, FRAG);
+	Shader shader(VERT, FRAG);
 	shader.enable();
 	shader.setUniformMat4("view", cam.viewMatrix());
 	shader.setUniformMat4("proj", cam.projMatrix(width, height));
@@ -154,7 +188,15 @@ int main() {
 		//draw monkey guy
 		//glBindVertexArray(monkey_vao);
 		//glDrawArrays(GL_TRIANGLES, 0, monkey_point_count);
-		model.flush();
+		//model.flush();
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), VertexT::offset1()); // defines layout of buffer.
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), VertexT::offset2()); // defines layout of buffer.
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+		glDrawElements(GL_TRIANGLES, model.num_indices, GL_UNSIGNED_INT, nullptr);
 		
 		window.update();
 
@@ -178,7 +220,7 @@ int main() {
 
 	}
 
-	model.clean();
+	//model.clean();
 	return 0;
 }
 

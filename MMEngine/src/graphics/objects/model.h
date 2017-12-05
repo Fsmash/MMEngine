@@ -18,28 +18,68 @@ namespace mme {
 	namespace graphics {
 
 		struct Model: public Renderable {
-		private:
+
 			VertexT *vertices;
-			//const aiScene *scene;
-			//const aiMesh *mesh;
-			GLuint m_bufID[3];
-			GLsizeiptr m_bufOffset[3];
-			bool m_init;
-			GLsizeiptr vertexBufferSize;
-			GLsizeiptr indexBufferSize;
+			bool clean;
 
 		public:
 
+			
+			// Default constructor
+			Model() : Renderable(), vertices(nullptr), clean(true) { }
+			
+			// Constructor
 			Model(const char* file_name);
+
+			// Destructor that frees up memory if clean is true
 			~Model();
 
+			// load mesh/model data from file
 			bool loadModelFile(const char* file_name);
-			void bufferModel();
-			void flush();
-			void clean();
+
+			// TO DO: have vertex data loaded in from file
+			//void loader(const char *file);
+
+			// Returns vertex buffer size
+			GLsizeiptr vertexBufferSize() const {
+				return num_vertices * sizeof(VertexT);
+			}
+
+			// Returns index buffer size
+			GLsizeiptr indexBufferSize() const {
+				return num_indices * sizeof(GLuint);
+			}
+
+			// Updates position attribute of vertex data
+			void updatePos(const float x, const float y, const float z) {
+				if (vertices == nullptr) return;
+				for (int i = 0; i < num_vertices; i++) {
+					vertices[i].updatePos(x, y, z);
+				}
+			}
+
+			// Free up memory by deleting allocated memory
+			void cleanUp() {
+
+				if (vertices != nullptr) {
+					delete[] vertices;
+					vertices = nullptr;
+				}
+
+				if (indices != nullptr) {
+					delete[] indices;
+					indices = nullptr;
+				}
+
+				num_vertices = num_indices = 0;
+			}
+			
+			//void bufferModel();
+			//void flush();
+			//void clean();
 		};
 
-		bool loadMesh(const char *file_name, GLuint *vao, int *point_count);
+		//bool loadMesh(const char *file_name, GLuint *vao, int *point_count);
 
 	}
 }
