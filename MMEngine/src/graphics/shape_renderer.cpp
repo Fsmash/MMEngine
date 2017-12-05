@@ -135,7 +135,7 @@ namespace mme {
 
 		void ShapeRenderer::flush() const {
 			
-			if (m_shader->getProgram() == -1) {
+			if (m_shader == nullptr) {
 				std::cout << "Shader has not been initialized" << std::endl;
 				return;
 			}
@@ -164,7 +164,7 @@ namespace mme {
 
 		void ShapeRenderer::flushInstanced() const {
 
-			if (m_shader->getProgram() == -1) {
+			if (m_shader == nullptr) {
 				std::cout << "Shader has not been initialized" << std::endl;
 				return;
 			}

@@ -21,7 +21,7 @@ namespace mme {
 			}
 
 			static const void* offset1() {
-				return (const void *)(sizeof(float) * 2);
+				return (const void *)(sizeof(float) * 3);
 			}
 
 			static const void* offset2() {

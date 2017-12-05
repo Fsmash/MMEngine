@@ -17,7 +17,7 @@ This class Model inherits from
 namespace mme {
 	namespace graphics {
 
-		class Model: public Renderable {
+		struct Model: public Renderable {
 		private:
 			VertexT *vertices;
 			//const aiScene *scene;
