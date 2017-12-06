@@ -6,8 +6,10 @@
 #include "graphics/objects/shape_generator_2D.h"
 #include "graphics/objects/shape_generator_3D.h"
 #include "graphics/shape_renderer.h"
+#include "graphics/model_renderer.h"
 #include "graphics/buffers/buffer.h"
 #include "graphics/objects/model.h"
+
 
 #define DEBUG 1
 #define VERT "src/shaders/light.vert"
@@ -32,7 +34,8 @@
 #define INFO()
 #endif
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader);
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ModelRenderer &shader,
+	const char *vert, const char *frag);
 
 
 int main() {
@@ -60,15 +63,13 @@ int main() {
 		return 1;
 	}
 
-	//model importing
-	//GLuint monkey_vao;
-	/*int monkey_point_count = 0;
-	loadMesh(MESH_FILE, &monkey_vao, &monkey_point_count);
-	*/
-
 	Model model(MESH_FILE);
 	std::cout << "num_indices = " << model.num_indices << std::endl;
 	std::cout << "num_vertices = " << model.num_vertices << std::endl;
+
+	ModelRenderer m(model);
+
+	model.cleanUp();
 
 	/*
 	for (int i = 0; i < model.num_vertices; i++) {
@@ -77,31 +78,7 @@ int main() {
 		std::cout << "normal = " << model.vertices[i].normal << std::endl;
 	}*/
 
-	GLuint vbo = 0;
-	GLuint ibo = 0;
-
-	GLsizeiptr bufferSz = model.vertexBufferSize();
-
-	std::cout << "vertex buffer size = " << bufferSz << std::endl;
-	std::cout << "vertex size = " << sizeof(VertexT) << std::endl;
-
-	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
-	glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, color)
-	glEnableVertexAttribArray(2); // enables generic vertex attribute array (attribute 2, normal)
-
-	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);	// Bind buffer "vbo" as current in context
-	glBufferData(GL_ARRAY_BUFFER, bufferSz, model.vertices, GL_STATIC_DRAW);
-
-	bufferSz = model.indexBufferSize();
-	std::cout << "index buffer size = " << bufferSz << std::endl;
-	std::cout << "index size = " << sizeof(GLuint) << std::endl;
-
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);	// Bind buffer "vbo" as current in context
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufferSz, model.indices, GL_STATIC_DRAW);
-
-	//model.bufferModel();
+	
 	
 	/*
 	// Texture Data
@@ -156,7 +133,6 @@ int main() {
 	*/
 
 	// Camera and Shader set up
-
 	int width = window.getWidth();
 	int height = window.getHeight();
 	//mat4 translate;
@@ -170,37 +146,32 @@ int main() {
 	cam.setFar(500.0f);
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
 
-	Shader shader(VERT, FRAG);
-	shader.enable();
-	shader.setUniformMat4("view", cam.viewMatrix());
-	shader.setUniformMat4("proj", cam.projMatrix(width, height));
+	//Shader shader(VERT, FRAG);
+	//shader.enable();
+	//shader.setUniformMat4("view", cam.viewMatrix());
+	//shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	//shader.setUniformMat4("model_matrix", translate);
+
+	m.initShader(VERT, FRAG);
+	m.enableShader();
+	m.setUniformMat4("view", cam.viewMatrix());
+	m.setUniformMat4("proj", cam.projMatrix(width, height));
+	m.disableShader();
 
 	vec3 ray_world;
 
 	window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
+
 	while (!window.closed()) {
 
 		window.frameCounter();
+		window.update();
 		window.clear();		
 
-		//draw monkey guy
-		//glBindVertexArray(monkey_vao);
-		//glDrawArrays(GL_TRIANGLES, 0, monkey_point_count);
-		//model.flush();
+		m.flush();
 
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), VertexT::offset1()); // defines layout of buffer.
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), VertexT::offset2()); // defines layout of buffer.
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-		glDrawElements(GL_TRIANGLES, model.num_indices, GL_UNSIGNED_INT, nullptr);
-		
-		window.update();
-
-		keyPresses(cam, window, shader);
+		keyPresses(cam, window, m, VERT, FRAG);
 
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
@@ -211,20 +182,19 @@ int main() {
 		if (window.resized()) {
 			width = window.getWidth();
 			height = window.getHeight();
-			shader.setUniformMat4("proj", cam.projMatrix(width, height));
+			m.setUniformMat4("proj", cam.projMatrix(width, height));
 		}
 
 		if (cam.update()) {
-			shader.setUniformMat4("view", cam.viewMatrixUpdate());
+			m.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
-
 	}
-
-	//model.clean();
+	m.clean();
 	return 0;
 }
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::Shader &shader) {
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ModelRenderer &shader,
+	const char *vert, const char *frag) {
 	//std::cout << "Camera pos: " << cam.getPos() << std::endl;
 
 	if (window.isKeyPressed(GLFW_KEY_W)) {
@@ -280,12 +250,12 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 	}
 
 	if (window.isKeyPressed(GLFW_KEY_R)) {
-		if (shader.reloadShader(VERT_INST, FRAG)) {
+		if (shader.reloadShader(vert, frag)) {
 			int width = window.getWidth();
 			int height = window.getHeight();
 
 		
-			shader.enable();
+			shader.enableShader();
 			cam.setPos(0.0f, 0.0f, 4.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());

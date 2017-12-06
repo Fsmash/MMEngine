@@ -285,7 +285,6 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 			int height = window.getHeight();
 
 			shader.enableShader();
-			cam.setPos(0.0f, 0.0f, 5.0f);
 			cam.setPos(0.0f, 0.0f, -20.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());

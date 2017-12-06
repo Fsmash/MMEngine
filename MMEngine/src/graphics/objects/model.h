@@ -1,10 +1,8 @@
-/*	Code by Daniel Meidna for Senior Sem 2017 Project : Misunderstood Magician Engine
+/*	Code by Daniel Medina for Senior Sem 2017 Project : Misunderstood Magician Engine
 
-This struct, Shape, inerits from Renderable. This "renderable" will hold an array of VertexC vertices that will interleave attribute data for
-basic 2D and 3D shapes. It also has useful member functions to perform operations on the vertices such as updating positions with translation,
-scaling, or rotation operations.
+This model struct inherits from renderable and vertex_t and loads data from a model file to be rendered. This class utilizes Assimp library in order to support a large variety of model file types. 
 
-This class Model inherits from
+supported file types can be found: http://assimp.org/main_features_formats.html
 */
 
 #pragma once
@@ -18,7 +16,6 @@ namespace mme {
 	namespace graphics {
 
 		struct Model: public Renderable {
-
 			VertexT *vertices;
 			bool clean;
 
@@ -73,13 +70,6 @@ namespace mme {
 
 				num_vertices = num_indices = 0;
 			}
-			
-			//void bufferModel();
-			//void flush();
-			//void clean();
 		};
-
-		//bool loadMesh(const char *file_name, GLuint *vao, int *point_count);
-
 	}
 }
