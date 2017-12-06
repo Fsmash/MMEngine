@@ -23,6 +23,18 @@ namespace mme {
 			mat4& multiply(const mat4 &other);
 			mat4& operator*=(const mat4 &other);
 			
+			// Update translation 
+			void incrementX(float inc);
+			void incrementY(float inc);
+			void incrementZ(float inc);
+			
+			// Update rotation
+			void rotationX(float angle);
+			void rotationY(float angle);
+			void rotationZ(float angle);
+
+			void scale(float x, float y, float z);
+
 			static float determinant(const mat4 &mm);
 			static mat4 identity();
 			static mat4 translationMatrix(const float x, const float y, const float z);

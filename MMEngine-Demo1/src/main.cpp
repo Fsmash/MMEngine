@@ -86,7 +86,7 @@ int main() {
 	std::cout << "vertex size = " << sizeof(VertexT) << std::endl;
 
 	glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
-	glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, color)
+	glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, tex coord)
 	glEnableVertexAttribArray(2); // enables generic vertex attribute array (attribute 2, normal)
 
 	glGenBuffers(1, &vbo);	// Generate vertex buffer id (name), just and unsigned int.

@@ -20,9 +20,11 @@ namespace mme {
 			GLuint num_indices;		// number of indices
 			math::vec3 pos;
 			math::vec3 vel;
+			math::mat4 model_matrix;
 
-
-			Renderable() : num_vertices(0), indices(nullptr), num_indices(0) { }
+			Renderable() : num_vertices(0), indices(nullptr), num_indices(0) { 
+				model_matrix = math::mat4::identity();
+			}
 
 			virtual ~Renderable() { }
 

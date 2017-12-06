@@ -25,15 +25,17 @@ namespace mme {
 
 		public:
 
-			ShapeRenderer() : Renderer(), m_numShapes(0), m_ptr(nullptr) {}
+			ShapeRenderer() : Renderer(), m_numShapes(0), m_ptr(nullptr) { }
 			ShapeRenderer(Shape *shapes, const GLuint num, const GLsizeiptr buf, const GLsizeiptr idx);
 			ShapeRenderer(Shape &shapes);
 			~ShapeRenderer();
 
 			void submit(Shape *shapes, const GLuint num, const GLsizeiptr buf, const GLsizeiptr idx);
 			void submit(Shape &shape);
+			void add(Shape *shapes, const GLuint num);
 			void flush() const override;
 			void flushInstanced() const override;
+			void flushDynamic(const char *uniform) const;
 			void clean() override;
 			
 		};
