@@ -4,9 +4,11 @@ namespace mme {
 	namespace math {
 
 		mat4::mat4() {
+			
 			for (int i = 0; i < 16; i++) {
 				matrix[i] = 0.0f;
 			}
+		
 		}
 
 		mat4::mat4(const vec4 col1, const vec4 col2, const vec4 col3, const vec4 col4) {
@@ -17,6 +19,7 @@ namespace mme {
 		}
 
 		mat4::mat4(const float diagonal) {
+			
 			for (int i = 0; i < 16; i++) {
 				matrix[i] = 0.0f;
 			}
@@ -48,7 +51,9 @@ namespace mme {
 		}
 
 		mat4& mat4::multiply(const mat4 &other) {
+			
 			float data[16];
+			
 			for (int y = 0; y < 4; y++)
 			{
 				for (int x = 0; x < 4; x++)
@@ -61,6 +66,7 @@ namespace mme {
 					data[x + y * 4] = sum;
 				}
 			}
+			
 			memcpy(matrix, data, 16 * sizeof(float));
 
 			return *this;
@@ -68,6 +74,45 @@ namespace mme {
 
 		mat4& mat4::operator*=(const mat4 &other) {
 			return multiply(other);
+		}
+
+		void mat4::incrementX(float inc) {
+			columns[3].x += inc;
+		}
+
+		void mat4::incrementY(float inc) {
+			columns[3].y += inc;
+		}
+
+		void mat4::incrementZ(float inc) {
+			columns[3].z += inc;
+		}
+
+		void mat4::rotationX(float angle) {
+			matrix[5] = cos(angle * RADIANS);
+			matrix[6] = sin(angle * RADIANS);
+			matrix[9] = -sin(angle * RADIANS);
+			matrix[10] = cos(angle * RADIANS);
+		}
+		
+		void mat4::rotationY(float angle) {
+			matrix[0] = cos(angle * RADIANS);
+			matrix[2] = -sin(angle * RADIANS);
+			matrix[8] = sin(angle * RADIANS);
+			matrix[10] = cos(angle * RADIANS);
+		}
+		
+		void mat4::rotationZ(float angle) {
+			matrix[0] = cos(angle * RADIANS);
+			matrix[1] = sin(angle * RADIANS);
+			matrix[4] = -sin(angle * RADIANS);
+			matrix[5] = cos(angle * RADIANS);
+		}
+
+		void mat4::scale(float x, float y, float z) {
+			matrix[0] = x;
+			matrix[5] = y;
+			matrix[10] = z;
 		}
 
 		float mat4::determinant(const mat4 &mm) {

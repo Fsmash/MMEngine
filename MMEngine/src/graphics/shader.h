@@ -50,10 +50,10 @@ namespace mme {
 			inline GLuint getFrag() const { return m_fragment; }
 			//inline GLuint getGeom() const { return m_geometry; }
 			inline GLuint getProgram() const { return m_program; }
-			inline void setVert(GLenum idx) { m_vertex = idx; }
-			inline void setFrag(GLenum idx) { m_fragment = idx; }
+			//inline void setVert(GLenum idx) { m_vertex = idx; }
+			//inline void setFrag(GLenum idx) { m_fragment = idx; }
 			//inline void setGeom(GLenum idx) { m_geometry = idx; }
-			inline void setProgram(GLenum idx) { m_program = idx; }
+			//inline void setProgram(GLenum idx) { m_program = idx; }
 
 		};
 	}

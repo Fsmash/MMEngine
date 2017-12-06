@@ -55,6 +55,11 @@ namespace mme {
 
 			// Updates position attribute of vertex data
 			void updatePos(const float x, const float y, const float z) {
+				
+				pos.x = x;
+				pos.y = y;
+				pos.z = z;
+
 				if (vertices == nullptr) return;
 				for (int i = 0; i < num_vertices; i++) {
 					vertices[i].updatePos(x, y, z);
