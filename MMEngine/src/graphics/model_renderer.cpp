@@ -58,7 +58,6 @@ namespace mme {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufID[1]);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, idx, 0, GL_STATIC_DRAW);
 
-			m_idxOffsets = new GLsizeiptr[m_numModels];
 
 			for (int i = 0; i < m_numModels; i++) {
 
@@ -94,8 +93,7 @@ namespace mme {
 
 				elementOffset += models[i].num_vertices;
 				m_numIndices += models[i].num_indices;
-				m_idxOffsets[i] = m_numIndices;
-				std::cout << "i: " << i << " offset: " << m_idxOffsets[i] << " num indices: " << m_numIndices << std::endl;
+	
 			}
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
