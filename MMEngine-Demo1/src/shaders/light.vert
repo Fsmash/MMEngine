@@ -19,7 +19,7 @@ void main() {
 	vec4 eye = view * model_matrix * vec4(vp, 1.0);	// vertex positions (vp) in eye space, vec4
 	eye_pos = vec3(eye);							// vertex positions (vp) in eye space, vec3
 	eye_normal = vec3(view * vec4(vn, 0.0));		// normals in eye space
-	Kd = vec3(0.1, 0.1, 0.1);						// surface reflection color
+	Kd = vec3(0.2, 0.0, 0.3);						// surface reflection color
 	gl_Position= proj * eye;	
 
 }

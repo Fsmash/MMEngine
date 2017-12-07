@@ -51,24 +51,27 @@ namespace mme {
 			if (mesh->HasPositions()) {
 				for (int i = 0; i < num_vertices; i++) {
 					const aiVector3D *vp = &(mesh->mVertices[i]);
-					vertices[i].pos.x = (GLfloat)vp->x;
-					vertices[i].pos.y = (GLfloat)vp->y;
-					vertices[i].pos.z = (GLfloat)vp->z;
+					vertices[i].pos = *(math::vec3*)(vp);
+					//vertices[i].pos.x = (GLfloat)vp->x;
+					//vertices[i].pos.y = (GLfloat)vp->y;
+					//vertices[i].pos.z = (GLfloat)vp->z;
 				}
 			}
 			if (mesh->HasNormals()) {
 				for (int i = 0; i < num_vertices; i++) {
 					const aiVector3D *vn = &(mesh->mNormals[i]);
-					vertices[i].normal.x = (GLfloat)vn->x;
-					vertices[i].normal.y = (GLfloat)vn->y;
-					vertices[i].normal.z = (GLfloat)vn->z;
+					vertices[i].normal = *(math::vec3*)(vn);
+					//vertices[i].normal.x = (GLfloat)vn->x;
+					//vertices[i].normal.y = (GLfloat)vn->y;
+					//vertices[i].normal.z = (GLfloat)vn->z;
 				}
 			}
 			if (mesh->HasTextureCoords(0)) {
 				for (int i = 0; i < num_vertices; i++) {
 					const aiVector3D *vt = &(mesh->mTextureCoords[0][i]);
-					vertices[i].uv.x = (GLfloat)vt->x;
-					vertices[i].uv.y = (GLfloat)vt->y;
+					vertices[i].uv = *(math::vec2*)(vt);
+					//vertices[i].uv.x = (GLfloat)vt->x;
+					//vertices[i].uv.y = (GLfloat)vt->y;
 				}
 			}
 			if (mesh->HasFaces()) {
