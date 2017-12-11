@@ -22,6 +22,22 @@ namespace mme {
 			this->z = z;
 		}
 
+		float vec3::normal() {
+			return sqrt(x * x + y * y + z * z);
+		}
+
+		vec3& vec3::normalize() {
+			x /= normal();
+			y /= normal();
+			z /= normal();
+
+			return (*this);
+		}
+
+		float vec3::dot(const vec3 &other) {
+			return (x * other.x) + (y * other.y) + (z * other.z);
+		}
+
 		vec3& vec3::add(const vec3 &other) {
 			x += other.x;
 			y += other.y;

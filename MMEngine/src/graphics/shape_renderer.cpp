@@ -86,7 +86,7 @@ namespace mme {
 
 				if (i != 0) {
 					shapes[i].offsetIdx(elementOffset);
-					std::cout << "offsetting by: " << elementOffset << std::endl;
+					//std::cout << "offsetting by: " << elementOffset << std::endl;
 				}
 
 				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_bufOffset[1], idxSz, shapes[i].indices);
@@ -96,7 +96,7 @@ namespace mme {
 
 				elementOffset += shapes[i].num_vertices;
 				m_numIndices += shapes[i].num_indices;
-				std::cout << "i: " << i << " offset: " << shapes[i].num_indices << " num indices: " << m_numIndices << std::endl;
+				//std::cout << "i: " << i << " offset: " << shapes[i].num_indices << " num indices: " << m_numIndices << std::endl;
 			}
 
 			m_numVertices = elementOffset;
@@ -176,7 +176,7 @@ namespace mme {
 
 				if (i != 0) {
 					shapes[i].offsetIdx(elementOffset);
-					std::cout << "offsetting by: " << elementOffset << std::endl;
+					//std::cout << "offsetting by: " << elementOffset << std::endl;
 				}
 
 				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, m_bufOffset[1], idxSz, shapes[i].indices);
@@ -188,7 +188,7 @@ namespace mme {
 				m_numIndices += shapes[i].num_indices;
 				m_numShapes++;
 
-				std::cout << "i: " << i << " offset: " << shapes[i].num_indices << " num indices: " << m_numIndices << std::endl;
+				//std::cout << "i: " << i << " offset: " << shapes[i].num_indices << " num indices: " << m_numIndices << std::endl;
 			}
 
 			m_numVertices = elementOffset;

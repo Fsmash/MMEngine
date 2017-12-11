@@ -11,6 +11,9 @@ namespace mme {
 			vec2();
 			vec2(const float x, const float y);
 
+			float normal();
+			vec2& normalize();
+			float dot(const vec2 &other);
 			vec2& add(const vec2 &other);
 			vec2& subtract(const vec2 &other);
 			vec2& multiply(const vec2 &other);

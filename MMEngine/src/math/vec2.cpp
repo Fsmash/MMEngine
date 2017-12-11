@@ -13,6 +13,21 @@ namespace mme {
 			this->y = y;
 		}
 
+		float vec2::normal() {
+			return sqrt(x * x + y * y);
+		}
+
+		vec2& vec2::normalize() {
+			x /= normal();
+			y /= normal();
+
+			return (*this);
+		}
+
+		float vec2::dot(const vec2 &other) {
+			return (x * other.x) + (y * other.y);
+		}
+
 		vec2& vec2::add(const vec2 &other) {
 			x += other.x;
 			y += other.y;

@@ -65,9 +65,9 @@ int main() {
 
 	ShapeRenderer c(cube);
 	
-	square.updatePos(0.0f, -1.0f, -50.0f);
-	cube.updatePos(0.0f, -1.0f, -52.0f);
-	triangle.updatePos(0.0f, 1.0f, -51.0f);
+	square.updateVertices(0.0f, -1.0f, -50.0f);
+	cube.updateVertices(0.0f, -1.0f, -52.0f);
+	triangle.updateVertices(0.0f, 1.0f, -51.0f);
 	
 	Shape arr[] = { triangle, square, cube };
 	GLsizeiptr buf = triangle.vertexBufferSize() + square.vertexBufferSize() + cube.vertexBufferSize();
@@ -186,6 +186,7 @@ int main() {
 		keyPresses(cam, window, b, VERT, FRAG);
 		
 		// update projection matrix with new width and height on resize.
+		
 		if (window.resized()) {
 			width = window.getWidth();
 			height = window.getHeight();

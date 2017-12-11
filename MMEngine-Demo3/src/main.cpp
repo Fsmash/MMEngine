@@ -7,6 +7,7 @@
 #include "graphics/objects/shape_generator_3D.h"
 #include "graphics/shape_renderer.h"
 #include "graphics/buffers/buffer.h"
+#include "physics/physics.h"
 
 #define DEBUG 1
 #define VERT "src/shaders/light.vert"
@@ -59,80 +60,106 @@ int main() {
 		return 1;
 	}
 
+	Shape box = ShapeGenerator3D::makeBox();
 	Shape cube = ShapeGenerator3D::makeCube();
-	Shape triangle = ShapeGenerator2D::makeTriangle();
-	Shape square = ShapeGenerator2D::makeSquare();
+	Shape cube2 = ShapeGenerator3D::makeCube();
+	Shape cube3 = ShapeGenerator3D::makeCube();
+	Shape cube4 = ShapeGenerator3D::makeCube();
+	Shape cube5 = ShapeGenerator3D::makeCube();
+	Shape cube6 = ShapeGenerator3D::makeCube();
+	Shape cube7 = ShapeGenerator3D::makeCube();
+	Shape cube8 = ShapeGenerator3D::makeCube();
+	Shape cube9 = ShapeGenerator3D::makeCube();
+	Shape cube10 = ShapeGenerator3D::makeCube();
+	Shape cube11 = ShapeGenerator3D::makeCube();
+	Shape cube12 = ShapeGenerator3D::makeCube();
+	Shape cube13 = ShapeGenerator3D::makeCube();
+	Shape cube14 = ShapeGenerator3D::makeCube();
 
-	square.updatePos(2.0f, 1.0f, -2.0f);
-	cube.updatePos(-1.0f, -1.0f, 0.0f);
-	triangle.updatePos(3.0f, 2.0f, -4.0f);
+	cube.updateVertices(0.0f, -4.0f, -5.0f);
+	cube2.updateVertices(3.0f, 4.0f, -10.0f);
+	cube3.updateVertices(-4.0f, 4.0f, -5.0f);
+	cube4.updateVertices(-1.0f, 4.0f, -10.0f);
+	cube5.updateVertices(-2.0f, -2.0f, -15.0f);
+	cube6.updateVertices(-3.0f, 4.0f, -15.0f);
+	cube7.updateVertices(-5.0f, 4.0f, -15.0f);
+	cube8.updateVertices(6.0f, 4.0f, -10.0f);
+	cube9.updateVertices(1.0f, -4.0f, -5.0f);
+	cube10.updateVertices(-2.0f, 2.0f, -10.0f);
+	cube11.updateVertices(-5.0f, -3.0f, -15.0f);
+	cube12.updateVertices(7.0f, 6.0f, -5.0f);
+	cube13.updateVertices(-5.0f, 7.0f, -10.0f);
+	cube14.updateVertices(-2.0f, 3.0f, -5.0f);
+	
+	cube.setColor(1.0f, 0.0f, 0.0f);
+	cube2.setColor(0.0f, 1.0f, 0.0f);
+	cube3.setColor(0.0f, 0.0f, 1.0f);
+	cube4.setColor(0.0f, 1.0f, 1.0f);
+	cube5.setColor(1.0f, 0.0f, 1.0f);
+	cube6.setColor(1.0f, 0.2f, 0.0f);
+	cube7.setColor(0.7f, 0.0f, 1.0f);
+	cube8.setColor(0.6f, 0.3f, 0.0f);
+	cube9.setColor(0.0f, 0.2f, 1.0f);
+	cube10.setColor(0.0f, 0.1f, 1.0f);
+	cube11.setColor(0.2f, 0.2f, 0.5f);
+	cube12.setColor(1.0f, 0.5f, 0.7f);
+	cube13.setColor(1.0f, 0.3f, 0.8f);
+	cube14.setColor(0.5f, 0.2f, 0.0f);
 
-	Shape arr[] = { triangle, square, cube };
-	GLsizeiptr buf = triangle.vertexBufferSize() + square.vertexBufferSize() + cube.vertexBufferSize();
-	GLsizeiptr idx = triangle.indexBufferSize() + square.indexBufferSize() + cube.vertexBufferSize();
+	cube.vel = vec3(0.0f, -0.03f, 0.0f);
+	cube2.vel = vec3(-0.03f, -0.03f, 0.0f);
+	cube3.vel = vec3(-0.03f, -0.03f, 0.0f);
+	cube4.vel = vec3(0.2f, -0.03f, 0.0f);
+	cube5.vel = vec3(-0.05f, -0.01f, 0.0f);
+	cube6.vel = vec3(-0.04f, -0.06f, 0.0f);
+	cube7.vel = vec3(0.2f, -0.03f, 0.0f);
+	cube8.vel = vec3(0.03f, 0.04f, 0.0f);
+	cube9.vel = vec3(-0.05f, -0.03f, 0.0f);
+	cube10.vel = vec3(0.2f, 0.07f, 0.0f);
+	cube11.vel = vec3(-0.03f, 0.03f, 0.0f);
+	cube12.vel = vec3(0.04f, -0.01f, 0.0f);
+	cube13.vel = vec3(0.05f, -0.02f, 0.0f);
+	cube14.vel = vec3(0.06f, -0.03f, 0.0f);
 
-	ShapeRenderer b(arr, 3, buf, idx);
+	box.scaleVertices(20.0f, 20.0f, 20.0f);
+	
+	physics::Plane planes[4];
+	math::vec3 vec;
+	
+	// Bottom plane
+	planes[0].normal = math::vec3(0.0f, 1.0f, 0.0f);
+	vec = box.vertices[12].pos;
+	vec.scale(-1);
+	planes[0].dist = vec.dot(math::vec3(0.0f, 1.0f, 0.0f));
+	// Top plane
+	planes[1].normal = math::vec3(0.0f, -1.0f, 0.0f);
+	vec = box.vertices[8].pos;
+	vec.scale(-1);
+	planes[1].dist = vec.dot(math::vec3(0.0f, -1.0f, 0.0f));
+	// Left plane
+	planes[2].normal = math::vec3(1.0f, 0.0f, 0.0f);
+	vec = box.vertices[0].pos;
+	vec.scale(-1);
+	planes[2].dist = vec.dot(math::vec3(1.0f, 0.0f, 0.0f));
+	// Right plane
+	planes[3].normal = math::vec3(-1.0f, 0.0f, 0.0f);
+	vec = box.vertices[4].pos;
+	vec.scale(-1);
+	planes[3].dist = vec.dot(math::vec3(-1.0f, 0.0f, 0.0f));
 
-	//Renderable arr2[] = { triangle, square, cube };
+	Shape arr[] = { cube, cube2, cube3, cube4, cube5, cube6, cube7, cube8, cube9, cube10, cube11, cube12, cube13, cube14 };
 
-	cube.cleanUp();
-	triangle.cleanUp();
-	square.cleanUp();
+	GLsizeiptr buf = 14 * cube.vertexBufferSize();
+	GLsizeiptr idx = 14 * cube.indexBufferSize();
 
-
-	/*
-	// Texture Data
-	int x, y, n;
-	int force_channels = 4;
-	const char *img = "./res/bricks.jpg";
-	//const char *img = "./res/bball.png";
-	unsigned char *img_data = stbi_load(img, &x, &y, &n, force_channels);
-	if (!img_data) {
-	fprintf(stderr, "ERROR: could not load image data %s\n", img);
-	}
-	else {
-	fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
-	}
-	if (x & (x - 1) != 0 || y & (y - 1) != 0) {
-	fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", img);
-	}
-	// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
-	int width_in_bytes = x * 4;
-	unsigned char *top = NULL;
-	unsigned char *bottom = NULL;
-	unsigned char temp = 0;
-	int half_height = y / 2;
-	for (int row = 0; row < half_height; row++) {
-	top = img_data + row * width_in_bytes;
-	bottom = img_data + (y - row - 1) * width_in_bytes;
-	for (int col = 0; col < width_in_bytes; col++) {
-	temp = *top;
-	*top = *bottom;
-	*bottom = temp;
-	top++;
-	bottom++;
-	}
-	}
-	// Texture Buffer
-	GLuint tex = 0;
-	glGenTextures(1, &tex);	// generate texture id (name) used to reference texture
-	glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
-	glBindTexture(GL_TEXTURE_2D, tex);	// bind
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	*/
+	ShapeRenderer a(box);
+	ShapeRenderer b(arr, 14, buf, idx);
 
 	// Camera and Shader set up
-
 	int width = window.getWidth();
 	int height = window.getHeight();
-	//mat4 translate;
-	//translate = mat4::translationMatrix(0.0f, 0.0f, 0.0f);
-
-	Camera cam(0.0f, 0.0f, 3.0f);
+	
+	Camera cam(0.0f, 0.0f, 10.0f);
 	cam.speed = 0.12f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
@@ -146,47 +173,30 @@ int main() {
 	b.setUniformMat4("proj", cam.projMatrix(width, height));
 	b.disableShader();
 
+
+	a.initShader(VERT, FRAG);
+	a.enableShader();
+	a.setUniformMat4("view", cam.viewMatrix());
+	a.setUniformMat4("proj", cam.projMatrix(width, height));
+	a.setUniform1f("alpha", 0.6f);
+	a.disableShader();
+
 	vec3 ray_world;
 
-	//arr[0].model_matrix = mat4::translationMatrix(0.1f, 0.0f, 0.0f);
-	//arr[1].model_matrix = mat4::translationMatrix(0.1f, 0.2f, 0.0f);
-	//arr[2].model_matrix = mat4::translationMatrix(0.1f, 0.0f, 0.3f);
+	float speed = 0.05f;
 
-	//window.setClearColor(0.0f, 0.4f, 0.8f, 1.0f);
+	physics::Physics game;
+	game.submit(arr, 14);
 
-	Renderable *ptr;
-
-	float speed = 0.15f;
-	float angle = 1.0f;
-	float scale_speed = 0.05f;
-	vec3 scale(1.0f, 1.0f, 1.0f);
 
 	while (!window.closed()) {
 
-		ptr = &arr[0];
-		ptr->model_matrix.incrementX(speed);
-
-		if (fabs(ptr->model_matrix.columns[3].x) >= 10.0f) {
-			speed = -speed;
-		}
-
-		ptr = &arr[1];
-		scale.x += scale_speed;
-		scale.y += scale_speed;
-		scale.z += scale_speed;
-		ptr->model_matrix.scale(scale.x, scale.y, scale.z);
-
-		if (fabs(scale.x) >= 5.0f) {
-			scale_speed = -scale_speed;
-		}
-
-		ptr = &arr[2];
-		ptr->model_matrix.rotationX(angle);
-		angle += 2.0f;
-
-		if (fabs(angle) > 360.0f) {
-			angle = 0;
-		}
+		game.AABB3DCollision();
+		game.planeCollision(planes[0]);
+		game.planeCollision(planes[1]);
+		game.planeCollision(planes[2]);
+		game.planeCollision(planes[3]);
+		game.applyForces();
 
 		window.frameCounter();
 		window.update();
@@ -206,6 +216,20 @@ int main() {
 			b.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
 
+		a.flush();
+		keyPresses(cam, window, a, VERT, FRAG);
+
+		// update projection matrix with new width and height on resize.
+		if (window.resized()) {
+			width = window.getWidth();
+			height = window.getHeight();
+			a.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
+		if (cam.update()) {
+			a.setUniformMat4("view", cam.viewMatrixUpdate());
+		}
+
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
@@ -213,6 +237,7 @@ int main() {
 
 	}
 
+	a.clean();
 	b.clean();
 
 	return 0;

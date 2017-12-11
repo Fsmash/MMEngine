@@ -3,6 +3,7 @@
 
 // uniform when view updates
 uniform mat4 view;
+uniform float alpha = 1.0f;
 
 // input from vertex shader for lighting calculations
 in vec3 Kd, eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
@@ -69,6 +70,6 @@ void main() {
 	// specular intensity
 	vec3 Is = Ls * Ks * specular_factor;
 	
-	frag_colour=vec4(Is + Id + Ia, 1.0);
+	frag_colour=vec4(Is + Id + Ia, alpha);
 
 }

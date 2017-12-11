@@ -185,6 +185,7 @@
     <ClCompile Include="src\math\vec2.cpp" />
     <ClCompile Include="src\math\vec3.cpp" />
     <ClCompile Include="src\math\vec4.cpp" />
+    <ClCompile Include="src\physics\physics.cpp" />
     <ClCompile Include="src\utility\log.cpp" />
     <ClCompile Include="src\utility\stb_image.c" />
   </ItemGroup>
@@ -208,6 +209,8 @@
     <ClInclude Include="src\math\vec2.h" />
     <ClInclude Include="src\math\vec3.h" />
     <ClInclude Include="src\math\vec4.h" />
+    <ClInclude Include="src\physics\bounding\collision_geometry.h" />
+    <ClInclude Include="src\physics\physics.h" />
     <ClInclude Include="src\utility\fileutil.h" />
     <ClInclude Include="src\utility\log.h">
       <FileType>CppHeader</FileType>

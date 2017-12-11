@@ -31,6 +31,23 @@ namespace mme {
 			this->w = w;
 		}
 
+		float vec4::normal() {
+			return sqrt(x * x + y * y + z * z + w * w);
+		}
+
+		vec4& vec4::normalize() {
+			x /= normal();
+			y /= normal();
+			z /= normal();
+			w /= normal();
+
+			return (*this);
+		}
+
+		float vec4::dot(const vec4 &other) {
+			return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+		}
+
 		vec4& vec4::add(const vec4 &other) {
 			x += other.x;
 			y += other.y;

@@ -9,6 +9,7 @@
 #include "GL/glew.h"
 #include <iostream>
 #include "../../math/mat4.h"
+#include "../../physics/bounding/collision_geometry.h"
 
 namespace mme {
 	namespace graphics {
@@ -18,9 +19,16 @@ namespace mme {
 			GLuint num_vertices;	// number of vertices
 			GLuint *indices;		// pointer to array of indices for index rendering
 			GLuint num_indices;		// number of indices
+			
 			math::vec3 pos;
 			math::vec3 vel;
 			math::mat4 model_matrix;
+
+			// Used for collision detection
+			physics::Plane col_plane;
+			physics::BoundingSphere col_sphere;
+			physics::AABB2D col_box2D;
+			physics::AABB3D col_box3D;
 
 			Renderable() : num_vertices(0), indices(nullptr), num_indices(0) { 
 				model_matrix = math::mat4::identity();

@@ -29,6 +29,8 @@ namespace mme {
 				return false;
 			}
 
+			glEnable(GL_BLEND); 
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_DEPTH_TEST);	// enable depth testing
 			glDepthFunc(GL_LESS);	// depth testing interprets a smaller values as "closer"
 			//glEnable(GL_CULL_FACE);
