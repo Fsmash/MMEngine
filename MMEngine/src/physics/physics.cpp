@@ -34,23 +34,52 @@ namespace mme {
 				m_numShapes = num;
 				std::cout << "Initialized shapes" << std::endl;
 			}
+
+		}
+
+		void Physics::submit(graphics::Model *models, const unsigned int num) {
+			
+			if (m_models == nullptr) {
+				m_models = models;
+				m_numModels = num;
+				std::cout << "Initialized models" << std::endl;
+			}
+
 		}
 
 		void Physics::applyForces() {
 			
 			math::vec3 vel;
+			if (m_shapes != nullptr) {
 
-			for (int i = 0; i < m_numShapes; i++) {
-				
-				vel = m_shapes[i].vel;
+				for (int i = 0; i < m_numShapes; i++) {
 
-				m_shapes[i].pos += vel;
-				*(m_shapes[i].col_box3D.max) += vel;
-				*(m_shapes[i].col_box3D.min) += vel;
+					vel = m_shapes[i].vel;
 
-				m_shapes[i].model_matrix.incrementX(vel.x);
-				m_shapes[i].model_matrix.incrementY(vel.y);
-				m_shapes[i].model_matrix.incrementZ(vel.z);
+					m_shapes[i].pos += vel;
+					*(m_shapes[i].col_box3D.max) += vel;
+					*(m_shapes[i].col_box3D.min) += vel;
+
+					m_shapes[i].model_matrix.incrementX(vel.x);
+					m_shapes[i].model_matrix.incrementY(vel.y);
+					m_shapes[i].model_matrix.incrementZ(vel.z);
+				}
+			}
+
+			if (m_models != nullptr) {
+
+				for (int i = 0; i < m_numShapes; i++) {
+
+					vel = m_models[i].vel;
+
+					m_models[i].pos += vel;
+					*(m_models[i].col_box3D.max) += vel;
+					*(m_models[i].col_box3D.min) += vel;
+
+					m_models[i].model_matrix.incrementX(vel.x);
+					m_models[i].model_matrix.incrementY(vel.y);
+					m_models[i].model_matrix.incrementZ(vel.z);
+				}
 			}
 
 		}
@@ -64,9 +93,6 @@ namespace mme {
 			bool collide;
 
 			for (int i = 0; i < m_numShapes; i++) {
-
-				//std::cout << "AABB max i: " << i << " " << *(m_shapes[i].col_box3D.max) << std::endl;
-				//std::cout << "AABB min i: " << i << " " << *(m_shapes[i].col_box3D.min) << std::endl;
 
 				for (int j = i + 1; j < m_numShapes; j++) {
 					
