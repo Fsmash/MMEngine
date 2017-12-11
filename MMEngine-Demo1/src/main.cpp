@@ -75,7 +75,7 @@ int main() {
 
 	monkey1.Interleaved();
 	monkey1.loadTexture(TEX_FILE);
-	monkey1.updatePos(3.0f, 1.0f, 1.0f);
+	monkey1.updatePos(1.0f, 1.0f, 1.0f);
 	monkey2.Interleaved();
 	monkey2.loadTexture(TEX_FILE);
 	monkey2.updatePos(6.0f, 1.0f, 1.0f);
@@ -87,7 +87,7 @@ int main() {
 	ship.vel = vec3(0.04, 0.01, 0.02);
 	monkey2.vel = vec3(0.02, 0.0, 0.01);
 	
-	//model[0] = monkey1;
+	model[0] = monkey1;
 	model[1] = ship;
 	model[2] = monkey2;
 	
@@ -121,9 +121,9 @@ int main() {
 	a.submitMat(matrices, 1000000, 3, matBuf);
 
 	triangle.cleanUp();
-	model[0].cleanUp();
-	model[1].cleanUp();
-	model[2].cleanUp();
+	//model[0].cleanUp();
+	//model[1].cleanUp();
+	//model[2].cleanUp();
 
 	// Camera and Shader set up
 	int width = window.getWidth();
@@ -169,7 +169,7 @@ int main() {
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
 
-		g.applyForces();
+		//g.applyForces();
 
 		// Model stuff
 		m.flushDynamic("model_matrix"); 
@@ -193,7 +193,7 @@ int main() {
 			a.setUniformMat4("proj", cam.projMatrix(width, height));
 		}
 		
-		cam.lookAt(model[0].getCenter());
+		cam.lookAt(ship.getCenter());
 		// Shape stuff
 		a.flushInstanced();
 		keyPresses(cam, window);
