@@ -104,7 +104,7 @@ namespace mme {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			m_ptr = models;
-			//fitTexture();
+			fitTexture();
 			m_init = true;
 		}
 

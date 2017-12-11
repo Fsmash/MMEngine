@@ -21,10 +21,11 @@
 #define VERT_INST "src/shaders/instanced.vert"
 #define FRAG_BASIC "src/shaders/basic.frag"
 
-#define MESH_FILE1 "res/suzanne.obj"
+#define MESH_FILE1 "res/suzanneTex.obj"
 #define MESH_FILE2 "res/SpaceShip.obj"
+//#define MESH_FILE2 "res/millenium-falcon.obj" 
 
-#define TEX_FILE "res/iq200.png"
+#define TEX_FILE "res/SpaceShip.png"
 
 #if DEBUG
 #include "utility/log.h"
@@ -84,7 +85,7 @@ int main() {
 	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
-	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+	ship.model_matrix = mat4::translationMatrix(15.0f, -5.0f, 1.0f);
 	model[0] = monkey1;
 	model[1] = ship;
 	model[2] = monkey2;
@@ -97,9 +98,9 @@ int main() {
 	ModelRenderer m;
 	m.submit(model, 3, buf, idx);
 
-	model[0].cleanUp();
-	model[1].cleanUp();
-	model[2].cleanUp();
+	monkey1.cleanUp();
+	monkey2.cleanUp();
+	ship.cleanUp();
 	
 	/*mat4 *matrices = new mat4[10];
 	GLsizeiptr matBuf = sizeof(mat4) * 10;
