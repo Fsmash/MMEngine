@@ -7,7 +7,6 @@ namespace mme {
 		Shape ShapeGenerator3D::makeCube() {
 
 			Shape cube;
-			cube.clean = false;
 
 			VertexC vertices[] = {
 				// Vertex 0, Front
@@ -154,7 +153,6 @@ namespace mme {
 		Shape ShapeGenerator3D::makeBox() {
 
 			Shape cube;
-			cube.clean = false;
 
 			VertexC vertices[] = {
 	

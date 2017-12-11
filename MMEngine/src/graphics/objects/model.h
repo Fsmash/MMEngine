@@ -16,23 +16,17 @@ namespace mme {
 	namespace graphics {
 
 		struct Model: public Renderable {
+			
 			VertexT *vertices;
-			bool clean = false;
 			bool interleaved = false;
 			const char *filePath;
 			const char *texFilePath;
-
-		public:
-
 			
 			// Default constructor
-			Model() : Renderable(), vertices(nullptr), clean(true) { }
+			Model() : Renderable(), vertices(nullptr), filePath(nullptr), texFilePath(nullptr) { }
 			
 			// Constructor
 			Model(const char* file_name);
-
-			// Destructor that frees up memory if clean is true
-			~Model();
 
 			// load mesh/model data from file
 			bool Interleaved();
@@ -60,19 +54,16 @@ namespace mme {
 
 			// Free up memory by deleting allocated memory
 			void cleanUp() {
-				if (clean) {
-					if (vertices != nullptr) {
-						delete[] vertices;
-						vertices = nullptr;
-					}
+				if (vertices != nullptr) {
+					delete[] vertices;
+					vertices = nullptr;
+				}
 
-					if (indices != nullptr) {
-						delete[] indices;
-						indices = nullptr;
-					}
+				if (indices != nullptr) {
+					delete[] indices;
+					indices = nullptr;
 				}
 				num_vertices = num_indices = 0;
-				clean = false;
 			}
 		};
 	}

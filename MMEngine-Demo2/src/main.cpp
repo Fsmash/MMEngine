@@ -99,52 +99,6 @@ int main() {
 
 	c.submitMat(matrices, 500000, 3, matBuf);
 
-
-	/*
-	// Texture Data
-	int x, y, n;
-	int force_channels = 4;
-	const char *img = "./res/bricks.jpg";
-	//const char *img = "./res/bball.png";
-	unsigned char *img_data = stbi_load(img, &x, &y, &n, force_channels);
-	if (!img_data) {
-	fprintf(stderr, "ERROR: could not load image data %s\n", img);
-	}
-	else {
-	fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
-	}
-	if (x & (x - 1) != 0 || y & (y - 1) != 0) {
-	fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", img);
-	}
-	// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
-	int width_in_bytes = x * 4;
-	unsigned char *top = NULL;
-	unsigned char *bottom = NULL;
-	unsigned char temp = 0;
-	int half_height = y / 2;
-	for (int row = 0; row < half_height; row++) {
-	top = img_data + row * width_in_bytes;
-	bottom = img_data + (y - row - 1) * width_in_bytes;
-	for (int col = 0; col < width_in_bytes; col++) {
-	temp = *top;
-	*top = *bottom;
-	*bottom = temp;
-	top++;
-	bottom++;
-	}
-	}
-	// Texture Buffer
-	GLuint tex = 0;
-	glGenTextures(1, &tex);	// generate texture id (name) used to reference texture
-	glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
-	glBindTexture(GL_TEXTURE_2D, tex);	// bind
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	*/
-
 	// Camera and Shader set up
 
 	int width = window.getWidth();

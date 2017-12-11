@@ -5,24 +5,8 @@ namespace mme {
 
 		Model::Model(const char* file_name) {
 			filePath = file_name;
-		}
-
-		Model::~Model() {
-			clean = false;
-			if (clean) {
-
-				if (vertices != nullptr) {
-					delete[] vertices;
-					vertices = nullptr;
-				}
-
-				if (indices != nullptr) {
-					delete[] indices;
-					indices = nullptr;
-				}
-			}
-
-			num_vertices = num_indices = 0;
+			vertices = nullptr;
+			texFilePath = nullptr;
 		}
 
 		bool Model::Interleaved() {
@@ -92,7 +76,6 @@ namespace mme {
 			}
 
 			interleaved = true;
-			clean = true;
 			aiReleaseImport(scene);
 			return true;
 		}
