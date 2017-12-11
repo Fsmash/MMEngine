@@ -75,19 +75,19 @@ int main() {
 
 	monkey1.Interleaved();
 	monkey1.loadTexture(TEX_FILE);
-	monkey2.model_matrix = mat4::translationMatrix(3.0f, 1.0f, 1.0f);
+	monkey1.updatePos(3.0f, 1.0f, 1.0f);
 	monkey2.Interleaved();
 	monkey2.loadTexture(TEX_FILE);
-	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
+	monkey2.updatePos(6.0f, 1.0f, 1.0f);
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
-	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+	ship.updatePos(15.0f, 1.0f, 1.0f);
 
 	monkey1.vel = vec3(0.05, 0.0, 0.0);
 	ship.vel = vec3(0.04, 0.01, 0.02);
 	monkey2.vel = vec3(0.02, 0.0, 0.01);
 	
-	model[0] = monkey1;
+	//model[0] = monkey1;
 	model[1] = ship;
 	model[2] = monkey2;
 	
@@ -193,7 +193,7 @@ int main() {
 			a.setUniformMat4("proj", cam.projMatrix(width, height));
 		}
 		
-		cam.lookAt(monkey1.getCenter());
+		cam.lookAt(model[0].getCenter());
 		// Shape stuff
 		a.flushInstanced();
 		keyPresses(cam, window);

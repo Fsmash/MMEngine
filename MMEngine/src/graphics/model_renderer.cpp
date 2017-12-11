@@ -427,7 +427,7 @@ namespace mme {
 			int x, y, n;
 			int force_channels = 4;
 
-			unsigned char *img_data = stbi_load(m_ptr->texFilePath, &x, &y, &n, force_channels);
+			unsigned char *img_data = stbi_load("res/SpaceShip.png", &x, &y, &n, force_channels);
 
 			if (!img_data) {
 				fprintf(stderr, "ERROR: could not load image data %s\n", m_ptr->texFilePath);
