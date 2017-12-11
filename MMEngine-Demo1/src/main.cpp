@@ -37,8 +37,9 @@
 #define INFO()
 #endif
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ModelRenderer &shader,
-	const char *vert, const char *frag);
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window);
+bool reloadShaders(mme::graphics::Window &window, mme::graphics::ModelRenderer &shader, const char *vert, const char *frag);
+bool reloadShaders(mme::graphics::Window &window, mme::graphics::ShapeRenderer &shader, const char *vert, const char *frag);
 
 
 int main() {
@@ -66,12 +67,7 @@ int main() {
 		return 1;
 	}
 
-	//Model model(MESH_FILE);
-	//std::cout << "num_indices = " << model.num_indices << std::endl;
-	//std::cout << "num_vertices = " << model.num_vertices << std::endl;
-	
-	Model *model = new Model[3];
-
+	Model model[3];
 	Model monkey1(MESH_FILE1);
 	Model monkey2(MESH_FILE1);
 	Model ship(MESH_FILE2);
@@ -85,45 +81,48 @@ int main() {
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
 	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+	
 	model[0] = monkey1;
 	model[1] = ship;
 	model[2] = monkey2;
-
+	
 	GLsizeiptr buf = monkey1.vertexBufferSize() + ship.vertexBufferSize() + monkey2.vertexBufferSize();
-
 	GLsizeiptr idx = monkey1.indexBufferSize() + ship.indexBufferSize() + monkey2.indexBufferSize();
 
-	//ModelRenderer m(model);
 	ModelRenderer m;
 	m.submit(model, 3, buf, idx);
 
+	Shape triangle = ShapeGenerator2D::makeTriangle();
+	ShapeRenderer a(triangle);
+
+	mat4 *matrices = new mat4[1000000];
+	GLsizeiptr matBuf = sizeof(mat4) * 1000000;
+
+	float r1;
+	float r2;
+	float r3;
+
+	for (int i = 0; i < 1000000; i++) {
+
+		r1 = 10.5f * float(i) / 2.0f;
+		r2 = 15.5f * float(i) / 3.0f;
+		r3 = 20.5f * float(i) / 4.0f;
+
+
+		matrices[i] = mat4::rotationMatrixY(r1) * mat4::rotationMatrixZ(r2)
+			* mat4::rotationMatrixX(r3) * mat4::translationMatrix(0.01f + (r1 / 100.0f), 0.02f + (r2 / 100.f), 0.03f + (r3 / 100.f));
+	}
+
+	a.submitMat(matrices, 1000000, 3, matBuf);
+
+	triangle.cleanUp();
 	model[0].cleanUp();
 	model[1].cleanUp();
 	model[2].cleanUp();
-	
-	/*mat4 *matrices = new mat4[10];
-	GLsizeiptr matBuf = sizeof(mat4) * 10;
-
-	for (int i = 0; i < 10; i++) {
-
-		matrices[i] = mat4::translationMatrix(3.0f * (float)i, 1.0f, 1.0f);
-	}
-
-	m.submitMat(matrices, 10, 3, matBuf);
-	*/
-
-	/*
-	for (int i = 0; i < model.num_vertices; i++) {
-		std::cout << "pos = " << model.vertices[i].pos << std::endl;
-		std::cout << "tex coord = " << model.vertices[i].uv << std::endl;
-		std::cout << "normal = " << model.vertices[i].normal << std::endl;
-	}*/
 
 	// Camera and Shader set up
 	int width = window.getWidth();
 	int height = window.getHeight();
-	//mat4 translate;
-	//translate = mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
 	Camera cam(12.5f, 0.0f, 15.0f);
 	cam.speed = 0.12f;
@@ -132,13 +131,6 @@ int main() {
 	cam.pitch_speed = 1.5f;
 	cam.setFar(500.0f);
 	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
-
-	//Shader shader(VERT, FRAG);
-	//shader.enable();
-	//shader.setUniformMat4("view", cam.viewMatrix());
-	//shader.setUniformMat4("proj", cam.projMatrix(width, height));
-	//shader.setUniformMat4("model_matrix", translate);
-
 	
 	m.initShader(VERT_TEX, FRAG_TEX);
 	m.enableShader();
@@ -146,27 +138,31 @@ int main() {
 	m.setUniformMat4("proj", cam.projMatrix(width, height));
 	m.disableShader();
 
+	a.initShader(VERT_INST, FRAG);
+	a.enableShader();
+	a.setUniformMat4("view", cam.viewMatrix());
+	a.setUniformMat4("proj", cam.projMatrix(width, height));
+	a.disableShader();
+
 	vec3 ray_world;
 
-	window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
+	//window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	while (!window.closed()) {
 
+		// General stuff
 		window.frameCounter();
 		window.update();
-		window.clear();		
-
-		//m.flush();
-		//m.flushInstanced();
-		m.flushDynamic("model_matrix");
-
-		keyPresses(cam, window, m, VERT_TEX, FRAG_TEX);
-
+		window.clear();	
+		
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
+
+		// Model stuff
+		m.flushDynamic("model_matrix"); 
+		keyPresses(cam, window);
 
 		// update projection matrix with new width and height on resize.
 		if (window.resized()) {
@@ -178,14 +174,42 @@ int main() {
 		if (cam.update()) {
 			m.setUniformMat4("view", cam.viewMatrixUpdate());
 		}
+
+		if (reloadShaders(window, m, VERT_TEX, FRAG_TEX)) {
+			cam.setPos(12.5f, 0.0f, 15.0f);
+			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
+			a.setUniformMat4("view", cam.viewMatrix());
+			a.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
+		// Shape stuff
+		a.flushInstanced();
+		keyPresses(cam, window);
+
+		if (window.resized()) {
+			width = window.getWidth();
+			height = window.getHeight();
+			a.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
+		if (cam.update()) {
+			a.setUniformMat4("view", cam.viewMatrixUpdate());
+		}
+
+		if (reloadShaders(window, a, VERT_INST, FRAG)) {
+			cam.setPos(12.5f, 0.0f, 15.0f);
+			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
+			a.setUniformMat4("view", cam.viewMatrix());
+			a.setUniformMat4("proj", cam.projMatrix(width, height));
+		}
+
 	}
+
 	m.clean();
-	delete[] model;
 	return 0;
 }
 
-void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::graphics::ModelRenderer &shader,
-	const char *vert, const char *frag) {
+void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window) {
 	//std::cout << "Camera pos: " << cam.getPos() << std::endl;
 
 	if (window.isKeyPressed(GLFW_KEY_W)) {
@@ -240,21 +264,44 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 		cam.turnRight();
 	}
 
+}
+
+bool reloadShaders(mme::graphics::Window &window, mme::graphics::ModelRenderer &shader, const char *vert, const char *frag) {
 	if (window.isKeyPressed(GLFW_KEY_R)) {
 		if (shader.reloadShader(vert, frag)) {
+			
 			int width = window.getWidth();
 			int height = window.getHeight();
 
-		
 			shader.enableShader();
-			cam.setPos(12.5f, 0.0f, 15.0f);
-			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
-			shader.setUniformMat4("view", cam.viewMatrix());
-			shader.setUniformMat4("proj", cam.projMatrix(width, height));
 			printf("It Worked!");
+			return true;
 		}
+
 		else {
 			printf("you done fucked up son");
+			return false;
 		}
+
+	}
+}
+
+bool reloadShaders(mme::graphics::Window &window, mme::graphics::ShapeRenderer &shader, const char *vert, const char *frag) {
+	if (window.isKeyPressed(GLFW_KEY_R)) {
+		if (shader.reloadShader(vert, frag)) {
+
+			int width = window.getWidth();
+			int height = window.getHeight();
+
+			shader.enableShader();
+			printf("It Worked!");
+			return true;
+		}
+
+		else {
+			printf("you done fucked up son");
+			return false;
+		}
+
 	}
 }

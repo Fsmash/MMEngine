@@ -16,29 +16,9 @@ namespace mme {
 		struct Shape : public Renderable {
 
 			VertexC *vertices;	// pointer to array of VertexC vertices
-			bool clean;			// whether or not to clean data with destructor
 
 			// Default constructor
-			Shape() : Renderable(), vertices(nullptr), clean(true) { }
-
-			// Destructor that frees up memory if clean is true
-			~Shape() {
-
-				if (clean) {
-										
-					if (vertices != nullptr) {
-						delete[] vertices;
-						vertices = nullptr;
-					}
-
-					if (indices != nullptr) {
-						delete[] indices;
-						indices = nullptr;
-					}
-				}
-
-				num_vertices = num_indices = 0;
-			}
+			Shape() : Renderable(), vertices(nullptr) { }
 			
 			// TO DO: have vertex data loaded in from file
 			//void loader(const char *file);

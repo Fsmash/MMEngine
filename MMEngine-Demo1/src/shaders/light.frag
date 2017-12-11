@@ -5,10 +5,10 @@
 uniform mat4 view;
 
 // input from vertex shader for lighting calculations
-in vec3 Kd, eye_pos, eye_normal, normal; // should probably rename eye_pos and eye_normal
+in vec3 Kd, eye_pos, eye_normal; // should probably rename eye_pos and eye_normal
 
 // Light properties
-vec3 light_pos_world = vec3(0.0, 0.0, 4.0);	// position of light source in world space
+vec3 light_pos_world = vec3(0.0, 0.0, 1000.0);	// position of light source in world space
 
 vec3 Ls = vec3(1.0, 1.0, 1.0);				// white specular light colour
 vec3 Ld = vec3(0.7, 0.7, 0.7);				// dull white diffuse light color
@@ -17,7 +17,7 @@ vec3 La = vec3(0.25, 0.25, 0.25);				// grey ambient light colour
 // Surface properties
 vec3 Ks = vec3(1.0, 1.0, 1.0);				// fully reflect specular light
 vec3 Ka = vec3(1.0, 1.0, 1.0);				// fully reflect ambient light
-float specular_exponent = 400.0;			// specular power
+float specular_exponent = 10000000.0;			// specular power
 
 // final output color 
 out vec4 frag_colour;
@@ -69,7 +69,6 @@ void main() {
 	// specular intensity
 	vec3 Is = Ls * Ks * specular_factor;
 	
-	//frag_colour=vec4(Is + Id + Ia, 1.0);
-	frag_colour=vec4(normal, 1.0);
+	frag_colour=vec4(Is + Id + Ia, 1.0);
 
 }

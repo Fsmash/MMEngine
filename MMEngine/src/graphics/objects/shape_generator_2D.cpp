@@ -7,7 +7,6 @@ namespace mme {
 		Shape ShapeGenerator2D::makeTriangle() {
 			
 			Shape triangle;
-			triangle.clean = false;
 
 			// Array of vertex structs, (really just 3 vec3). vertex position, color and normal.
 			VertexC vertices[] = {
@@ -43,7 +42,6 @@ namespace mme {
 		Shape ShapeGenerator2D::makeSquare() {
 			
 			Shape square;
-			square.clean = false;
 
 			// Array of vertex structs, (really just 3 vec3). vertex position, color and normal.
 			VertexC vertices[] = {
