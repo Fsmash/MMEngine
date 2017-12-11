@@ -11,6 +11,7 @@ supported file types can be found: http://assimp.org/main_features_formats.html
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "../../math/mat4.h"
 
 namespace mme {
 	namespace graphics {
@@ -51,6 +52,8 @@ namespace mme {
 					vertices[i].updatePos(x, y, z);
 				}
 			}
+
+			math::vec3 getCenter();
 
 			// Free up memory by deleting allocated memory
 			void cleanUp() {
