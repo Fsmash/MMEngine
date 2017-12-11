@@ -83,8 +83,41 @@ namespace mme {
 			aiReleaseImport(scene);
 			return true;
 		}
+
 		void Model::loadTexture(const char* tex_file) {
 			texFilePath = tex_file;
+		}
+
+		 math::vec3 Model::getCenter() {
+			float maxx = 0.0f;
+			float maxy = 0.0f;
+			float maxz = 0.0f;
+			float minx = 2.0f;
+			float miny = 2.0f;
+			float minz = 2.0f;
+
+			for (int i = 0; i < num_vertices; i++) {
+				if (vertices[i].pos.x > maxx) {
+					maxx = vertices[i].pos.x;
+				}
+				if (vertices[i].pos.y > maxy) {
+					maxy = vertices[i].pos.y;
+				}
+				if (vertices[i].pos.z > maxz) {
+					maxz = vertices[i].pos.z;
+				}
+				if (vertices[i].pos.x < minx) {
+					minx = vertices[i].pos.x;
+				}
+				if (vertices[i].pos.y < miny) {
+					miny = vertices[i].pos.y;
+				}
+				if (vertices[i].pos.z < minz) {
+					miny = vertices[i].pos.z;
+				}
+			}
+
+			return math::vec3((maxx+minx)/2.0f, (maxy+miny)/2.0f, (maxz+minz)/2.0f);
 		}
 	}
 }

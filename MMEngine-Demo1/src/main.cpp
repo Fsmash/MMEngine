@@ -22,10 +22,10 @@
 #define VERT_INST "src/shaders/instanced.vert"
 #define FRAG_BASIC "src/shaders/basic.frag"
 
-#define MESH_FILE1 "res/suzanne.obj"
+#define MESH_FILE1 "res/suzanneTex.obj"
 #define MESH_FILE2 "res/SpaceShip.obj"
 
-#define TEX_FILE "res/iq200.png"
+#define TEX_FILE "res/SpaceShip.png"
 
 #if DEBUG
 #include "utility/log.h"
@@ -192,7 +192,8 @@ int main() {
 			a.setUniformMat4("view", cam.viewMatrix());
 			a.setUniformMat4("proj", cam.projMatrix(width, height));
 		}
-
+		
+		cam.lookAt(monkey1.getCenter());
 		// Shape stuff
 		a.flushInstanced();
 		keyPresses(cam, window);

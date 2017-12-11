@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../math/mat4.h"
+#include "objects/model.h"
 
 namespace mme {
 	namespace graphics {
@@ -55,7 +56,7 @@ namespace mme {
 			Camera(const math::vec3 cam_pos);
 
 			void setPos(const float x, const float y, const float z);
-			inline void setPos(const math::vec3 cam) { m_pos = cam; }
+			inline void setPos( math::vec3 cam) { m_pos = cam; }
 			inline void setNear(const float dist)	 { m_near = dist; }
 			inline void setFar(const float dist)	 { m_far = dist; }
 			inline void setFOV(const float angle)	 { m_fov = angle; }
@@ -85,6 +86,7 @@ namespace mme {
 			inline bool update() { return m_moved; }
 			void init(const float angle, const float x, const float y, const float z);
 			void setOrientation(const float angle, const float x, const float y, const float z);
+			void lookAt(math::vec3 center);
 			math::mat4 viewMatrix();
 			math::mat4 viewMatrixUpdate();
 			math::mat4 projMatrix(const int width, const int height);

@@ -326,6 +326,9 @@ namespace mme {
 
 			return vec3(ray.x / mag, ray.y / mag, ray.z / mag);
 		}
-
+		
+		void Camera::lookAt(math::vec3 center) {
+			setPos(center);
+		}
 	}
 }
