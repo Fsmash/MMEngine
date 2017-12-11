@@ -50,6 +50,7 @@ namespace mme {
 		void Physics::applyForces() {
 			
 			math::vec3 vel;
+
 			if (m_shapes != nullptr) {
 
 				for (int i = 0; i < m_numShapes; i++) {
@@ -68,13 +69,13 @@ namespace mme {
 
 			if (m_models != nullptr) {
 
-				for (int i = 0; i < m_numShapes; i++) {
+				for (int i = 0; i < m_numModels; i++) {
 
 					vel = m_models[i].vel;
 
 					m_models[i].pos += vel;
-					*(m_models[i].col_box3D.max) += vel;
-					*(m_models[i].col_box3D.min) += vel;
+					//*(m_models[i].col_box3D.max) += vel;
+					//*(m_models[i].col_box3D.min) += vel;
 
 					m_models[i].model_matrix.incrementX(vel.x);
 					m_models[i].model_matrix.incrementY(vel.y);

@@ -9,6 +9,7 @@
 #include "graphics/model_renderer.h"
 #include "graphics/buffers/buffer.h"
 #include "graphics/objects/model.h"
+#include "physics/physics.h"
 
 
 #define DEBUG 1
@@ -81,6 +82,10 @@ int main() {
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
 	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+
+	monkey1.vel = vec3(0.05, 0.0, 0.0);
+	ship.vel = vec3(0.04, 0.01, 0.02);
+	monkey2.vel = vec3(0.02, 0.0, 0.01);
 	
 	model[0] = monkey1;
 	model[1] = ship;
@@ -146,6 +151,10 @@ int main() {
 
 	vec3 ray_world;
 
+	physics::Physics g;
+
+	g.submit(model, 3);
+
 	//window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	while (!window.closed()) {
@@ -159,6 +168,8 @@ int main() {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
+
+		g.applyForces();
 
 		// Model stuff
 		m.flushDynamic("model_matrix"); 
