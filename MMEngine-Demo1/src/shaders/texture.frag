@@ -74,7 +74,7 @@ void main() {
 	// specular intensity
 	vec3 Is = Ls * Ks * specular_factor;
 	
-	frag_colour=vec4(Ia + Id + Is, 1.0);
-	//frag_colour=vec4(Kd.xyz, 1.0);
+	//frag_colour=vec4(Ia + Id + Is, 1.0);
+	frag_colour=vec4(Kd.xyz, 1.0);
 
 }

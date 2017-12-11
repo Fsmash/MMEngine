@@ -4,7 +4,7 @@ namespace mme {
 	namespace graphics {
 
 		Model::Model(const char* file_name) {
-			loadModelFile(file_name);
+			filePath = file_name;
 		}
 
 		Model::~Model() {
@@ -24,12 +24,12 @@ namespace mme {
 			num_vertices = num_indices = 0;
 		}
 
-		bool Model::loadModelFile(const char *file_name) {
+		bool Model::Interleaved() {
 			//load a file with assimp and print scene information
-			const aiScene *scene = aiImportFile(file_name, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+			const aiScene *scene = aiImportFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 			if (!scene) {
-				fprintf(stderr, "ERROR: reading mesh %s\n", file_name);
+				fprintf(stderr, "ERROR: reading mesh %s\n", filePath);
 				return false;
 			}
 
@@ -46,6 +46,7 @@ namespace mme {
 
 			num_vertices = mesh->mNumVertices;
 
+			
 			vertices = new VertexT[num_vertices];
 
 			if (mesh->HasPositions()) {
@@ -89,8 +90,13 @@ namespace mme {
 				}
 			}
 
+			interleaved = true;
+			clean = true;
 			aiReleaseImport(scene);
 			return true;
+		}
+		void Model::loadTexture(const char* tex_file) {
+			texFilePath = tex_file;
 		}
 	}
 }

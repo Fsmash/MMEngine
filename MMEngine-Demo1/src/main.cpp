@@ -21,7 +21,10 @@
 #define VERT_INST "src/shaders/instanced.vert"
 #define FRAG_BASIC "src/shaders/basic.frag"
 
-#define MESH_FILE "res/suzanne.obj"
+#define MESH_FILE1 "res/suzanne.obj"
+#define MESH_FILE2 "res/SpaceShip.obj"
+
+#define TEX_FILE "res/iq200.png"
 
 #if DEBUG
 #include "utility/log.h"
@@ -63,13 +66,52 @@ int main() {
 		return 1;
 	}
 
-	Model model(MESH_FILE);
-	std::cout << "num_indices = " << model.num_indices << std::endl;
-	std::cout << "num_vertices = " << model.num_vertices << std::endl;
+	//Model model(MESH_FILE);
+	//std::cout << "num_indices = " << model.num_indices << std::endl;
+	//std::cout << "num_vertices = " << model.num_vertices << std::endl;
+	
+	Model *model = new Model[3];
 
-	ModelRenderer m(model);
+	Model monkey1(MESH_FILE1);
+	Model monkey2(MESH_FILE1);
+	Model ship(MESH_FILE2);
 
-	model.cleanUp();
+	monkey1.Interleaved();
+	monkey1.loadTexture(TEX_FILE);
+	monkey2.model_matrix = mat4::translationMatrix(3.0f, 1.0f, 1.0f);
+	monkey2.Interleaved();
+	monkey2.loadTexture(TEX_FILE);
+	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
+	ship.Interleaved();
+	ship.loadTexture(TEX_FILE);
+	ship.model_matrix = mat4::translationMatrix(9.0f, 1.0f, 1.0f);
+	model[0] = monkey1;
+	model[1] = ship;
+	model[2] = monkey2;
+
+	GLsizeiptr buf = monkey1.vertexBufferSize() + ship.vertexBufferSize() + monkey2.vertexBufferSize();
+
+	GLsizeiptr idx = monkey1.indexBufferSize() + ship.indexBufferSize() + monkey2.indexBufferSize();
+
+	//ModelRenderer m(model);
+	ModelRenderer m;
+	m.submit(model, 3, buf, idx);
+
+	model[0].cleanUp();
+	model[1].cleanUp();
+	model[2].cleanUp();
+	delete[] model;
+	
+	/*mat4 *matrices = new mat4[10];
+	GLsizeiptr matBuf = sizeof(mat4) * 10;
+
+	for (int i = 0; i < 10; i++) {
+
+		matrices[i] = mat4::translationMatrix(3.0f * (float)i, 1.0f, 1.0f);
+	}
+
+	m.submitMat(matrices, 10, 3, matBuf);
+	*/
 
 	/*
 	for (int i = 0; i < model.num_vertices; i++) {
@@ -78,67 +120,13 @@ int main() {
 		std::cout << "normal = " << model.vertices[i].normal << std::endl;
 	}*/
 
-	
-	
-	/*
-	// Texture Data
-	int x, y, n;
-	int force_channels = 4;
-	const char *img = "./res/bricks.jpg";
-	//const char *img = "./res/bball.png";
-	unsigned char *img_data = stbi_load(img, &x, &y, &n, force_channels);
-
-	if (!img_data) {
-	fprintf(stderr, "ERROR: could not load image data %s\n", img);
-	}
-	else {
-	fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
-	}
-
-	if (x & (x - 1) != 0 || y & (y - 1) != 0) {
-	fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", img);
-	}
-
-	// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
-	int width_in_bytes = x * 4;
-	unsigned char *top = NULL;
-	unsigned char *bottom = NULL;
-	unsigned char temp = 0;
-	int half_height = y / 2;
-
-	for (int row = 0; row < half_height; row++) {
-	top = img_data + row * width_in_bytes;
-	bottom = img_data + (y - row - 1) * width_in_bytes;
-	for (int col = 0; col < width_in_bytes; col++) {
-	temp = *top;
-	*top = *bottom;
-	*bottom = temp;
-	top++;
-	bottom++;
-	}
-	}
-
-
-	// Texture Buffer
-	GLuint tex = 0;
-	glGenTextures(1, &tex);	// generate texture id (name) used to reference texture
-	glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
-	glBindTexture(GL_TEXTURE_2D, tex);	// bind
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	*/
-
 	// Camera and Shader set up
 	int width = window.getWidth();
 	int height = window.getHeight();
 	//mat4 translate;
 	//translate = mat4::translationMatrix(0.0f, 0.0f, 0.0f);
 
-	Camera cam(0.0f, 0.0f, 4.0f);
+	Camera cam(12.5f, 0.0f, 15.0f);
 	cam.speed = 0.12f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
@@ -152,7 +140,8 @@ int main() {
 	//shader.setUniformMat4("proj", cam.projMatrix(width, height));
 	//shader.setUniformMat4("model_matrix", translate);
 
-	m.initShader(VERT, FRAG);
+	
+	m.initShader(VERT_TEX, FRAG_TEX);
 	m.enableShader();
 	m.setUniformMat4("view", cam.viewMatrix());
 	m.setUniformMat4("proj", cam.projMatrix(width, height));
@@ -169,9 +158,11 @@ int main() {
 		window.update();
 		window.clear();		
 
-		m.flush();
+		//m.flush();
+		//m.flushInstanced();
+		m.flushDynamic("model_matrix");
 
-		keyPresses(cam, window, m, VERT, FRAG);
+		keyPresses(cam, window, m, VERT_TEX, FRAG_TEX);
 
 		if (window.isMousePressed(GLFW_MOUSE_BUTTON_1)) {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
@@ -256,7 +247,7 @@ void keyPresses(mme::graphics::Camera &cam, mme::graphics::Window &window, mme::
 
 		
 			shader.enableShader();
-			cam.setPos(0.0f, 0.0f, 4.0f);
+			cam.setPos(12.5f, 0.0f, 15.0f);
 			cam.setOrientation(0.0f, 0.0f, 1.0f, 0.0f);	// vanilla start, 0 degrees about the y axis.
 			shader.setUniformMat4("view", cam.viewMatrix());
 			shader.setUniformMat4("proj", cam.projMatrix(width, height));

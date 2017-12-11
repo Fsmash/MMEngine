@@ -17,7 +17,10 @@ namespace mme {
 
 		struct Model: public Renderable {
 			VertexT *vertices;
-			bool clean;
+			bool clean = false;
+			bool interleaved = false;
+			const char *filePath;
+			const char *texFilePath;
 
 		public:
 
@@ -32,10 +35,10 @@ namespace mme {
 			~Model();
 
 			// load mesh/model data from file
-			bool loadModelFile(const char* file_name);
+			bool Interleaved();
 
-			// TO DO: have vertex data loaded in from file
-			//void loader(const char *file);
+			// load texture from file
+			void loadTexture(const char* tex_file);
 
 			// Returns vertex buffer size
 			GLsizeiptr vertexBufferSize() const {
@@ -57,17 +60,17 @@ namespace mme {
 
 			// Free up memory by deleting allocated memory
 			void cleanUp() {
+				if (clean) {
+					if (vertices != nullptr) {
+						delete[] vertices;
+						vertices = nullptr;
+					}
 
-				if (vertices != nullptr) {
-					delete[] vertices;
-					vertices = nullptr;
+					if (indices != nullptr) {
+						delete[] indices;
+						indices = nullptr;
+					}
 				}
-
-				if (indices != nullptr) {
-					delete[] indices;
-					indices = nullptr;
-				}
-
 				num_vertices = num_indices = 0;
 			}
 		};

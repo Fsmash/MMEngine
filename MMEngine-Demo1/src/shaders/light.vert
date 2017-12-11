@@ -11,11 +11,13 @@ uniform mat4 model_matrix = mat4(1.0, 0.0, 0.0, 0.0,
 								 0.0, 0.0, 0.0, 1.0);
 
 out vec3 Kd, eye_pos, eye_normal; // outputs to fragment shader after raserization for lighting calc.
-out vec3 normal;	
+out vec3 normal;
+out vec2 texcoord;	
 
 void main() {
 	
 	normal = vn;
+	texcoord = vt;
 	vec4 eye = view * model_matrix * vec4(vp, 1.0);	// vertex positions (vp) in eye space, vec4
 	eye_pos = vec3(eye);							// vertex positions (vp) in eye space, vec3
 	eye_normal = vec3(view * vec4(vn, 0.0));		// normals in eye space

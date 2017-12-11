@@ -6,6 +6,7 @@ This model_renderer class inherits from renderable and vertex_t and loads data f
 #pragma once
 #include "renderer.h"
 #include "objects/model.h"
+#include "../utility/stb_image.h"
 
 namespace mme {
 	namespace graphics {
@@ -14,8 +15,12 @@ namespace mme {
 
 		private:
 
+			GLuint vao;
+			GLuint vertice_count;
 			GLuint m_numModels;	// number of model objects being rendered
 			Model *m_ptr;
+			void fitTexture();
+			int indices[3];
 
 		public:
 
@@ -28,6 +33,8 @@ namespace mme {
 			void submit(Model &model);
 			void flush() const override;
 			void flushInstanced() const override;
+			void flushDynamic(const char *uniform) const;
+			void add(Model *models, const GLuint num);
 			void clean() override;
 
 		};
