@@ -84,7 +84,7 @@ int main() {
 	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
-	ship.model_matrix = mat4::translationMatrix(9.0f, 1.0f, 1.0f);
+	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
 	model[0] = monkey1;
 	model[1] = ship;
 	model[2] = monkey2;
@@ -100,7 +100,6 @@ int main() {
 	model[0].cleanUp();
 	model[1].cleanUp();
 	model[2].cleanUp();
-	delete[] model;
 	
 	/*mat4 *matrices = new mat4[10];
 	GLsizeiptr matBuf = sizeof(mat4) * 10;
@@ -181,6 +180,7 @@ int main() {
 		}
 	}
 	m.clean();
+	delete[] model;
 	return 0;
 }
 

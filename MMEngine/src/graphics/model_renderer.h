@@ -20,7 +20,7 @@ namespace mme {
 			GLuint m_numModels;	// number of model objects being rendered
 			Model *m_ptr;
 			void fitTexture();
-			int indices[3];
+			int *indices;
 
 		public:
 

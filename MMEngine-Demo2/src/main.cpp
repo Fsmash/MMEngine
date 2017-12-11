@@ -182,7 +182,7 @@ int main() {
 		window.update();
 		window.clear();
 
-		b.flush();
+		b.flushDynamic("model_matrix");
 		keyPresses(cam, window, b, VERT, FRAG);
 		
 		// update projection matrix with new width and height on resize.

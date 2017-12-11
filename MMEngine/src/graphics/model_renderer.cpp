@@ -48,6 +48,8 @@ namespace mme {
 			GLsizeiptr idxSz = 0;
 			GLuint elementOffset = 0;
 
+			indices = new int[num];
+
 			glEnableVertexAttribArray(0); // enables generic vertex attribute array (attribute 0, position)
 			glEnableVertexAttribArray(1); // enables generic vertex attribute array (attribute 1, color)
 			glEnableVertexAttribArray(2); // enables generic vertex attribute array (attribute 2, normal)
@@ -102,7 +104,7 @@ namespace mme {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			m_ptr = models;
-			fitTexture();
+			//fitTexture();
 			m_init = true;
 		}
 
@@ -327,11 +329,10 @@ namespace mme {
 			if (cur_program != m_shader->getProgram()) {
 				m_shader->enable();
 			}
-			if (m_ptr->interleaved == false) {
+			if (m_ptr[0].interleaved == false) {
 				glBindVertexArray(vao);
 				glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, nullptr);
-			}
-			else {
+			} else {
 				glBindBuffer(GL_ARRAY_BUFFER, m_bufID[0]);
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), 0); // defines layout of buffer, "vbo", for attribute 0 (positions)
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VertexT::vertexSize(), VertexT::offset1()); // defines layout of buffer.
@@ -483,6 +484,7 @@ namespace mme {
 				m_bufID[0] = m_bufID[1] = m_matrixID = 0;
 				m_shader = nullptr;
 				m_init = false;
+				delete[] indices;
 			}
 		}
 

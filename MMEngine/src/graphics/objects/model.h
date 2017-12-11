@@ -72,6 +72,7 @@ namespace mme {
 					}
 				}
 				num_vertices = num_indices = 0;
+				clean = false;
 			}
 		};
 	}

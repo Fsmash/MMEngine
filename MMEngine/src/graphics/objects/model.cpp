@@ -8,6 +8,7 @@ namespace mme {
 		}
 
 		Model::~Model() {
+			clean = false;
 			if (clean) {
 
 				if (vertices != nullptr) {
