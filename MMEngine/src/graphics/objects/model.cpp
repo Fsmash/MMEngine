@@ -1,4 +1,8 @@
 #include "model.h"
+#include <assimp/cimport.h>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 
 namespace mme {
 	namespace graphics {
