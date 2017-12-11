@@ -62,6 +62,8 @@ namespace mme {
 				}
 				num_vertices = num_indices = 0;
 			}
+
+			math::vec3 getCenter();
 		};
 	}
 }

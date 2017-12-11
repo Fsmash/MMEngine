@@ -117,7 +117,7 @@ namespace mme {
 				}
 			}
 
-			return math::vec3((maxx+minx)/2.0f, (maxy+miny)/2.0f, (maxz+minz)/2.0f);
+			return math::vec3(((maxx+minx)/2.0f), ((maxy+miny)/2.0f) + 0.0f, ((maxz+minz)/2.0f) - 5.0f);
 		}
 	}
 }

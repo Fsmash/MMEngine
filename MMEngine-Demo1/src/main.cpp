@@ -74,13 +74,13 @@ int main() {
 
 	monkey1.Interleaved();
 	monkey1.loadTexture(TEX_FILE);
-	monkey2.model_matrix = mat4::translationMatrix(3.0f, 1.0f, 1.0f);
+	monkey1.updatePos(3.0f, 1.0f, 1.0f);
 	monkey2.Interleaved();
 	monkey2.loadTexture(TEX_FILE);
-	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
+	monkey2.updatePos(6.0f, 1.0f, 1.0f);
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
-	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+	ship.updatePos(15.0f, -5.0f, 1.0f);
 	
 	model[0] = monkey1;
 	model[1] = ship;
@@ -116,7 +116,7 @@ int main() {
 	a.submitMat(matrices, 1000000, 3, matBuf);
 
 	triangle.cleanUp();
-	model[0].cleanUp();
+	//model[0].cleanUp();
 	model[1].cleanUp();
 	model[2].cleanUp();
 
@@ -280,7 +280,7 @@ bool reloadShaders(mme::graphics::Window &window, mme::graphics::ModelRenderer &
 		}
 
 		else {
-			printf("you done fucked up son");
+			printf("you done goofed son");
 			return false;
 		}
 
@@ -300,7 +300,7 @@ bool reloadShaders(mme::graphics::Window &window, mme::graphics::ShapeRenderer &
 		}
 
 		else {
-			printf("you done fucked up son");
+			printf("you done goofed son");
 			return false;
 		}
 
