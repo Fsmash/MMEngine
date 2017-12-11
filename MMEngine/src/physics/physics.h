@@ -22,7 +22,7 @@ namespace mme {
 
 		public:
 
-			Physics() : m_gravity(0), m_penalty(1), m_numShapes(0), m_shapes(nullptr), m_models(nullptr) { };
+			Physics() : m_gravity(0), m_penalty(1), m_numShapes(0), m_numModels(0), m_shapes(nullptr), m_models(nullptr) { };
 
 			inline void setGravity(const float grav) { m_gravity = grav; }
 			inline float getGravity() const { return m_gravity; }

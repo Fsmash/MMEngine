@@ -9,6 +9,7 @@
 #include "graphics/model_renderer.h"
 #include "graphics/buffers/buffer.h"
 #include "graphics/objects/model.h"
+#include "physics/physics.h"
 
 
 #define DEBUG 1
@@ -74,13 +75,17 @@ int main() {
 
 	monkey1.Interleaved();
 	monkey1.loadTexture(TEX_FILE);
-	monkey1.updatePos(3.0f, 1.0f, 1.0f);
+	monkey2.model_matrix = mat4::translationMatrix(3.0f, 1.0f, 1.0f);
 	monkey2.Interleaved();
 	monkey2.loadTexture(TEX_FILE);
-	monkey2.updatePos(6.0f, 1.0f, 1.0f);
+	monkey2.model_matrix = mat4::translationMatrix(6.0f, 1.0f, 1.0f);
 	ship.Interleaved();
 	ship.loadTexture(TEX_FILE);
-	ship.updatePos(15.0f, -5.0f, 1.0f);
+	ship.model_matrix = mat4::translationMatrix(15.0f, 1.0f, 1.0f);
+
+	monkey1.vel = vec3(0.05, 0.0, 0.0);
+	ship.vel = vec3(0.04, 0.01, 0.02);
+	monkey2.vel = vec3(0.02, 0.0, 0.01);
 	
 	model[0] = monkey1;
 	model[1] = ship;
@@ -116,7 +121,7 @@ int main() {
 	a.submitMat(matrices, 1000000, 3, matBuf);
 
 	triangle.cleanUp();
-	//model[0].cleanUp();
+	model[0].cleanUp();
 	model[1].cleanUp();
 	model[2].cleanUp();
 
@@ -146,6 +151,10 @@ int main() {
 
 	vec3 ray_world;
 
+	physics::Physics g;
+
+	g.submit(model, 3);
+
 	//window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
 	while (!window.closed()) {
@@ -159,6 +168,8 @@ int main() {
 			ray_world = cam.worldRayVec(window.getX(), window.getY(), width, height);
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
+
+		g.applyForces();
 
 		// Model stuff
 		m.flushDynamic("model_matrix"); 
@@ -280,7 +291,7 @@ bool reloadShaders(mme::graphics::Window &window, mme::graphics::ModelRenderer &
 		}
 
 		else {
-			printf("you done goofed son");
+			printf("you done fucked up son");
 			return false;
 		}
 
@@ -300,7 +311,7 @@ bool reloadShaders(mme::graphics::Window &window, mme::graphics::ShapeRenderer &
 		}
 
 		else {
-			printf("you done goofed son");
+			printf("you done fucked up son");
 			return false;
 		}
 
