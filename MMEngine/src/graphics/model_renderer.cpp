@@ -16,6 +16,7 @@ namespace mme {
 			m_numModels = m_numInstances = m_numIndices = 0;
 			m_init = false;
 			m_ptr = nullptr;
+			m_tex = nullptr;
 			submit(models, num, buf, idx);
 		}
 
@@ -29,6 +30,7 @@ namespace mme {
 			m_numModels = m_numInstances = m_numIndices = 0;
 			m_init = false;
 			m_ptr = nullptr;
+			m_tex = nullptr;
 			submit(model);
 		}
 
@@ -43,7 +45,7 @@ namespace mme {
 				std::cout << "Buffers already initialized" << std::endl;
 				return;
 			}
-
+			m_ptr = models;
 			m_numModels = num;
 			m_bufSz[0] = buf;
 			m_bufSz[1] = idx;
@@ -106,7 +108,7 @@ namespace mme {
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			m_ptr = models;
+			m_tex = new GLuint[m_numModels];
 			fitTexture();
 			m_init = true;
 		}
@@ -249,6 +251,7 @@ namespace mme {
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 			}
 
+			m_tex = new GLuint[1];
 			fitTexture();
 			m_init = true;
 		}
@@ -413,6 +416,14 @@ namespace mme {
 			//std::cout << "num indices: " << num_indices << " offset: " << offset << std::endl;
 
 			for (int i = 0; i < m_numModels; i++) {
+				glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
+				glBindTexture(GL_TEXTURE_2D, m_tex[i]);	// bind
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 				m_shader->setUniformMat4(uniform, m_ptr[i].model_matrix);
 				num_indices = indices[i];
 				//std::cout << m_ptr[i].model_matrix << std::endl;
@@ -427,49 +438,52 @@ namespace mme {
 			int x, y, n;
 			int force_channels = 4;
 
-			unsigned char *img_data = stbi_load("res/SpaceShip.png", &x, &y, &n, force_channels);
+			glGenTextures(m_numModels, m_tex);	// generate texture id (name) used to reference texture
 
-			if (!img_data) {
-				fprintf(stderr, "ERROR: could not load image data %s\n", m_ptr->texFilePath);
-			}
-			else {
-				fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
-			}
-			if (x & (x - 1) != 0 || y & (y - 1) != 0) {
-				fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", m_ptr->texFilePath);
-			}
-			
-			// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
-			int width_in_bytes = x * 4;
-			unsigned char *top = NULL;
-			unsigned char *bottom = NULL;
-			unsigned char temp = 0;
-			int half_height = y / 2;
+			for (int i = 0; i < m_numModels; i++) {
 
-			for (int row = 0; row < half_height; row++) {
-				top = img_data + row * width_in_bytes;
-				bottom = img_data + (y - row - 1) * width_in_bytes;
-				for (int col = 0; col < width_in_bytes; col++) {
-					temp = *top;
-					*top = *bottom;
-					*bottom = temp;
-					top++;
-					bottom++;
+				unsigned char *img_data = stbi_load(m_ptr[i].texFilePath, &x, &y, &n, force_channels);
+				std::cout << m_ptr[i].texFilePath << std::endl;
+
+				if (!img_data) {
+					fprintf(stderr, "ERROR: could not load image data %s\n", m_ptr[i].texFilePath);
 				}
+				else {
+					fprintf(stdout, "Image width %d\nImage height %d\n# of 8 bit components per pixel %d\n", x, y, n);
+				}
+				if (x & (x - 1) != 0 || y & (y - 1) != 0) {
+					fprintf(stderr, "Image %s not a power of two. Could potentially be not supported by older graphics cards.", m_ptr->texFilePath);
+				}
+
+				// image loaded in upside down most of the time. images difine 0 of y axis at the to left corner.
+				int width_in_bytes = x * 4;
+				unsigned char *top = NULL;
+				unsigned char *bottom = NULL;
+				unsigned char temp = 0;
+				int half_height = y / 2;
+
+				for (int row = 0; row < half_height; row++) {
+					top = img_data + row * width_in_bytes;
+					bottom = img_data + (y - row - 1) * width_in_bytes;
+					for (int col = 0; col < width_in_bytes; col++) {
+						temp = *top;
+						*top = *bottom;
+						*bottom = temp;
+						top++;
+						bottom++;
+					}
+				}
+
+				// Texture Buffer
+				glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
+				glBindTexture(GL_TEXTURE_2D, m_tex[i]);	// bind
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
+
+				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			}
-
-			// Texture Buffer
-			GLuint tex = 0;
-			glGenTextures(1, &tex);	// generate texture id (name) used to reference texture
-			glActiveTexture(GL_TEXTURE0);	// set active texture slot to be texture 0, by default 0 anyways
-			glBindTexture(GL_TEXTURE_2D, tex);	// bind
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, x, y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			
 		}
 
 		void ModelRenderer::clean() {
@@ -477,6 +491,7 @@ namespace mme {
 			if (m_init) {
 
 				glDeleteBuffers(2, m_bufID);
+				//glDeleteTextures(m_numModels, m_tex);
 
 				if (m_matrixID != 0)
 					glDeleteBuffers(1, &m_matrixID);
@@ -488,6 +503,7 @@ namespace mme {
 				m_shader = nullptr;
 				m_init = false;
 				delete[] indices;
+				delete[] m_tex;
 			}
 		}
 

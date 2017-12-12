@@ -330,6 +330,7 @@ namespace mme {
 		void Camera::lookAt(math::vec3 center) {
 			setOrientation(180.0f, 0.0, 1.0f, 0.0f);
 			setPos(center);
+			update();
 		}
 	}
 }

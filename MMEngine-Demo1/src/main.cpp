@@ -22,10 +22,17 @@
 #define VERT_INST "src/shaders/instanced.vert"
 #define FRAG_BASIC "src/shaders/basic.frag"
 
-#define MESH_FILE1 "res/suzanneTex.obj"
-#define MESH_FILE2 "res/SpaceShip.obj"
+#define MESH_FILE1 "res/suzanne.obj"
+#define MESH_FILE2 "res/ship.3ds"
+#define MESH_FILE3 "res/ship2.3ds"
+#define MESH_FILE4 "res/ship3.3ds"
+#define MESH_FILE5 "res/ship4.3ds"
 
-#define TEX_FILE "res/SpaceShip.png"
+#define TEX_FILE1 "res/stripe.jpg"
+#define TEX_FILE2 "res/ship.jpg"
+#define TEX_FILE3 "res/ship2.jpg"
+#define TEX_FILE4 "res/ship3.jpg"
+#define TEX_FILE5 "res/ship4.jpg"
 
 #if DEBUG
 #include "utility/log.h"
@@ -68,34 +75,79 @@ int main() {
 		return 1;
 	}
 
-	Model model[3];
+	Model model[7];
 	Model monkey1(MESH_FILE1);
 	Model monkey2(MESH_FILE1);
 	Model ship(MESH_FILE2);
+	Model ship2(MESH_FILE3);
+	Model ship3(MESH_FILE4);
+	Model ship4(MESH_FILE5);
+	Model ship5(MESH_FILE5);
 
 	monkey1.Interleaved();
-	monkey1.loadTexture(TEX_FILE);
-	monkey1.updatePos(1.0f, 1.0f, 1.0f);
+	monkey1.loadTexture(TEX_FILE1);
+	monkey1.updateVertices(1.0f, 1.0f, 0.0f);
+	monkey2.rotateVertices(0.0f, -180.0f, 0.0f);
 	monkey2.Interleaved();
-	monkey2.loadTexture(TEX_FILE);
-	monkey2.updatePos(6.0f, 1.0f, 1.0f);
+	monkey2.loadTexture(TEX_FILE1);
+	monkey2.updateVertices(6.0f, 1.0f, 0.0f);
+	monkey2.rotateVertices(0.0f, -180.0f, 0.0f);
+	
 	ship.Interleaved();
-	ship.loadTexture(TEX_FILE);
-	ship.updatePos(15.0f, 1.0f, 1.0f);
+	ship.loadTexture(TEX_FILE2);
+	ship.scaleVertices(0.05f, 0.05f, 0.05f);
+	ship.updateVertices(-55.0f, 11.0f, 1.0f);
+	ship.rotateVertices(90.0f, 180.0f, 0.0f);
 
-	monkey1.vel = vec3(0.05, 0.0, 0.0);
-	ship.vel = vec3(0.04, 0.01, 0.02);
-	monkey2.vel = vec3(0.02, 0.0, 0.01);
+	ship2.Interleaved();
+	ship2.loadTexture(TEX_FILE3);
+	ship2.scaleVertices(0.05f, 0.05f, 0.05f);
+	ship2.updateVertices(5.0f, 2.0f, 3.0f);
+	ship2.rotateVertices(0.0f, 0.0f, 0.0f);
+
+	ship3.Interleaved();
+	ship3.loadTexture(TEX_FILE4);
+	ship3.scaleVertices(0.05f, 0.05f, 0.05f);
+	ship3.updateVertices(10.0f, 10.0f, -10.0f);
+	ship3.rotateVertices(-90.0f, 0.0f, 0.0f);
+
+	ship4.Interleaved();
+	ship4.loadTexture(TEX_FILE5);
+	ship4.scaleVertices(0.05f, 0.05f, 0.05f);
+	ship4.updateVertices(2.0f, -10.0f, 10.0f);
+	ship4.rotateVertices(-90.0f, 0.0f, 0.0f);
+
+	ship5.Interleaved();
+	ship5.loadTexture(TEX_FILE5);
+	ship5.scaleVertices(0.05f, 0.05f, 0.05f);
+	ship5.updateVertices(20.0f, -14.0f, 1.0f);
+	ship5.rotateVertices(-90.0f, 0.0f, 0.0f);
+	
+	monkey1.vel = vec3(0.0f, 0.0f, 0.04f);
+	ship.vel = vec3(0.0f, 0.0f, 0.05f);
+	ship2.vel = vec3(0.0f, 0.0f, 0.15f);
+	ship3.vel = vec3(0.0f, 0.0f, 0.35f);
+	ship4.vel = vec3(0.0f, 0.0f, 0.25f);
+	ship5.vel = vec3(0.0f, 0.0f, 0.25f);
+	monkey2.vel = vec3(0.0, 0.0, 0.14f);
 	
 	model[0] = monkey1;
-	model[1] = ship;
-	model[2] = monkey2;
+	model[1] = monkey2;
+	model[2] = ship;
+	model[3] = ship2;
+	model[4] = ship3;
+	model[5] = ship4;
+	model[6] = ship5;
+
+	//std::cout << model[0].texFilePath << std::endl;
 	
-	GLsizeiptr buf = monkey1.vertexBufferSize() + ship.vertexBufferSize() + monkey2.vertexBufferSize();
-	GLsizeiptr idx = monkey1.indexBufferSize() + ship.indexBufferSize() + monkey2.indexBufferSize();
+	GLsizeiptr buf = monkey1.vertexBufferSize() + ship.vertexBufferSize() + ship2.vertexBufferSize() 
+		+ ship3.vertexBufferSize() + ship4.vertexBufferSize()+ ship5.vertexBufferSize() + monkey2.vertexBufferSize();
+	GLsizeiptr idx = monkey1.indexBufferSize() + ship.indexBufferSize() + ship2.indexBufferSize()
+		+ ship3.indexBufferSize() + ship4.indexBufferSize() + ship5.indexBufferSize() + monkey2.indexBufferSize();
 
 	ModelRenderer m;
-	m.submit(model, 3, buf, idx);
+	m.submit(model, 7, buf, idx);
 
 	Shape triangle = ShapeGenerator2D::makeTriangle();
 	ShapeRenderer a(triangle);
@@ -109,33 +161,37 @@ int main() {
 
 	for (int i = 0; i < 1000000; i++) {
 
-		r1 = 10.5f * float(i) / 2.0f;
-		r2 = 15.5f * float(i) / 3.0f;
-		r3 = 20.5f * float(i) / 4.0f;
+		r1 = 15.5f * float(i) / 2.0f;
+		r2 = 20.5f * float(i) / 4.0f;
+		r3 = 35.5f * float(i) / 6.0f;
 
 
-		matrices[i] = mat4::rotationMatrixY(r1) * mat4::rotationMatrixZ(r2)
+		matrices[i] = mat4::rotationMatrixZ(r1) * mat4::rotationMatrixY(r2)
 			* mat4::rotationMatrixX(r3) * mat4::translationMatrix(0.01f + (r1 / 100.0f), 0.02f + (r2 / 100.f), 0.03f + (r3 / 100.f));
 	}
 
 	a.submitMat(matrices, 1000000, 3, matBuf);
 
 	triangle.cleanUp();
-	//model[0].cleanUp();
-	//model[1].cleanUp();
-	//model[2].cleanUp();
+	model[0].cleanUp();
+	model[1].cleanUp();
+	model[2].cleanUp();
+	model[3].cleanUp();
+	model[4].cleanUp();
+	model[5].cleanUp();
+	model[6].cleanUp();
 
 	// Camera and Shader set up
 	int width = window.getWidth();
 	int height = window.getHeight();
 
-	Camera cam(12.5f, 0.0f, 15.0f);
-	cam.speed = 0.12f;
+	Camera cam(50.0f, 5.0f, 120.0f);
+	cam.speed = 0.6f;
 	cam.roll_speed = 1.5f;
 	cam.yaw_speed = 1.5f;
 	cam.pitch_speed = 1.5f;
-	cam.setFar(500.0f);
-	cam.init(0.0f, 0.0f, 0.0f, 1.0f);	// vanilla start, 0 degrees about the y axis. 
+	cam.setFar(800.0f);
+	cam.init(35.0f, 0.0f, 1.0f, 0.0f);
 	
 	m.initShader(VERT_TEX, FRAG_TEX);
 	m.enableShader();
@@ -153,7 +209,7 @@ int main() {
 
 	physics::Physics g;
 
-	g.submit(model, 3);
+	g.submit(model, 7);
 
 	//window.setClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
@@ -169,7 +225,7 @@ int main() {
 			std::cout << "mouse world pos " << ray_world << std::endl;
 		}
 
-		//g.applyForces();
+		g.applyForces();
 
 		// Model stuff
 		m.flushDynamic("model_matrix"); 
@@ -193,7 +249,6 @@ int main() {
 			a.setUniformMat4("proj", cam.projMatrix(width, height));
 		}
 		
-		cam.lookAt(ship.getCenter());
 		// Shape stuff
 		a.flushInstanced();
 		keyPresses(cam, window);

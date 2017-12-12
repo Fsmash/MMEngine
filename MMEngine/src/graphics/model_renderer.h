@@ -18,13 +18,14 @@ namespace mme {
 			GLuint vao;
 			GLuint vertice_count;
 			GLuint m_numModels;	// number of model objects being rendered
+			GLuint *m_tex;
 			Model *m_ptr;
 			void fitTexture();
 			int *indices;
 
 		public:
 
-			ModelRenderer() : Renderer(), m_numModels(0), m_ptr(nullptr) {}
+			ModelRenderer() : Renderer(), m_numModels(0), m_ptr(nullptr), m_tex(nullptr) {}
 			ModelRenderer(Model *models, const GLuint num, const GLsizeiptr buf, const GLsizeiptr idx);
 			ModelRenderer(Model &model);
 			~ModelRenderer();
